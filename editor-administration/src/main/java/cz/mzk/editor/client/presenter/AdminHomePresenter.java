@@ -76,17 +76,11 @@ public class AdminHomePresenter
 
     }
 
-    /** The dispatcher. */
-    private final DispatchAsync dispatcher;
-
     /** The left presenter. */
     private final AdminMenuPresenter leftPresenter;
 
     /** The place manager. */
     private final PlaceManager placeManager;
-
-    /** The lang. */
-    private final LangConstants lang;
 
     /**
      * Instantiates a new home presenter.
@@ -116,9 +110,7 @@ public class AdminHomePresenter
                               final LangConstants lang) {
         super(eventBus, view, proxy);
         this.leftPresenter = leftPresenter;
-        this.dispatcher = dispatcher;
         this.placeManager = placeManager;
-        this.lang = lang;
         bind();
     }
 

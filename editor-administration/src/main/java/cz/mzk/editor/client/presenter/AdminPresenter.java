@@ -30,9 +30,6 @@ package cz.mzk.editor.client.presenter;
 import javax.inject.Inject;
 
 import com.google.gwt.event.shared.GwtEvent.Type;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.HasUiHandlers;
@@ -49,15 +46,17 @@ import com.smartgwt.client.widgets.HTMLFlow;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
+import cz.mzk.editor.client.other.HotKeyPressManager;
 import cz.mzk.editor.client.uihandlers.AdminUiHandlers;
 import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.shared.event.EscKeyPressedEvent;
+import cz.mzk.editor.client.util.HtmlCode;
 import cz.mzk.editor.shared.event.KeyPressedEvent;
 import cz.mzk.editor.shared.event.MenuButtonClickedEvent;
 import cz.mzk.editor.shared.event.MenuButtonClickedEvent.MenuButtonClickedHandler;
 import cz.mzk.editor.shared.event.OpenUserPresenterEvent;
-import cz.mzk.editor.shared.event.SetEnabledHotKeysEvent;
+import cz.mzk.editor.shared.rpc.action.GetLoggedUserAction;
+import cz.mzk.editor.shared.rpc.action.GetLoggedUserResult;
 import cz.mzk.editor.shared.rpc.action.LogoutAction;
 import cz.mzk.editor.shared.rpc.action.LogoutResult;
 
@@ -103,8 +102,6 @@ public class AdminPresenter
 
         HTMLFlow getUsername();
 
-        HTMLFlow getEditUsers();
-
         void changeMenuWidth(String width);
     }
 
@@ -115,10 +112,7 @@ public class AdminPresenter
     private final DispatchAsync dispatcher;
 
     /** The place manager. */
-    @SuppressWarnings("unused")
     private final PlaceManager placeManager;
-
-    private boolean isHotKeysEnabled = true;
 
     /**
      * Instantiates a new app presenter.
@@ -158,58 +152,7 @@ public class AdminPresenter
     @Override
     protected void onBind() {
         super.onBind();
-
-        /** Hot-keys operations **/
-        Event.addNativePreviewHandler(new NativePreviewHandler() {
-
-            private boolean isKnownCtrlAltHotkey(NativePreviewEvent event) {
-                if (event.getNativeEvent().getCtrlKey() && event.getNativeEvent().getAltKey()) {
-                    int code = event.getNativeEvent().getKeyCode();
-                    for (Constants.HOT_KEYS_WITH_CTRL_ALT key : Constants.HOT_KEYS_WITH_CTRL_ALT.values()) {
-                        if (code == key.getCode()) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-
-            @Override
-            public void onPreviewNativeEvent(NativePreviewEvent event) {
-
-                if (event.getTypeInt() != Event.ONKEYDOWN) {
-                    return;
-                }
-                int keyCode = event.getNativeEvent().getKeyCode();
-
-                //                System.err.println("pressed key code: " + event.getNativeEvent().getKeyCode());
-
-                if (keyCode != Constants.CODE_KEY_ESC && keyCode != Constants.CODE_KEY_ENTER
-                        && keyCode != Constants.CODE_KEY_DELETE && !isKnownCtrlAltHotkey(event)) {
-                    return;
-                }
-                if (isHotKeysEnabled) {
-                    if (keyCode == Constants.CODE_KEY_ESC) {
-                        //                        escShortCut();
-                        EscKeyPressedEvent.fire(AdminPresenter.this);
-                        return;
-                    }
-                    KeyPressedEvent.fire(AdminPresenter.this, keyCode);
-                } else {
-                    event.cancel();
-                }
-            }
-
-        });
-
-        addRegisteredHandler(SetEnabledHotKeysEvent.getType(),
-                             new SetEnabledHotKeysEvent.SetEnabledHotKeysHandler() {
-
-                                 @Override
-                                 public void onSetEnabledHotKeys(SetEnabledHotKeysEvent event) {
-                                     isHotKeysEnabled = event.isEnable();
-                                 }
-                             });
+        HotKeyPressManager.setInstanceOf(getEventBus());
 
         addRegisteredHandler(KeyPressedEvent.getType(), new KeyPressedEvent.KeyPressedHandler() {
 
@@ -238,36 +181,16 @@ public class AdminPresenter
         super.onReset();
         if (unknown) {
             unknown = false;
-            //            dispatcher.execute(new GetLoggedUserAction(), new DispatchCallback<GetLoggedUserResult>() {
-            //
-            //                @Override
-            //                public void callback(GetLoggedUserResult result) {
-            //                    getView().getUsername().setContents(HtmlCode.bold(result.getName()));
-            //                    if (result.isEditUsers()) {
-            //                        getView().getEditUsers().setContents(lang.userMgmt());
-            //                        getView().getEditUsers().setCursor(Cursor.HAND);
-            //                        getView().getEditUsers().setWidth(120);
-            //                        getView().getEditUsers().setHeight(15);
-            //                        getView().getEditUsers().setStyleName("pseudolink");
-            //                        getView().getEditUsers()
-            //                                .addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
-            //
-            //                                    @Override
-            //                                    public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-            //                                        placeManager.revealRelativePlace(new PlaceRequest(NameTokens.USERS));
-            //                                    }
-            //                                });
-            //                    }
-            //                }
-            //            });
+            dispatcher.execute(new GetLoggedUserAction(), new DispatchCallback<GetLoggedUserResult>() {
+
+                @Override
+                public void callback(GetLoggedUserResult result) {
+                    getView().getUsername().setContents(HtmlCode.bold(result.getName()));
+                }
+            });
         }
         getEventBus().fireEvent(new OpenUserPresenterEvent(leftPresenter));
     }
-
-    //    private void openObject(String uuid) {
-    //        placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID,
-    //                                                                                  uuid));
-    //    }
 
     /*
      * (non-Javadoc)

@@ -62,7 +62,7 @@ public class EditorPlaceManager
                               @DefaultPlace String defaultNameToken) {
         super(eventBus, tokenFormatter);
 
-        this.defaultPlaceRequest = new PlaceRequest(NameTokens.ADMIN_HOME);
+        this.defaultPlaceRequest = new PlaceRequest(NameTokens.MEDIT_HOME);
     }
 
     /*

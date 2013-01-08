@@ -48,8 +48,6 @@ import cz.mzk.editor.shared.rpc.action.PutUserIdentityResult;
 public abstract class AddIdentityWindow
         extends UniversalWindow {
 
-    private final LangConstants lang;
-
     /**
      * Instantiates a new adds the identity window.
      * 
@@ -67,7 +65,6 @@ public abstract class AddIdentityWindow
                              final DispatchAsync dispatcher,
                              final USER_IDENTITY_TYPES type) {
         super(200, 550, title, eventBus, 50);
-        this.lang = lang;
 
         final DynamicForm form = new DynamicForm();
         form.setMargin(15);

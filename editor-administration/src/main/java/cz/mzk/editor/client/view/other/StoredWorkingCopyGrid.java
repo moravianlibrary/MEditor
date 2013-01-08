@@ -57,7 +57,6 @@ public class StoredWorkingCopyGrid
     private DispatchAsync dispatcher;
     private LangConstants lang;
     private Long editorUserId;
-    private boolean showMore;
 
     /**
      * 
@@ -66,7 +65,6 @@ public class StoredWorkingCopyGrid
         super();
         this.lang = lang;
         this.dispatcher = dispatcher;
-        this.showMore = showMore;
 
         setWidth("95%");
         setHeight("80%");

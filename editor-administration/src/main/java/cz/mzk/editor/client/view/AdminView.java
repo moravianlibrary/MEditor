@@ -81,9 +81,6 @@ public class AdminView
 
     private final HTMLFlow langSelection;
 
-    /** The edit users. */
-    private final HTMLFlow editUsers;
-
     @SuppressWarnings("unused")
     private final LangConstants lang;
 
@@ -173,8 +170,6 @@ public class AdminView
         });
         logged.addMember(hotKeysFlow);
 
-        editUsers = new HTMLFlow();
-        logged.addMember(editUsers);
         logged.addMember(username);
         logged.addMember(langSelection);
         logged.addMember(anchor);
@@ -263,15 +258,6 @@ public class AdminView
     @Override
     public HTMLFlow getUsername() {
         return username;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see cz.mzk.editor.client.presenter.AppPresenter.MyView#getEditUsers ()
-     */
-    @Override
-    public HTMLFlow getEditUsers() {
-        return editUsers;
     }
 
     @Override

@@ -29,8 +29,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import javax.inject.Inject;
-
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
@@ -75,10 +73,6 @@ public class StoredItemsDAOImpl
     /** The Constant INSERT_STORED_ITEM. */
     private static final String INSERT_STORED_ITEM = "INSERT INTO " + Constants.TABLE_SAVED_EDITED_OBJECT
             + " (digital_object_uuid, description, file_name, state) VALUES ((?),(?),(?),'true') ";
-
-    /** The dao utils. */
-    @Inject
-    private DAOUtils daoUtils;
 
     /**
      * {@inheritDoc}

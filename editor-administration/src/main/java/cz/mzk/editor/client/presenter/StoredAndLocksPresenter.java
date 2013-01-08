@@ -54,12 +54,6 @@ public class StoredAndLocksPresenter
         extends Presenter<StoredAndLocksPresenter.MyView, StoredAndLocksPresenter.MyProxy>
         implements StoredAndLocksUiHandlers {
 
-    /** The lang. */
-    private final LangConstants lang;
-
-    /** The dispatcher. */
-    private final DispatchAsync dispatcher;
-
     /** The left presenter. */
     private final AdminMenuPresenter leftPresenter;
 
@@ -105,8 +99,6 @@ public class StoredAndLocksPresenter
                                    final DispatchAsync dispatcher,
                                    final AdminMenuPresenter leftPresenter) {
         super(eventBus, view, proxy);
-        this.lang = lang;
-        this.dispatcher = dispatcher;
         this.leftPresenter = leftPresenter;
 
     }

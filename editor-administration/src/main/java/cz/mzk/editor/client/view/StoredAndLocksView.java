@@ -122,6 +122,7 @@ public class StoredAndLocksView
     private ListGrid activeLocks;
     private int count;
 
+    @SuppressWarnings("static-access")
     @Inject
     public StoredAndLocksView(EventBus eventBus, final LangConstants lang, DispatchAsync dispatcher) {
         this.mainLayout = new VStack();

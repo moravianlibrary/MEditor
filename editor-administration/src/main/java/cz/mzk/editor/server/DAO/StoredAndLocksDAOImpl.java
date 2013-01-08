@@ -32,8 +32,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
@@ -98,10 +96,6 @@ public class StoredAndLocksDAOImpl
                     + " WHERE editor_user_id = (?) AND (type = 'c' OR type = 'u') GROUP BY lock_id) a INNER JOIN "
                     + Constants.TABLE_LOCK + " l ON l.id = a.lock_id) WHERE state = true) al INNER JOIN "
                     + Constants.TABLE_DIGITAL_OBJECT + " o ON al.digital_object_uuid = o.uuid)";
-
-    /** The dao utils. */
-    @Inject
-    private DAOUtils daoUtils;
 
     /**
      * {@inheritDoc}

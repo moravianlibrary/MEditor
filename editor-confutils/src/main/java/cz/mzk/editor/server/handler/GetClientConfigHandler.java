@@ -30,11 +30,8 @@ package cz.mzk.editor.server.handler;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
@@ -59,9 +56,6 @@ public class GetClientConfigHandler
 
     /** The configuration. */
     private final EditorConfiguration configuration;
-
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
 
     /**
      * Instantiates a new gets the client config handler.

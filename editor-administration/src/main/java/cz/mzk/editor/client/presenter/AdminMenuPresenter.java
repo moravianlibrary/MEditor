@@ -71,9 +71,7 @@ public class AdminMenuPresenter
         void setButtons(boolean showStat, boolean showUsers);
     }
 
-    private final LangConstants lang;
     private final DispatchAsync dispatcher;
-    private final PlaceManager placeManager;
 
     /**
      * @param eventBus
@@ -89,8 +87,6 @@ public class AdminMenuPresenter
                               final LangConstants lang) {
         super(eventBus, view, proxy);
         this.dispatcher = dispatcher;
-        this.placeManager = placeManager;
-        this.lang = lang;
     }
 
     /**

@@ -49,6 +49,7 @@ import com.smartgwt.client.widgets.form.fields.TextItem;
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.NameTokens;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
+import cz.mzk.editor.client.other.HotKeyPressManager;
 import cz.mzk.editor.client.uihandlers.MyUiHandlers;
 import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
@@ -60,7 +61,6 @@ import cz.mzk.editor.client.view.window.UuidWindow;
 import cz.mzk.editor.shared.event.ChangeMenuWidthEvent;
 import cz.mzk.editor.shared.event.KeyPressedEvent;
 import cz.mzk.editor.shared.event.OpenFirstDigitalObjectEvent;
-import cz.mzk.editor.shared.event.SetEnabledHotKeysEvent;
 import cz.mzk.editor.shared.rpc.StoredItem;
 import cz.mzk.editor.shared.rpc.action.GetLoggedUserAction;
 import cz.mzk.editor.shared.rpc.action.GetLoggedUserResult;
@@ -129,11 +129,7 @@ public class AppPresenter
     /** The place manager. */
     private final PlaceManager placeManager;
 
-    private boolean isHotKeysEnabled = true;
-
     private boolean canOpen = true;
-    private final boolean canPublish = true;
-    private final boolean canDelete = true;
 
     /**
      * Instantiates a new app presenter.
@@ -179,6 +175,7 @@ public class AppPresenter
     @Override
     protected void onBind() {
         super.onBind();
+        HotKeyPressManager.setInstanceOf(getEventBus());
 
         addRegisteredHandler(OpenFirstDigitalObjectEvent.getType(),
                              new OpenFirstDigitalObjectEvent.OpenFirstDigitalObjectHandler() {
@@ -194,15 +191,6 @@ public class AppPresenter
                                      } else {
                                          openObject(event.getUuid());
                                      }
-                                 }
-                             });
-
-        addRegisteredHandler(SetEnabledHotKeysEvent.getType(),
-                             new SetEnabledHotKeysEvent.SetEnabledHotKeysHandler() {
-
-                                 @Override
-                                 public void onSetEnabledHotKeys(SetEnabledHotKeysEvent event) {
-                                     isHotKeysEnabled = event.isEnable();
                                  }
                              });
 
@@ -295,6 +283,7 @@ public class AppPresenter
     /**
      * Method for close currently displayed window
      */
+    @SuppressWarnings("unused")
     private void escShortCut() {
         if (uuidWindow != null) {
             uuidWindow.hide();

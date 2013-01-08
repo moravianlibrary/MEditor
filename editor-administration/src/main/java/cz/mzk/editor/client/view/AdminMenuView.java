@@ -56,7 +56,6 @@ public class AdminMenuView
         extends ViewWithUiHandlers<AdminMenuUiHandlers>
         implements MyView {
 
-    @SuppressWarnings("unused")
     private final LangConstants lang;
     private static EventBus eventBus;
     final ModalWindow mw;

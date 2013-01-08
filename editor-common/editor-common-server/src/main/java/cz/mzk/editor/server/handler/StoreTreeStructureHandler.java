@@ -68,6 +68,7 @@ public class StoreTreeStructureHandler
     @Inject
     private TreeStructureDAO treeDAO;
 
+    @SuppressWarnings("unused")
     @Inject
     private UserDAO userDAO;
 

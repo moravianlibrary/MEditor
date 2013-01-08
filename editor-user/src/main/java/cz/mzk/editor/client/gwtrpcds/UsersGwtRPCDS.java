@@ -62,7 +62,6 @@ public class UsersGwtRPCDS
     /** The dispatcher. */
     private final DispatchAsync dispatcher;
 
-    @SuppressWarnings("unused")
     private final LangConstants lang;
 
     /**

@@ -71,6 +71,7 @@ public class RpxConnection {
         return baseUrl;
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public JSONObject authInfo(String token) {
         if (token == null) throw new IllegalArgumentException("token was null.");
 
@@ -79,6 +80,7 @@ public class RpxConnection {
         return apiCall("auth_info", query);
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked", "unused"})
     private JSONObject apiCall(String methodName, Map partialQuery) {
         Map query = null;
         if (partialQuery == null) {

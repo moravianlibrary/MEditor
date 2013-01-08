@@ -52,6 +52,9 @@ public class HasUserRightsHandler
     public HasUserRightsResult execute(HasUserRightsAction action, ExecutionContext context)
             throws ActionException {
 
+        LOGGER.debug("Processing action: HasUserRightsAction");
+        ServerUtils.checkExpiredSession();
+
         Boolean[] ok = new Boolean[action.getRights().length];
         for (int i = 0; i < ok.length; i++)
             ok[i] = false;
