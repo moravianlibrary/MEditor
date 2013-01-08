@@ -246,21 +246,20 @@ public class AppPresenter
                 @Override
                 public void callback(GetLoggedUserResult result) {
                     getView().getUsername().setContents(HtmlCode.bold(result.getName()));
-                    if (result.isEditUsers()) {
-                        getView().getEditUsers().setContents(lang.userMgmt());
-                        getView().getEditUsers().setCursor(Cursor.HAND);
-                        getView().getEditUsers().setWidth(120);
-                        getView().getEditUsers().setHeight(15);
-                        getView().getEditUsers().setStyleName("pseudolink");
-                        getView().getEditUsers()
-                                .addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+                    getView().getEditUsers().setContents(lang.userMgmt());
+                    getView().getEditUsers().setCursor(Cursor.HAND);
+                    getView().getEditUsers().setWidth(140);
+                    getView().getEditUsers().setHeight(15);
+                    getView().getEditUsers().setStyleName("pseudolink");
+                    getView().getEditUsers()
+                            .addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
-                                    @Override
-                                    public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                                        placeManager.revealPlace(new PlaceRequest(NameTokens.ADMIN_HOME));
-                                    }
-                                });
-                    }
+                                @Override
+                                public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+                                    placeManager.revealPlace(new PlaceRequest(NameTokens.ADMIN_HOME));
+                                }
+                            });
+
                 }
             });
         }

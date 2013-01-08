@@ -42,10 +42,7 @@ public class GetLoggedUser {
     @Out(1)
     private String name;
 
-    /** The edit users. */
+    /** The user id. */
     @Out(2)
-    private boolean editUsers;
-
-    @Out(3)
     private Long userId;
 }

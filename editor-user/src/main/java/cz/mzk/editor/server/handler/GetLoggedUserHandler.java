@@ -88,11 +88,8 @@ public class GetLoggedUserHandler
         LOGGER.debug("Processing action: GetLoggedUserAction");
         ServerUtils.checkExpiredSession();
 
-        boolean editUsers;
         try {
-            editUsers = true;
             return new GetLoggedUserResult(userDAO.getName(daoUtils.getUserId(true)),
-                                           editUsers,
                                            daoUtils.getUserId(true));
         } catch (DatabaseException e) {
             LOGGER.error(e.getMessage());
