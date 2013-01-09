@@ -98,6 +98,7 @@ public abstract class AbstractDAO {
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(AbstractDAO.class);
 
+    /** The Constant DRIVER. */
     private static final String DRIVER = "org.postgresql.Driver";
 
     /** Must be the same as in the META-INF/context.xml and WEB-INF/web.xml */
@@ -106,14 +107,26 @@ public abstract class AbstractDAO {
     /** The Constant FORMATTER with format: dd.MM.yyyy HH:mm:ss. */
     public static final SimpleDateFormat FORMATTER_TO_SECONDS = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
+    //      /** The Constant FORMATTER with format: yyyy/MM/dd. */
+    //    public static final SimpleDateFormat FORMATTER_TO_DAYS = new SimpleDateFormat("yyyy/MM/dd");
+
+    /** The Constant POOLABLE_YES. */
     private static final int POOLABLE_YES = 1;
+
+    /** The Constant POOLABLE_NO. */
     private static final int POOLABLE_NO = 0;
+
+    /** The poolable. */
     private static int poolable = -1;
+
+    /** The context is correct. */
     private static boolean contextIsCorrect = false;
 
+    /** The pool. */
     @Resource(name = JNDI_DB_POOL_ID)
     private DataSource pool;
 
+    /** The http session provider. */
     @Inject
     private Provider<HttpSession> httpSessionProvider;
 
@@ -121,6 +134,7 @@ public abstract class AbstractDAO {
      * Inits the connection.
      * 
      * @throws DatabaseException
+     *         the database exception
      */
     private void initConnection() throws DatabaseException {
         if (poolable != POOLABLE_NO && pool == null) {
@@ -162,6 +176,12 @@ public abstract class AbstractDAO {
         }
     }
 
+    /**
+     * Inits the connection without pool.
+     * 
+     * @throws DatabaseException
+     *         the database exception
+     */
     private void initConnectionWithoutPool() throws DatabaseException {
         try {
             Class.forName(DRIVER);
@@ -201,6 +221,7 @@ public abstract class AbstractDAO {
      * 
      * @return the connection
      * @throws DatabaseException
+     *         the database exception
      */
     protected Connection getConnection() throws DatabaseException {
         if (conn == null) {
@@ -224,6 +245,18 @@ public abstract class AbstractDAO {
         conn = null;
     }
 
+    /**
+     * Creates the correct context.
+     * 
+     * @param login
+     *        the login
+     * @param password
+     *        the password
+     * @param port
+     *        the port
+     * @param name
+     *        the name
+     */
     private void createCorrectContext(String login, String password, String port, String name) {
         String pathPrefix = System.getProperty("catalina.home");
         boolean changed = false;

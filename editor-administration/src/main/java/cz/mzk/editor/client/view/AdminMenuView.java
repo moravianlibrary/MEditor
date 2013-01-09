@@ -165,8 +165,7 @@ public class AdminMenuView
      */
     @Override
     public Widget asWidget() {
-        // TODO Auto-generated method stub
-        return null;
+        return mainLayout;
     }
 
 }
