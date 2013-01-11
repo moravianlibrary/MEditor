@@ -24,7 +24,7 @@
 
 package cz.mzk.editor.client.view.window;
 
-import com.google.gwt.event.shared.EventBus;
+import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.HTMLFlow;
@@ -38,8 +38,8 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
+import cz.mzk.editor.client.other.LabelAndModelConverter;
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.client.view.other.LabelAndModelConverter;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle;
 import cz.mzk.editor.shared.rpc.action.StoreTreeStructureAction;
 import cz.mzk.editor.shared.rpc.action.StoreTreeStructureResult;

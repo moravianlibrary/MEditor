@@ -52,7 +52,13 @@ import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 public class NameTokens {
 
     /** The Constant HOME. */
-    public static final String HOME = "home";
+    public static final String ADMIN_HOME = "adminHome";
+
+    /** The Constant MEDIT_HOME. */
+    public static final String MEDIT_HOME = "meditHome";
+
+    /** The Constant MENU. */
+    public static final String MENU = "menu";
 
     /** The Constant MODIFY. */
     public static final String MODIFY = "modify";
@@ -64,21 +70,35 @@ public class NameTokens {
 
     public static final String ADJUST_PAGES = "adjust";
 
-    /** The Constant USERS. */
-    public static final String USERS = "users";
-
     @SuppressWarnings("serial")
     public static List<String> getAllNameTokens() {
         return new ArrayList<String>() {
 
             {
-                add(HOME);
+                add(ADMIN_HOME);
+                add(MEDIT_HOME);
+                add(MENU);
                 add(MODIFY);
                 add(CREATE);
                 add(FIND_METADATA);
                 add(ADJUST_PAGES);
-                add(USERS);
+
+                add(ADMIN_MENU_BUTTONS.MY_ACOUNT);
+                add(ADMIN_MENU_BUTTONS.HISTORY);
+                add(ADMIN_MENU_BUTTONS.STORED_AND_LOCKS);
+                add(ADMIN_MENU_BUTTONS.STATISTICS);
+                add(ADMIN_MENU_BUTTONS.USERS);
             }
         };
+    }
+
+    public static final class ADMIN_MENU_BUTTONS {
+
+        public static final String MY_ACOUNT = "myAcount";
+        public static final String HISTORY = "history";
+        public static final String STORED_AND_LOCKS = "stored";
+        public static final String STATISTICS = "statistic";
+        public static final String USERS = "users";
+
     }
 }

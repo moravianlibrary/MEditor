@@ -31,10 +31,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.HasUiHandlers;
 import com.gwtplatform.mvp.client.Presenter;
@@ -327,7 +327,7 @@ public class ModifyPresenter
                 previousUuid1 = uuid;
             }
         }
-        RevealContentEvent.fire(this, Constants.TYPE_LEFT_CONTENT, leftPresenter);
+        RevealContentEvent.fire(this, Constants.TYPE_MEDIT_LEFT_CONTENT, leftPresenter);
 
     }
 
@@ -464,7 +464,7 @@ public class ModifyPresenter
      */
     @Override
     protected void revealInParent() {
-        RevealContentEvent.fire(this, Constants.TYPE_MAIN_CONTENT, this);
+        RevealContentEvent.fire(this, Constants.TYPE_MEDIT_MAIN_CONTENT, this);
     }
 
     /*

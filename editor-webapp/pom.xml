@@ -1,6 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<name>Editor web application</name>
 	<groupId>cz.mzk</groupId>
 	<artifactId>editor-webapp</artifactId>
@@ -39,12 +40,17 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>editor-common-client</artifactId>
+			<artifactId>editor-common-server</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>editor-common-server</artifactId>
+			<artifactId>editor-administration</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>editor-security</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
@@ -104,12 +110,27 @@
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-		</dependency>
 	</dependencies>
 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>resources</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 	<profiles>
 		<profile>
 			<id>default-filter</id>
@@ -180,22 +201,11 @@
 								</goals>
 								<configuration>
 									<module>cz.mzk.editor.MEditor</module>
+									<module>cz.mzk.editor.RequestForAdding</module>
 								</configuration>
 							</execution>
 						</executions>
 					</plugin>
-
-					<!-- Replace $HOSTNAME$ with real hostname <plugin> <groupId>com.google.code.maven-replacer-plugin</groupId> 
-						<artifactId>maven-replacer-plugin</artifactId> <executions> <execution> <id>viewer</id> 
-						<phase>prepare-package</phase> <goals> <goal>replace</goal> </goals> <configuration> 
-						<file>src/main/webapp/viewer/viewerTemplate</file> <outputFile>src/main/webapp/viewer/viewer.html</outputFile> 
-						<replacements> <replacement> <token>&lt;&lt;HOSTNAME&gt;&gt;</token> <value>${hostname}</value> 
-						</replacement> </replacements> </configuration> </execution> <execution> 
-						<id>login</id> <phase>prepare-package</phase> <goals> <goal>replace</goal> 
-						</goals> <configuration> <file>src/main/webapp/loginTemplate</file> <outputFile>src/main/webapp/login.html</outputFile> 
-						<replacements> <replacement> <token>&lt;&lt;HOSTNAME&gt;&gt;</token> <value>${hostname}</value> 
-						</replacement> </replacements> </configuration> </execution> </executions> 
-						</plugin> -->
 
 					<!-- Pack war file -->
 					<plugin>
@@ -216,23 +226,30 @@
 							</archive>
 							<webResources>
 								<resource>
-									<directory>${basedir}/src/main/webapp</directory>
+									<directory>${basedir}/../editor-webapp/src/main/webapp</directory>
 									<filtering>true</filtering>
 									<includes>
 										<include>login.html</include>
 										<include>viewer/viewer.html</include>
+										<include>MEditor.css</include>
+										<include>MEditor.html</include>
 									</includes>
 								</resource>
+								<resource>
+									<directory>${basedir}/../editor-security/src/main/security</directory>
+									<includes>
+										<include>applicationContext.xml</include>
+									</includes>
+									<targetPath>WEB-INF</targetPath>
+								</resource>
 							</webResources>
+							<webXml>${basedir}/../editor-webapp/src/main/webapp/WEB-INF/web.xml</webXml>
 						</configuration>
 					</plugin>
-					<!-- <plugin> <groupId>org.apache.tomcat.maven</groupId> <artifactId>tomcat7-maven-plugin</artifactId> 
-						<version>2.0-SNAPSHOT</version> <configuration> <warFile>${basedir}/../target/${warName}</warFile> 
-						<url>{filter.hostname}/manager/html</url> </configuration> </plugin> -->
 				</plugins>
 			</build>
 		</profile>
-		
+
 		<profile>
 			<id>prod-editor-devel</id>
 			<activation>
@@ -265,7 +282,7 @@
 				</filters>
 			</build>
 		</profile>
-		
+
 		<profile>
 			<id>dev</id>
 			<build>
@@ -283,8 +300,8 @@
 							<buildOutputDirectory>target/gwtclasses</buildOutputDirectory>
 							<hostedWebapp>target/hostedWar</hostedWebapp>
 							<debugSuspend>false</debugSuspend>
-							<!--<style>OBF</style>-->
-							<style>DETAILED</style> 
+							<!--<style>OBF</style> -->
+							<style>DETAILED</style>
 							<strict>true</strict>
 						</configuration>
 						<executions>
@@ -293,6 +310,55 @@
 									<modules>
 										<module>cz.mzk.editor.MEditorDev</module>
 										<module>cz.mzk.editor.RequestForAddingDev</module>
+									</modules>
+								</configuration>
+								<id>gwt-goals</id>
+								<goals>
+									<goal>compile</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>default-cli</id>
+								<goals>
+									<goal>debug</goal>
+								</goals>
+								<configuration>
+									<module>cz.mzk.editor.MEditorDev</module>
+									<module>cz.mzk.editor.RequestForAddingDev</module>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		
+		<profile>
+			<id>medit</id>
+			<build>
+				<plugins>
+					<!-- Compile GWT modules (dev -> 1 locale, 1 browser) -->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>gwt-maven-plugin</artifactId>
+						<configuration>
+							<noServer>true</noServer>
+							<inplace>false</inplace>
+							<logLevel>INFO</logLevel>
+							<draftCompile>true</draftCompile>
+							<soyc>false</soyc>
+							<buildOutputDirectory>target/gwtclasses</buildOutputDirectory>
+							<hostedWebapp>target/hostedWar</hostedWebapp>
+							<debugSuspend>false</debugSuspend>
+							<!--<style>OBF</style> -->
+							<style>DETAILED</style>
+							<strict>true</strict>
+						</configuration>
+						<executions>
+							<execution>
+								<configuration>
+									<modules>
+										<module>cz.mzk.editor.MEditor</module>
 									</modules>
 								</configuration>
 								<id>gwt-goals</id>

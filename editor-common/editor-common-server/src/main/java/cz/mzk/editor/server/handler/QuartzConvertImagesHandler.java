@@ -67,6 +67,12 @@ public class QuartzConvertImagesHandler
     @Override
     public QuartzConvertImagesResult execute(QuartzConvertImagesAction action, ExecutionContext context)
             throws ActionException {
+
+        //        TODO
+        //        LOGGER.debug("Processing action: ");
+        //        ServerUtils.checkExpiredSession();
+        // 
+
         JobDetail job =
                 JobBuilder.newJob(ConvertImages.class)
                         .withIdentity(action.getModel() + ":" + action.getCode(), "Konverze")

@@ -26,7 +26,12 @@ package cz.mzk.editor.server.DAO;
 
 import java.util.List;
 
+import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
+
+// TODO: Auto-generated Javadoc
 /**
+ * The Interface DigitalObjectDAO.
+ * 
  * @author Matous Jobanek
  * @version Oct 22, 2012
  */
@@ -51,6 +56,18 @@ public interface DigitalObjectDAO {
             throws DatabaseException;
 
     /**
+     * Update state.
+     * 
+     * @param objects
+     *        the uuid
+     * @param state
+     *        the state
+     * @throws DatabaseException
+     *         the database exception
+     */
+    void updateState(List<String> objects, boolean state) throws DatabaseException;
+
+    /**
      * Insert new digital object.
      * 
      * @param uuid
@@ -63,6 +80,8 @@ public interface DigitalObjectDAO {
      *        the input_queue_directory_path
      * @param top_digital_object_uuid
      *        the top_digital_object_uuid
+     * @param state
+     *        the state
      * @return true, if successful
      * @throws DatabaseException
      *         the database exception
@@ -71,7 +90,8 @@ public interface DigitalObjectDAO {
                                    String model,
                                    String name,
                                    String input_queue_directory_path,
-                                   String top_digital_object_uuid) throws DatabaseException;
+                                   String top_digital_object_uuid,
+                                   boolean state) throws DatabaseException;
 
     /**
      * Update top object time.
@@ -108,4 +128,22 @@ public interface DigitalObjectDAO {
                                 String model,
                                 String name,
                                 String input_queue_directory_path) throws DatabaseException;
+
+    /**
+     * Insert do crud action.
+     * 
+     * @param tableName
+     *        the table name
+     * @param fkNameCol
+     *        the fk name col
+     * @param foreignKey
+     *        the foreign key
+     * @param type
+     *        the type
+     * @throws DatabaseException
+     *         the database exception
+     */
+    void insertDOCrudAction(String tableName, String fkNameCol, Object foreignKey, CRUD_ACTION_TYPES type)
+            throws DatabaseException;
+
 }

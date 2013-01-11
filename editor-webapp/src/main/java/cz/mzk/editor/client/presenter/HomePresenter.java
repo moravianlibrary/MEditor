@@ -29,8 +29,8 @@ package cz.mzk.editor.client.presenter;
 
 import javax.inject.Inject;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Timer;
+import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.dispatch.shared.DispatchRequest;
 import com.gwtplatform.mvp.client.Presenter;
@@ -59,10 +59,13 @@ import cz.mzk.editor.client.NameTokens;
 import cz.mzk.editor.client.config.EditorClientConfiguration;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.client.view.window.SchedulerWindow;
 import cz.mzk.editor.shared.rpc.action.CheckAvailability;
 import cz.mzk.editor.shared.rpc.action.CheckAvailabilityAction;
 import cz.mzk.editor.shared.rpc.action.CheckAvailabilityResult;
+import cz.mzk.editor.shared.rpc.action.HasUserRightsAction;
+import cz.mzk.editor.shared.rpc.action.HasUserRightsResult;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -149,13 +152,15 @@ public class HomePresenter
         public DynamicForm getForm();
 
         public IButton getScheduler();
+
+        void showSheduler();
     }
 
     /**
      * The Interface MyProxy.
      */
     @ProxyCodeSplit
-    @NameToken(NameTokens.HOME)
+    @NameToken(NameTokens.MEDIT_HOME)
     public interface MyProxy
             extends ProxyPlace<HomePresenter> {
 
@@ -255,15 +260,25 @@ public class HomePresenter
                 }
             }
         });
-        getView().getScheduler().addClickHandler(new ClickHandler() {
 
-            @Override
-            public void onClick(ClickEvent event) {
-                new SchedulerWindow(getEventBus(), lang, dispatcher);
+        dispatcher.execute(new HasUserRightsAction(new EDITOR_RIGHTS[] {EDITOR_RIGHTS.LONG_RUNNING_PROCESS}),
+                           new DispatchCallback<HasUserRightsResult>() {
 
-            }
-        });
+                               @Override
+                               public void callback(HasUserRightsResult result) {
+                                   if (result.getOk()[0]) {
+                                       getView().showSheduler();
+                                       getView().getScheduler().addClickHandler(new ClickHandler() {
 
+                                           @Override
+                                           public void onClick(ClickEvent event) {
+                                               new SchedulerWindow(getEventBus(), lang, dispatcher);
+
+                                           }
+                                       });
+                                   }
+                               }
+                           });
     }
 
     private void evaluateUuid() {
@@ -278,7 +293,7 @@ public class HomePresenter
      */
     @Override
     protected void onReset() {
-        RevealContentEvent.fire(this, AppPresenter.TYPE_LEFT_CONTENT, leftPresenter);
+        RevealContentEvent.fire(this, AppPresenter.TYPE_MEDIT_LEFT_CONTENT, leftPresenter);
     }
 
     /*
@@ -287,7 +302,7 @@ public class HomePresenter
      */
     @Override
     protected void revealInParent() {
-        RevealContentEvent.fire(this, AppPresenter.TYPE_MAIN_CONTENT, this);
+        RevealContentEvent.fire(this, AppPresenter.TYPE_MEDIT_MAIN_CONTENT, this);
     }
 
     /**

@@ -87,6 +87,12 @@ public class InitializeConversionHandler
     @Override
     public InitializeConversionResult execute(final InitializeConversionAction action,
                                               final ExecutionContext exContext) throws ActionException {
+
+        //        TODO
+        //        LOGGER.debug("Processing action: ");
+        //        ServerUtils.checkExpiredSession();
+        // 
+
         // parse input
         final boolean start = action.isStart();
         Converter converter = Converter.getInstance();

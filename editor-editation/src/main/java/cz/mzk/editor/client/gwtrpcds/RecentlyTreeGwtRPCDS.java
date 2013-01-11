@@ -31,7 +31,7 @@ import java.util.ArrayList;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.event.shared.EventBus;
+import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
@@ -120,8 +120,7 @@ public class RecentlyTreeGwtRPCDS
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.gwtrpcds.AbstractGwtRPCDS#executeFetch
+     * @see cz.mzk.editor.client.gwtrpcds.AbstractGwtRPCDS#executeFetch
      * (java.lang.String, com.smartgwt.client.data.DSRequest,
      * com.smartgwt.client.data.DSResponse)
      */
@@ -157,8 +156,7 @@ public class RecentlyTreeGwtRPCDS
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.gwtrpcds.AbstractGwtRPCDS#executeAdd(
+     * @see cz.mzk.editor.client.gwtrpcds.AbstractGwtRPCDS#executeAdd(
      * java.lang.String, com.smartgwt.client.data.DSRequest,
      * com.smartgwt.client.data.DSResponse)
      */
@@ -189,7 +187,7 @@ public class RecentlyTreeGwtRPCDS
                                        response.setData(list);
                                    }
                                    processResponse(requestId, response);
-                                   RefreshTreeEvent.fire(bus, NAME_OF_TREE.RECENTLY_MODIFIED);
+                                   bus.fireEvent(new RefreshTreeEvent(NAME_OF_TREE.RECENTLY_MODIFIED));
                                }
                            });
 
@@ -197,8 +195,7 @@ public class RecentlyTreeGwtRPCDS
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.gwtrpcds.AbstractGwtRPCDS#executeUpdate
+     * @see cz.mzk.editor.client.gwtrpcds.AbstractGwtRPCDS#executeUpdate
      * (java.lang.String, com.smartgwt.client.data.DSRequest,
      * com.smartgwt.client.data.DSResponse)
      */
@@ -228,15 +225,14 @@ public class RecentlyTreeGwtRPCDS
                                        processResponse(requestId, response);
                                    }
                                    processResponse(requestId, response);
-                                   RefreshTreeEvent.fire(bus, NAME_OF_TREE.RECENTLY_MODIFIED);
+                                   bus.fireEvent(new RefreshTreeEvent(NAME_OF_TREE.RECENTLY_MODIFIED));
                                }
                            });
     }
 
     /*
      * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.gwtrpcds.AbstractGwtRPCDS#executeRemove
+     * @see cz.mzk.editor.client.gwtrpcds.AbstractGwtRPCDS#executeRemove
      * (java.lang.String, com.smartgwt.client.data.DSRequest,
      * com.smartgwt.client.data.DSResponse)
      */

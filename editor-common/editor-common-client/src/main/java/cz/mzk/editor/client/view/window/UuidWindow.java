@@ -27,7 +27,7 @@
 
 package cz.mzk.editor.client.view.window;
 
-import com.google.gwt.event.shared.EventBus;
+import com.google.web.bindery.event.shared.EventBus;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -38,7 +38,7 @@ import com.smartgwt.client.widgets.form.fields.events.ChangedEvent;
 import com.smartgwt.client.widgets.form.validator.RegExpValidator;
 
 import cz.mzk.editor.client.LangConstants;
-import cz.mzk.editor.client.view.other.HtmlCode;
+import cz.mzk.editor.client.util.HtmlCode;
 
 public abstract class UuidWindow
         extends UniversalWindow {

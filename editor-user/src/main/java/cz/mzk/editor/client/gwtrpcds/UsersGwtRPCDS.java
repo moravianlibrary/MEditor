@@ -38,18 +38,19 @@ import com.smartgwt.client.data.DataSourceField;
 import com.smartgwt.client.data.fields.DataSourceTextField;
 import com.smartgwt.client.rpc.RPCResponse;
 import com.smartgwt.client.util.JSOHelper;
+import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.shared.rpc.UserInfoItem;
-import cz.mzk.editor.shared.rpc.action.GetUserInfoAction;
-import cz.mzk.editor.shared.rpc.action.GetUserInfoResult;
+import cz.mzk.editor.shared.rpc.action.GetUsersInfoAction;
+import cz.mzk.editor.shared.rpc.action.GetUsersInfoResult;
 import cz.mzk.editor.shared.rpc.action.PutUserInfoAction;
 import cz.mzk.editor.shared.rpc.action.PutUserInfoResult;
-import cz.mzk.editor.shared.rpc.action.RemoveUserInfoAction;
-import cz.mzk.editor.shared.rpc.action.RemoveUserInfoResult;
+import cz.mzk.editor.shared.rpc.action.RemoveUserAction;
+import cz.mzk.editor.shared.rpc.action.RemoveUserResult;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -61,7 +62,6 @@ public class UsersGwtRPCDS
     /** The dispatcher. */
     private final DispatchAsync dispatcher;
 
-    @SuppressWarnings("unused")
     private final LangConstants lang;
 
     /**
@@ -69,6 +69,8 @@ public class UsersGwtRPCDS
      * 
      * @param dispatcher
      *        the dispatcher
+     * @param lang
+     *        the lang
      */
     public UsersGwtRPCDS(DispatchAsync dispatcher, LangConstants lang) {
         this.dispatcher = dispatcher;
@@ -82,15 +84,11 @@ public class UsersGwtRPCDS
         field.setRequired(true);
         field.setAttribute("width", "*");
         addField(field);
-        field = new DataSourceTextField(Constants.ATTR_SEX, "sex");
-        field.setHidden(true);
-        addField(field);
         field = new DataSourceTextField(Constants.ATTR_USER_ID, "user id");
         field.setPrimaryKey(true);
         field.setHidden(true);
         field.setRequired(true);
         addField(field);
-
     }
 
     /*
@@ -101,28 +99,32 @@ public class UsersGwtRPCDS
      */
     @Override
     protected void executeFetch(final String requestId, final DSRequest request, final DSResponse response) {
-        dispatcher.execute(new GetUserInfoAction(), new DispatchCallback<GetUserInfoResult>() {
+        dispatcher.execute(new GetUsersInfoAction(), new DispatchCallback<GetUsersInfoResult>() {
 
             @Override
             public void callbackError(final Throwable cause) {
                 Log.error("Handle Failure:", cause);
                 response.setStatus(RPCResponse.STATUS_FAILURE);
+                super.callbackError(cause);
             }
 
             @Override
-            public void callback(final GetUserInfoResult result) {
+            public void callback(final GetUsersInfoResult result) {
                 ArrayList<UserInfoItem> items = result.getItems();
-                ListGridRecord[] list = new ListGridRecord[items.size()];
-                for (int i = 0; i < items.size(); i++) {
-                    ListGridRecord record = new ListGridRecord();
-                    copyValues(items.get(i), record);
-                    list[i] = record;
+                if (items != null) {
+                    ListGridRecord[] list = new ListGridRecord[items.size()];
+                    for (int i = 0; i < items.size(); i++) {
+                        ListGridRecord record = new ListGridRecord();
+                        copyValues(items.get(i), record);
+                        list[i] = record;
+                    }
+                    response.setData(list);
+                    response.setTotalRows(items.size());
+                    processResponse(requestId, response);
                 }
-                response.setData(list);
-                response.setTotalRows(items.size());
-                processResponse(requestId, response);
             }
         });
+
     }
 
     /*
@@ -149,15 +151,18 @@ public class UsersGwtRPCDS
 
             @Override
             public void callback(PutUserInfoResult result) {
-                if (!result.isFound()) {
+                if (result.getId() > 0) {
                     ListGridRecord[] list = new ListGridRecord[1];
                     ListGridRecord newRec = new ListGridRecord();
                     copyValues(testRec, newRec);
                     newRec.setAttribute(Constants.ATTR_USER_ID, result.getId());
                     list[0] = newRec;
                     response.setData(list);
+                    processResponse(requestId, response);
+                } else {
+                    SC.warn(lang.operationFailed());
+                    processResponse(requestId, response);
                 }
-                processResponse(requestId, response);
             }
         });
 
@@ -185,15 +190,18 @@ public class UsersGwtRPCDS
 
             @Override
             public void callback(PutUserInfoResult result) {
-                if (!result.isFound()) {
+                if (result.getId() > 0) {
                     ListGridRecord[] list = new ListGridRecord[1];
                     ListGridRecord updRec = new ListGridRecord();
+                    testRec.setId(result.getId());
                     copyValues(testRec, updRec);
                     list[0] = updRec;
                     response.setData(list);
                     processResponse(requestId, response);
+                } else {
+                    SC.warn(lang.operationFailed());
+                    processResponse(requestId, response);
                 }
-                processResponse(requestId, response);
             }
         });
     }
@@ -210,8 +218,8 @@ public class UsersGwtRPCDS
         final ListGridRecord rec = new ListGridRecord(data);
         final UserInfoItem testRec = new UserInfoItem();
         copyValues(rec, testRec);
-        dispatcher.execute(new RemoveUserInfoAction(testRec.getId()),
-                           new DispatchCallback<RemoveUserInfoResult>() {
+        dispatcher.execute(new RemoveUserAction(testRec.getId().toString()),
+                           new DispatchCallback<RemoveUserResult>() {
 
                                @Override
                                public void callbackError(Throwable caught) {
@@ -220,15 +228,15 @@ public class UsersGwtRPCDS
                                }
 
                                @Override
-                               public void callback(RemoveUserInfoResult result) {
-                                   // if (!result.isFound()) {
-                                   // ListGridRecord[] list = new ListGridRecord[1];
-                                   // ListGridRecord updRec = new ListGridRecord();
-                                   // copyValues(testRec, updRec);
-                                   // list[0] = updRec;
-                                   // response.setData(list);
-                                   // processResponse(requestId, response);
-                                   // }
+                               public void callback(RemoveUserResult result) {
+                                   if (!result.isSuccessful()) {
+                                       ListGridRecord[] list = new ListGridRecord[1];
+                                       ListGridRecord updRec = new ListGridRecord();
+                                       copyValues(testRec, updRec);
+                                       list[0] = updRec;
+                                       response.setData(list);
+                                       processResponse(requestId, response);
+                                   }
                                    processResponse(requestId, response);
                                }
                            });
@@ -246,7 +254,8 @@ public class UsersGwtRPCDS
     private static void copyValues(ListGridRecord from, UserInfoItem to) {
         to.setSurname(from.getAttributeAsString(Constants.ATTR_SURNAME));
         to.setName(from.getAttributeAsString(Constants.ATTR_NAME));
-        to.setId(from.getAttributeAsString(Constants.ATTR_USER_ID));
+        if (from.getAttribute(Constants.ATTR_USER_ID) != null)
+            to.setId(Long.parseLong(from.getAttributeAsString(Constants.ATTR_USER_ID)));
     }
 
     /**

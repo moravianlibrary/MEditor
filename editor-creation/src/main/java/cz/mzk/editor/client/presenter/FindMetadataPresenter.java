@@ -33,7 +33,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import com.google.gwt.event.shared.EventBus;
+import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.Presenter;
 import com.gwtplatform.mvp.client.View;
@@ -230,11 +230,10 @@ public class FindMetadataPresenter
                         getView().getResults().getSelectedRecord()
                                 .getAttributeAsInt(Constants.ATTR_GENERIC_ID);
                 MetadataBundle bundle = results.get(id);
-                CreateStructureEvent.fire(getEventBus(),
-                                          model,
-                                          bundle.getMarc().getSysno(),
-                                          inputPath,
-                                          bundle);
+                getEventBus().fireEvent(new CreateStructureEvent(model,
+                                                                 bundle.getMarc().getSysno(),
+                                                                 inputPath,
+                                                                 bundle));
                 placeManager.revealRelativePlace(new PlaceRequest(NameTokens.CREATE)
                         .with(Constants.ATTR_MODEL, model)
                         .with(Constants.URL_PARAM_SYSNO, bundle.getMarc().getSysno())
@@ -246,7 +245,7 @@ public class FindMetadataPresenter
 
             @Override
             public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                CreateStructureEvent.fire(getEventBus(), model, sysno, inputPath);
+                getEventBus().fireEvent(new CreateStructureEvent(model, sysno, inputPath, null));
                 placeManager.revealRelativePlace(new PlaceRequest(NameTokens.CREATE)
                         .with(Constants.ATTR_MODEL, model).with(Constants.URL_PARAM_SYSNO, sysno)
                         .with(Constants.URL_PARAM_PATH, inputPath)
@@ -278,7 +277,7 @@ public class FindMetadataPresenter
      */
     @Override
     protected void onReset() {
-        RevealContentEvent.fire(this, Constants.TYPE_LEFT_CONTENT, leftPresenter);
+        RevealContentEvent.fire(this, Constants.TYPE_MEDIT_LEFT_CONTENT, leftPresenter);
         leftPresenter.getView().setInputTree(dispatcher, placeManager);
         getView().getNext().setDisabled(true);
     }
@@ -289,7 +288,7 @@ public class FindMetadataPresenter
      */
     @Override
     protected void revealInParent() {
-        RevealContentEvent.fire(this, Constants.TYPE_MAIN_CONTENT, this);
+        RevealContentEvent.fire(this, Constants.TYPE_MEDIT_MAIN_CONTENT, this);
     }
 
     @Override
@@ -399,8 +398,8 @@ public class FindMetadataPresenter
             return null;
         }
         String query =
-                config.getVsup() ? ClientCreateUtils.format(OAI_STRING_VSUP, 'p', url, base) : ClientCreateUtils
-                        .format(OAI_STRING, 'p', url, prefix, base);
+                config.getVsup() ? ClientCreateUtils.format(OAI_STRING_VSUP, 'p', url, base)
+                        : ClientCreateUtils.format(OAI_STRING, 'p', url, prefix, base);
         return query;
     }
 

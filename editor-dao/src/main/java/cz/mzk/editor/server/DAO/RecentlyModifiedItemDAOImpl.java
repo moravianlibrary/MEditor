@@ -47,7 +47,7 @@ import cz.mzk.editor.shared.rpc.RecentlyModifiedItem;
  * The Class RecentlyModifiedItemDAOImpl.
  */
 public class RecentlyModifiedItemDAOImpl
-        extends AbstractDAO
+        extends AbstractActionDAO
         implements RecentlyModifiedItemDAO {
 
     //     recently_modified_item (id, uuid, name, description, modified, model, user_id)  ->
@@ -99,7 +99,7 @@ public class RecentlyModifiedItemDAOImpl
      * {@inheritDoc}
      */
     @Override
-    public boolean put(RecentlyModifiedItem toPut, long user_id) throws DatabaseException {
+    public boolean put(RecentlyModifiedItem toPut) throws DatabaseException {
         if (toPut == null) throw new NullPointerException("toPut");
         if (toPut.getUuid() == null || "".equals(toPut.getUuid()))
             throw new NullPointerException("toPut.getUuid()");
@@ -118,16 +118,17 @@ public class RecentlyModifiedItemDAOImpl
                                                 toPut.getName(),
                                                 null,
                                                 null,
+                                                true,
                                                 false);
 
             if (successful)
                 successful =
-                        daoUtils.insertCrudAction(user_id,
-                                                  Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION,
-                                                  "digital_object_uuid",
-                                                  toPut.getUuid(),
-                                                  CRUD_ACTION_TYPES.READ,
-                                                  false);
+                        insertCrudAction(getUserId(false),
+                                         Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION,
+                                         "digital_object_uuid",
+                                         toPut.getUuid(),
+                                         CRUD_ACTION_TYPES.READ,
+                                         false);
             if (successful) {
                 getConnection().commit();
                 LOGGER.debug("DB has been updated by commit.");

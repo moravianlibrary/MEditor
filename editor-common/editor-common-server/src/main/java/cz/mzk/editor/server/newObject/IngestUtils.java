@@ -98,7 +98,8 @@ public class IngestUtils {
                                                                 model,
                                                                 label,
                                                                 inputDirPath,
-                                                                topLevelUuid);
+                                                                topLevelUuid,
+                                                                false);
                     } else {
                         digitalObjectDAO.updateTopObjectTime(uuid);
                     }

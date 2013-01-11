@@ -28,6 +28,7 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.HtmlCode;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 
 /**

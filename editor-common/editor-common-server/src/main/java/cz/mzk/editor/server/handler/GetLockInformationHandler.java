@@ -24,16 +24,17 @@
 
 package cz.mzk.editor.server.handler;
 
-import javax.servlet.http.HttpSession;
+import java.sql.SQLException;
 
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
-import cz.mzk.editor.server.HttpCookies;
+import org.apache.log4j.Logger;
+
+import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.LockDAO;
 import cz.mzk.editor.server.DAO.UserDAO;
@@ -50,9 +51,9 @@ import cz.mzk.editor.shared.rpc.action.GetLockInformationResult;
 public class GetLockInformationHandler
         implements ActionHandler<GetLockInformationAction, GetLockInformationResult> {
 
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
+    /** The Constant LOGGER. */
+    private static final Logger LOGGER = Logger.getLogger(GetLockInformationHandler.class.getPackage()
+            .toString());
 
     /** The user DAO **/
     @Inject
@@ -62,6 +63,10 @@ public class GetLockInformationHandler
     @Inject
     private LockDAO locksDAO;
 
+    /** The dao utils. */
+    @Inject
+    private DAOUtils daoUtils;
+
     /**
      * {@inheritDoc}
      */
@@ -70,15 +75,21 @@ public class GetLockInformationHandler
     public GetLockInformationResult execute(GetLockInformationAction action, ExecutionContext context)
             throws ActionException {
 
-        String uuid = action.getUuid();
+        LOGGER.debug("Processing action: GetLockInformationAction " + action.getUuid());
+        ServerUtils.checkExpiredSession();
 
-        HttpSession ses = httpSessionProvider.get();
-        ServerUtils.checkExpiredSession(ses);
+        String uuid = action.getUuid();
 
         long usersId = 0;
         try {
-            usersId = userDAO.getUsersId(String.valueOf(ses.getAttribute(HttpCookies.SESSION_ID_KEY)));
+            usersId = daoUtils.getUserId(true);
         } catch (DatabaseException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            throw new ActionException(e);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
             throw new ActionException(e);
         }
 

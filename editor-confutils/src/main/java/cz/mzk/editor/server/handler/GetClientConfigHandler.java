@@ -30,11 +30,8 @@ package cz.mzk.editor.server.handler;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
@@ -43,7 +40,6 @@ import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.config.EditorClientConfiguration;
 import cz.mzk.editor.server.config.EditorConfiguration;
-import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.GetClientConfigAction;
 import cz.mzk.editor.shared.rpc.action.GetClientConfigResult;
 
@@ -60,9 +56,6 @@ public class GetClientConfigHandler
 
     /** The configuration. */
     private final EditorConfiguration configuration;
-
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
 
     /**
      * Instantiates a new gets the client config handler.
@@ -86,7 +79,7 @@ public class GetClientConfigHandler
     public GetClientConfigResult execute(final GetClientConfigAction action, final ExecutionContext context)
             throws ActionException {
         LOGGER.debug("Processing action: GetClientConfigAction");
-        ServerUtils.checkExpiredSession(httpSessionProvider);
+        //        ServerUtils.checkExpiredSession(httpSessionProvider);
         HashMap<String, Object> result = new HashMap<String, Object>();
         Iterator<String> it = configuration.getClientConfiguration().getKeys();
         while (it.hasNext()) {
@@ -110,6 +103,7 @@ public class GetClientConfigHandler
                    configuration.getOaiRecordIdentifierLength());
         result.put(EditorClientConfiguration.Constants.HOSTNAME, configuration.getHostname());
         result.put(EditorClientConfiguration.Constants.VSUP, configuration.getVsup());
+        result.put(EditorClientConfiguration.Constants.DOCUMENT_TYPES, configuration.getDocumentTypes());
         return new GetClientConfigResult(result);
     }
 

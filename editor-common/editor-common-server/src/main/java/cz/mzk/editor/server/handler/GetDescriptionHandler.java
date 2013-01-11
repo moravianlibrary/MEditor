@@ -27,21 +27,16 @@
 
 package cz.mzk.editor.server.handler;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.server.HttpCookies;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.DescriptionDAO;
-import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.GetDescriptionAction;
 import cz.mzk.editor.shared.rpc.action.GetDescriptionResult;
@@ -61,14 +56,6 @@ public class GetDescriptionHandler
     @Inject
     private DescriptionDAO descriptionDAO;
 
-    /** The user dao. */
-    @Inject
-    UserDAO userDAO;
-
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
-
     /**
      * Instantiates a new put recently modified handler.
      */
@@ -86,18 +73,17 @@ public class GetDescriptionHandler
     @Override
     public GetDescriptionResult execute(final GetDescriptionAction action, final ExecutionContext context)
             throws ActionException {
+
+        LOGGER.debug("Processing action: GetDescriptionAction " + action.getUuid());
+        ServerUtils.checkExpiredSession();
+
         if (action.getUuid() == null || "".equals(action.getUuid()))
             throw new NullPointerException("getUuid()");
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Processing action: GetDescription: " + action.getUuid());
-        }
-        HttpSession session = httpSessionProvider.get();
-        ServerUtils.checkExpiredSession(session);
+
         String commonDescription = null;
         String userDescription = null;
         try {
-            long usersId = userDAO.getUsersId((String) session.getAttribute(HttpCookies.SESSION_ID_KEY));
-            userDescription = descriptionDAO.getUserDescription(action.getUuid(), usersId);
+            userDescription = descriptionDAO.getUserDescription(action.getUuid());
             commonDescription = descriptionDAO.getCommonDescription(action.getUuid());
 
         } catch (DatabaseException e) {

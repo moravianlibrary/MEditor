@@ -30,14 +30,13 @@ import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
+
+import org.apache.log4j.Logger;
 
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
@@ -56,9 +55,9 @@ import cz.mzk.editor.shared.rpc.action.FindAltoOcrFilesResult;
 public class FindAltoOcrFilesHandler
         implements ActionHandler<FindAltoOcrFilesAction, FindAltoOcrFilesResult> {
 
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
+    /** The logger. */
+    private static final Logger LOGGER = Logger.getLogger(FindAltoOcrFilesHandler.class.getPackage()
+            .toString());
 
     /** The input queue dao. */
     @Inject
@@ -75,8 +74,9 @@ public class FindAltoOcrFilesHandler
     public FindAltoOcrFilesResult execute(FindAltoOcrFilesAction action, ExecutionContext context)
             throws ActionException {
 
-        HttpSession session = httpSessionProvider.get();
-        ServerUtils.checkExpiredSession(session);
+        LOGGER.debug("Processing action: FindAltoOcrFilesHandler");
+        ServerUtils.checkExpiredSession();
+
         String oldJpgFsPath = null;
 
         try {

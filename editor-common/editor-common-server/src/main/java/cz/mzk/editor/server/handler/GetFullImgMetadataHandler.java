@@ -27,7 +27,6 @@ package cz.mzk.editor.server.handler;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import javax.inject.Inject;
 
@@ -35,6 +34,8 @@ import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
+
+import org.apache.log4j.Logger;
 
 import cz.mzk.editor.server.URLS;
 import cz.mzk.editor.server.config.EditorConfiguration;
@@ -51,9 +52,9 @@ import cz.mzk.editor.shared.rpc.action.GetFullImgMetadataResult;
 public class GetFullImgMetadataHandler
         implements ActionHandler<GetFullImgMetadataAction, GetFullImgMetadataResult> {
 
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
+    /** The Constant LOGGER. */
+    private static final Logger LOGGER = Logger.getLogger(GetFullImgMetadataHandler.class.getPackage()
+            .toString());
 
     /** The http session provider. */
     @Inject
@@ -71,8 +72,8 @@ public class GetFullImgMetadataHandler
     public GetFullImgMetadataResult execute(GetFullImgMetadataAction action, ExecutionContext context)
             throws ActionException {
 
-        HttpSession ses = httpSessionProvider.get();
-        ServerUtils.checkExpiredSession(ses);
+        LOGGER.debug("Processing action: GetFullImgMetadataAction " + action.getUuid());
+        ServerUtils.checkExpiredSession();
 
         HttpServletRequest httpServletRequest = requestProvider.get();
 

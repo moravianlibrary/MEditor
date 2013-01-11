@@ -27,22 +27,30 @@
 
 package cz.mzk.editor.client.gin;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.inject.client.AsyncProvider;
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
 import com.google.inject.Provider;
+import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.client.gin.DispatchAsyncModule;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
 
+import cz.mzk.editor.client.presenter.AdminHomePresenter;
+import cz.mzk.editor.client.presenter.AdminMenuPresenter;
+import cz.mzk.editor.client.presenter.AdminPresenter;
 import cz.mzk.editor.client.presenter.AppPresenter;
 import cz.mzk.editor.client.presenter.CreateObjectMenuPresenter;
 import cz.mzk.editor.client.presenter.CreateStructurePresenter;
 import cz.mzk.editor.client.presenter.DigitalObjectMenuPresenter;
+import cz.mzk.editor.client.presenter.EditorRootPresenter;
 import cz.mzk.editor.client.presenter.FindMetadataPresenter;
+import cz.mzk.editor.client.presenter.HistoryPresenter;
 import cz.mzk.editor.client.presenter.HomePresenter;
 import cz.mzk.editor.client.presenter.ModifyPresenter;
+import cz.mzk.editor.client.presenter.MyAcountPresenter;
+import cz.mzk.editor.client.presenter.StatisticsPresenter;
+import cz.mzk.editor.client.presenter.StoredAndLocksPresenter;
 import cz.mzk.editor.client.presenter.UserPresenter;
 
 // TODO: Auto-generated Javadoc
@@ -76,8 +84,6 @@ public interface EditorGinjector
 
     AsyncProvider<HomePresenter> getHomePresenter();
 
-    AsyncProvider<UserPresenter> getUserPresenter();
-
     AsyncProvider<ModifyPresenter> getModifyPresenter();
 
     AsyncProvider<FindMetadataPresenter> getFindMetadataPresenterPresenter();
@@ -90,4 +96,22 @@ public interface EditorGinjector
 
     DispatchAsync getDispatcher();
 
+    //    Administration
+    AsyncProvider<AdminHomePresenter> getAdminHomePresenter();
+
+    Provider<AdminPresenter> getAdminPresenter();
+
+    Provider<AdminMenuPresenter> getAdminMenuPresenter();
+
+    AsyncProvider<HistoryPresenter> getHistoryPresenter();
+
+    AsyncProvider<StatisticsPresenter> getStatisticsPresenter();
+
+    AsyncProvider<StoredAndLocksPresenter> getStoredAndLocksPresenter();
+
+    AsyncProvider<UserPresenter> getUserPresenter();
+
+    AsyncProvider<MyAcountPresenter> getMyAcountPresenter();
+
+    Provider<EditorRootPresenter> getEditorRootPresenter();
 }

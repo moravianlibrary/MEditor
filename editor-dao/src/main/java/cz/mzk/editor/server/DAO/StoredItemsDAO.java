@@ -24,8 +24,6 @@
 
 package cz.mzk.editor.server.DAO;
 
-import java.util.List;
-
 import cz.mzk.editor.shared.rpc.StoredItem;
 
 // TODO: Auto-generated Javadoc
@@ -39,17 +37,6 @@ import cz.mzk.editor.shared.rpc.StoredItem;
 public interface StoredItemsDAO {
 
     /**
-     * Gets the stored items.
-     * 
-     * @param userId
-     *        the user id
-     * @return the stored items
-     * @throws DatabaseException
-     *         the database exception
-     */
-    List<StoredItem> getStoredItems(long userId) throws DatabaseException;
-
-    /**
      * Check stored digital object.
      * 
      * @param userId
@@ -61,16 +48,5 @@ public interface StoredItemsDAO {
      *         the database exception
      */
     boolean checkStoredDigitalObject(long userId, StoredItem storedItem) throws DatabaseException;
-
-    /**
-     * Delete item.
-     * 
-     * @param id
-     *        the id
-     * @return true, if successful
-     * @throws DatabaseException
-     *         the database exception
-     */
-    public boolean deleteItem(Long id) throws DatabaseException;
 
 }

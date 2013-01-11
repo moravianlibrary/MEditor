@@ -29,14 +29,13 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
+
+import org.apache.log4j.Logger;
 
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.ImageResolverDAO;
@@ -51,9 +50,9 @@ import cz.mzk.editor.shared.rpc.action.FindAltoOcrFilesBatchResult;
 public class FindAltoOcrFilesBatchHandler
         implements ActionHandler<FindAltoOcrFilesBatchAction, FindAltoOcrFilesBatchResult> {
 
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
+    /** The logger. */
+    private static final Logger LOGGER = Logger.getLogger(FindAltoOcrFilesBatchHandler.class.getPackage()
+            .toString());
 
     /** The input queue dao. */
     @Inject
@@ -66,17 +65,17 @@ public class FindAltoOcrFilesBatchHandler
     private static final String TXTsuffix = ".txt";
 
     /**
-     *  {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public FindAltoOcrFilesBatchResult execute(FindAltoOcrFilesBatchAction action, ExecutionContext context)
             throws ActionException {
 
+        LOGGER.debug("Processing action: FindAltoOcrFilesBatchAction");
+        ServerUtils.checkExpiredSession();
+
         Map<String, String> altoFileNames = new HashMap<String, String>();
         Map<String, String> ocrFileNames = new HashMap<String, String>();
-
-        HttpSession session = httpSessionProvider.get();
-        ServerUtils.checkExpiredSession(session);
 
         for (String path : action.getPaths()) {
             try {

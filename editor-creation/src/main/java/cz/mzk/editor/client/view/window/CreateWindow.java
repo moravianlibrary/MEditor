@@ -24,7 +24,7 @@
 
 package cz.mzk.editor.client.view.window;
 
-import com.google.gwt.event.shared.EventBus;
+import com.google.web.bindery.event.shared.EventBus;
 import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Button;
 import com.smartgwt.client.widgets.HTMLFlow;
@@ -39,8 +39,8 @@ import com.smartgwt.client.widgets.layout.HLayout;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.mods.ModsTypeClient;
+import cz.mzk.editor.client.util.HtmlCode;
 import cz.mzk.editor.client.view.other.EditorTabSet;
-import cz.mzk.editor.client.view.other.HtmlCode;
 import cz.mzk.editor.client.view.other.ModsTab;
 import cz.mzk.editor.shared.rpc.DublinCore;
 

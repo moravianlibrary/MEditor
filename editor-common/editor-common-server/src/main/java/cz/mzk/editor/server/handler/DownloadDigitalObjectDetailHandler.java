@@ -24,14 +24,11 @@
 
 package cz.mzk.editor.server.handler;
 
-import javax.servlet.http.HttpSession;
-
-import javax.inject.Inject;
-
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
+
+import org.apache.log4j.Logger;
 
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
 import cz.mzk.editor.server.util.ServerUtils;
@@ -46,9 +43,9 @@ import cz.mzk.editor.shared.rpc.action.DownloadDigitalObjectDetailResult;
 public class DownloadDigitalObjectDetailHandler
         implements ActionHandler<DownloadDigitalObjectDetailAction, DownloadDigitalObjectDetailResult> {
 
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
+    /** The logger. */
+    private static final Logger LOGGER = Logger.getLogger(DownloadDigitalObjectDetailHandler.class
+            .getPackage().toString());
 
     /**
      * {@inheritDoc}
@@ -58,9 +55,10 @@ public class DownloadDigitalObjectDetailHandler
     public DownloadDigitalObjectDetailResult execute(DownloadDigitalObjectDetailAction action,
                                                      ExecutionContext context) throws ActionException {
 
+        LOGGER.debug("Processing action: DownloadDigitalObjectDetailAction " + action.getDetail().getUuid());
+        ServerUtils.checkExpiredSession();
+
         if (action == null || action.getDetail() == null) throw new NullPointerException("getDetail()");
-        HttpSession session = httpSessionProvider.get();
-        ServerUtils.checkExpiredSession(session);
 
         return new DownloadDigitalObjectDetailResult(FedoraUtils.createWorkingCopyFoxmlAndStreams(action
                 .getDetail(), false));

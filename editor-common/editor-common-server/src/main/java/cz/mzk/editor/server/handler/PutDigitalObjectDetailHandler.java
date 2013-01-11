@@ -29,8 +29,6 @@ package cz.mzk.editor.server.handler;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpSession;
-
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -38,7 +36,6 @@ import javax.xml.xpath.XPathExpressionException;
 
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
@@ -51,8 +48,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.server.HttpCookies;
-import cz.mzk.editor.server.DAO.UserDAO;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
@@ -75,14 +71,8 @@ public class PutDigitalObjectDetailHandler
     private static final Logger LOGGER = Logger.getLogger(PutDigitalObjectDetailHandler.class.getPackage()
             .toString());
 
-    /** The user dao. */
-    private final UserDAO userDAO;
-
     /** The configuration. */
     private final EditorConfiguration configuration;
-
-    /** The http session provider. */
-    private final Provider<HttpSession> httpSessionProvider;
 
     private final FedoraAccess fedoraAccess;
 
@@ -101,13 +91,9 @@ public class PutDigitalObjectDetailHandler
      *        the http session provider
      */
     @Inject
-    public PutDigitalObjectDetailHandler(final UserDAO userDAO,
-                                         final EditorConfiguration configuration,
-                                         Provider<HttpSession> httpSessionProvider,
+    public PutDigitalObjectDetailHandler(final EditorConfiguration configuration,
                                          @Named("securedFedoraAccess") FedoraAccess fedoraAccess) {
         this.configuration = configuration;
-        this.userDAO = userDAO;
-        this.httpSessionProvider = httpSessionProvider;
         this.fedoraAccess = fedoraAccess;
     }
 
@@ -121,19 +107,19 @@ public class PutDigitalObjectDetailHandler
     @Override
     public PutDigitalObjectDetailResult execute(final PutDigitalObjectDetailAction action,
                                                 final ExecutionContext context) throws ActionException {
-        if (action == null || action.getDetail() == null) throw new NullPointerException("getDetail()");
-        HttpSession session = httpSessionProvider.get();
-        ServerUtils.checkExpiredSession(session);
 
-        String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
+        LOGGER.debug("Processing action: PutDigitalObjectDetailAction " + action.getDetail().getUuid());
+        ServerUtils.checkExpiredSession();
+
+        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.PUBLISH)) {
+            LOGGER.warn("Bad authorization in " + this.getClass().toString());
+            throw new ActionException("Bad authorization in " + this.getClass().toString());
+        }
+
+        if (action == null || action.getDetail() == null) throw new NullPointerException("getDetail()");
+
         boolean write = false;
-        //        try {
         write = true;
-        //                    userDAO.hasRole(UserDAO.CAN_PUBLISH_STRING, userDAO.getUsersId(openID))
-        //                            || HttpCookies.ADMIN_YES.equals(session.getAttribute(HttpCookies.ADMIN));
-        //        } catch (DatabaseException e) {
-        //            throw new ActionException(e);
-        //        }
 
         boolean shouldReindex = false;
         if (write) {

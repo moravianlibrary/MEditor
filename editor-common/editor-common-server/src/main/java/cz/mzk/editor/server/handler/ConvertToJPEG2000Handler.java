@@ -32,11 +32,8 @@ import java.io.IOException;
 
 import java.nio.charset.Charset;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
@@ -48,44 +45,36 @@ import org.apache.log4j.Logger;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfigurationImpl;
+import cz.mzk.editor.server.convert.Converter;
 import cz.mzk.editor.server.util.IOUtils;
 import cz.mzk.editor.server.util.ServerUtils;
+import cz.mzk.editor.shared.rpc.ImageItem;
 import cz.mzk.editor.shared.rpc.action.ConvertToJPEG2000Action;
 import cz.mzk.editor.shared.rpc.action.ConvertToJPEG2000Result;
 
 // TODO: Auto-generated Javadoc
-
 /**
  * The Class ScanFolderHandler.
  */
 public class ConvertToJPEG2000Handler
         implements ActionHandler<ConvertToJPEG2000Action, ConvertToJPEG2000Result> {
 
-    /**
-     * The logger.
-     */
+    /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(ConvertToJPEG2000Handler.class.getPackage()
             .toString());
 
     private static final Object LOCK = ConvertToJPEG2000Handler.class;
 
-    /**
-     * The configuration.
-     */
+    /** The configuration. */
     private final EditorConfiguration configuration;
-
-    /**
-     * The http session provider.
-     */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
 
     private String djatokaHome = null;
 
     /**
      * Instantiates a new scan input queue handler.
-     *
-     * @param configuration the configuration
+     * 
+     * @param configuration
+     *        the configuration
      */
     @Inject
     public ConvertToJPEG2000Handler(final EditorConfiguration configuration) {
@@ -104,9 +93,10 @@ public class ConvertToJPEG2000Handler
                                            final ExecutionContext context) throws ActionException {
         // parse input
         final ImageItem item = action.getItem();
+        LOGGER.debug("Processing action: ConvertToJPEG2000Action " + action.getItem());
 
         if (context != null) {
-            ServerUtils.checkExpiredSession(httpSessionProvider);
+            ServerUtils.checkExpiredSession();
         }
 
         if (item != null && item.getMimeType() != null && item.getMimeType().equals(Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getMimeType())) {

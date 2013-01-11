@@ -26,8 +26,8 @@ package cz.mzk.editor.client.view.window;
 
 import java.util.List;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Alignment;
@@ -47,7 +47,7 @@ import com.smartgwt.client.widgets.layout.VLayout;
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.client.view.other.HtmlCode;
+import cz.mzk.editor.client.util.HtmlCode;
 import cz.mzk.editor.shared.rpc.action.FindAltoOcrFilesAction;
 import cz.mzk.editor.shared.rpc.action.FindAltoOcrFilesResult;
 

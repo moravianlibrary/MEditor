@@ -35,8 +35,8 @@ import com.gwtplatform.dispatch.annotation.Out;
 
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle;
-import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureInfo;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureNode;
+import cz.mzk.editor.shared.rpc.TreeStructureInfo;
 
 /**
  * @author Jiri Kremser

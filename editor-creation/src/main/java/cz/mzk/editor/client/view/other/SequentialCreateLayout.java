@@ -26,19 +26,10 @@ package cz.mzk.editor.client.view.other;
 
 import java.util.LinkedHashMap;
 
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.web.bindery.event.shared.EventBus;
 import com.smartgwt.client.types.Alignment;
-import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.IButton;
-import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
-import com.smartgwt.client.widgets.events.DropEvent;
-import com.smartgwt.client.widgets.events.DropHandler;
-import com.smartgwt.client.widgets.events.DropOutEvent;
-import com.smartgwt.client.widgets.events.DropOutHandler;
-import com.smartgwt.client.widgets.events.DropOverEvent;
-import com.smartgwt.client.widgets.events.DropOverHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
@@ -52,6 +43,7 @@ import com.smartgwt.client.widgets.layout.Layout;
 import com.smartgwt.client.widgets.layout.VLayout;
 
 import cz.mzk.editor.client.LangConstants;
+import cz.mzk.editor.client.other.LabelAndModelConverter;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.INTERNAL_PART_ARTICLE_GENRE_TYPES;
 import cz.mzk.editor.client.util.Constants.INTERNAL_PART_CHAPTER_GENRE_TYPES;
@@ -177,7 +169,6 @@ public class SequentialCreateLayout
 
         levelNames = new SelectItem("levelNames", lang.levelName());
         levelNamesForm = new CreateDynamicForm(levelNames);
-
 
         xOfLevelNames = new TextItem("xOfLevelNames", "XXXX");
         xOfLevelNames.setWidth(50);
@@ -360,7 +351,7 @@ public class SequentialCreateLayout
         otherLayout.addMember(levelNamesLayout);
 
         nameOrTitle.setTitle(lang.supplementName());
-        otherLayout.addMember(nameOrTitleForm);;
+        otherLayout.addMember(nameOrTitleForm);
 
         partNumberForm.setWidth100();
         otherLayout.addMember(partNumberForm);

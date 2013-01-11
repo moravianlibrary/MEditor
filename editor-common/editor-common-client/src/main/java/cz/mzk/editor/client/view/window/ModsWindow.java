@@ -30,7 +30,7 @@ package cz.mzk.editor.client.view.window;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.event.shared.EventBus;
+import com.google.web.bindery.event.shared.EventBus;
 import com.smartgwt.client.types.Alignment;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.form.DynamicForm;
@@ -440,7 +440,7 @@ public abstract class ModsWindow
                             TextItem newItem = new MyTextItem();
                             newItem.setTitle(part.getType());
                             if (part.getType().equals("date")) newItem.setTooltip(lang.dateParse());
-                            if (part.getType().equals("family")) newItem.setTooltip(lang.surname());
+                            if (part.getType().equals("family")) newItem.setTooltip(lang.lastName());
                             if (part.getType().equals("termsOfAddress")) {
                                 newItem.setTitle("termsOf Address");
                                 newItem.setWrapTitle(true);
@@ -467,7 +467,7 @@ public abstract class ModsWindow
             if (!isFamily) {
                 final TextItem newItem = new MyTextItem();
                 newItem.setTitle(ModsConstants.FAMILY);
-                newItem.setTooltip(lang.surname());
+                newItem.setTooltip(lang.lastName());
                 (i == 0 ? authorPartsOfName1 : authorPartsOfName2).add(newItem);
             }
 
@@ -619,7 +619,7 @@ public abstract class ModsWindow
     private void setLabel(DigitalObjectModel model, String title) {
         this.label =
                 ClientCreateUtils.trimLabel((title != null && !"".equals(title) ? title : "untitled"),
-                                      Constants.MAX_LABEL_LENGTH);
+                                            Constants.MAX_LABEL_LENGTH);
     }
 
     /**

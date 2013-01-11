@@ -30,9 +30,9 @@ package cz.mzk.editor.client.config;
 import javax.inject.Inject;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.inject.Singleton;
+import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.HasEventBus;
 

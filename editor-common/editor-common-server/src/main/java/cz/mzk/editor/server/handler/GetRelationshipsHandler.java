@@ -31,10 +31,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
-
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
@@ -57,13 +53,8 @@ import cz.mzk.editor.shared.rpc.action.GetRelationshipsResult;
 public class GetRelationshipsHandler
         implements ActionHandler<GetRelationshipsAction, GetRelationshipsResult> {
 
-    @SuppressWarnings("unused")
     private static final Logger LOGGER = Logger.getLogger(GetRelationshipsHandler.class.getPackage()
             .toString());
-
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
 
     private List<String> uuidList;
     private List<String> sharedPages;
@@ -77,12 +68,14 @@ public class GetRelationshipsHandler
     @Override
     public GetRelationshipsResult execute(GetRelationshipsAction action, ExecutionContext context)
             throws ActionException {
+
+        LOGGER.debug("Processing action: GetRelationshipsAction " + action.getUuid());
+        ServerUtils.checkExpiredSession();
+
         test = 0;
         uuidList = new ArrayList<String>();
         sharedPages = new ArrayList<String>();
         uuidNotToRemove = new ArrayList<String>();
-        HttpSession ses = httpSessionProvider.get();
-        ServerUtils.checkExpiredSession(ses);
 
         DigitalObjectRelationships digObjRel = new DigitalObjectRelationships(action.getUuid());
         getChildren(digObjRel, null);

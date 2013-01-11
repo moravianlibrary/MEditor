@@ -48,7 +48,6 @@ public class MEditor
 
     /** The injector. */
     private final EditorGinjector injector = GWT.create(EditorGinjector.class);
-    private DispatchAsync dispatcher;
 
     /*
      * (non-Javadoc)
@@ -60,27 +59,6 @@ public class MEditor
         injector.getPlaceManager().revealCurrentPlace();
         initializeDatabaseIfNeeded(injector.getDispatcher());
     }
-
-    /**
-     * Redirect.
-     * 
-     * @param url
-     *        the url
-     */
-    public static native void redirect(String url)/*-{
-		$wnd.location = url;
-    }-*/;
-
-    public static native void langRefresh(String locale)/*-{
-		var pos = $wnd.location.search.indexOf('&locale=');
-		var params = $wnd.location.search;
-		if (pos == -1) {
-			$wnd.location.search = params + '&locale=' + locale;
-		} else {
-			$wnd.location.search = params.substring(0, pos) + '&locale='
-					+ locale + params.substring(pos + 13, params.length);
-		}
-    }-*/;
 
     public static void initializeDatabaseIfNeeded(DispatchAsync dispatcher) {
         dispatcher.execute(new CheckAndUpdateDBSchemaAction(),

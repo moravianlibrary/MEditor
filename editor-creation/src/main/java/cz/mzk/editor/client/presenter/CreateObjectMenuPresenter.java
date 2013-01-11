@@ -63,10 +63,10 @@ import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.NameTokens;
 import cz.mzk.editor.client.config.EditorClientConfiguration;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
+import cz.mzk.editor.client.other.LabelAndModelConverter;
 import cz.mzk.editor.client.uihandlers.CreateObjectMenuUiHandlers;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.view.other.InputQueueTree;
-import cz.mzk.editor.client.view.other.LabelAndModelConverter;
 import cz.mzk.editor.client.view.other.SequentialCreateLayout;
 import cz.mzk.editor.client.view.other.StructureTreeHoverCreator;
 import cz.mzk.editor.client.view.window.AddAltoOcrWindow;
@@ -554,7 +554,7 @@ public class CreateObjectMenuPresenter
     }
 
     @Override
-    public HasHandlers getBus() {
+    public EventBus getBus() {
         return getEventBus();
     }
 

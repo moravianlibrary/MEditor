@@ -1,29 +1,29 @@
 /*
-* Metadata Editor
-* @author Jiri Kremser
-*
-*
-*
-* Metadata Editor - Rich internet application for editing metadata.
-* Copyright (C) 2011 Jiri Kremser (kremser@mzk.cz)
-* Moravian Library in Brno
-*
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public License
-* as published by the Free Software Foundation; either version 2
-* of the License, or (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-*
-*
-*/
+ * Metadata Editor
+ * @author Jiri Kremser
+ * 
+ * 
+ * 
+ * Metadata Editor - Rich internet application for editing metadata.
+ * Copyright (C) 2011  Jiri Kremser (kremser@mzk.cz)
+ * Moravian Library in Brno
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * 
+ */
 
 package cz.mzk.editor.server.handler;
 
@@ -49,6 +49,7 @@ import cz.mzk.editor.shared.rpc.ImageItem;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.client.util.Constants.SERVER_ACTION_RESULT;
 import cz.mzk.editor.server.DAO.ConversionDAO;
 import cz.mzk.editor.server.DAO.DatabaseException;
@@ -57,40 +58,32 @@ import cz.mzk.editor.server.DAO.InputQueueItemDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.util.IOUtils;
 import cz.mzk.editor.server.util.ServerUtils;
+import cz.mzk.editor.shared.rpc.ImageItem;
 import cz.mzk.editor.shared.rpc.ServerActionResult;
 import cz.mzk.editor.shared.rpc.action.ScanFolderAction;
 import cz.mzk.editor.shared.rpc.action.ScanFolderResult;
 
 // TODO: Auto-generated Javadoc
-
 /**
  * The Class ScanFolderHandler.
  */
 public class ScanFolderHandler
         implements ActionHandler<ScanFolderAction, ScanFolderResult> {
 
-    /**
-     * The logger.
-     */
+    /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(ScanFolderHandler.class.getPackage().toString());
 
-    /**
-     * The configuration.
-     */
+    /** The configuration. */
     private final EditorConfiguration configuration;
 
-    /**
-     * The input queue dao.
-     */
+    /** The input queue dao. */
     @Inject
     private ImageResolverDAO imageResolverDAO;
 
     @Inject
     private Provider<HttpServletRequest> requestProvider;
 
-    /**
-     * The input queue dao.
-     */
+    /** The input queue dao. */
     @Inject
     private InputQueueItemDAO inputQueueDAO;
 
@@ -99,8 +92,9 @@ public class ScanFolderHandler
 
     /**
      * Instantiates a new scan input queue handler.
-     *
-     * @param configuration the configuration
+     * 
+     * @param configuration
+     *        the configuration
      */
     @Inject
     public ScanFolderHandler(final EditorConfiguration configuration) {
@@ -108,15 +102,24 @@ public class ScanFolderHandler
     }
 
     /*
-* (non-Javadoc)
-* @see
-* com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
-* .gwtplatform.dispatch.shared.Action,
-* com.gwtplatform.dispatch.server.ExecutionContext)
-*/
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#execute(com
+     * .gwtplatform.dispatch.shared.Action,
+     * com.gwtplatform.dispatch.server.ExecutionContext)
+     */
     @Override
     public ScanFolderResult execute(final ScanFolderAction action, final ExecutionContext context)
             throws ActionException {
+
+        LOGGER.debug("Processing action: ScanFolderAction " + action.getModel() + " - " + action.getCode());
+        ServerUtils.checkExpiredSession();
+
+        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.SCAN_FOLDER_TO_CONVERT)) {
+            LOGGER.warn("Bad authorization in " + this.getClass().toString());
+            throw new ActionException("Bad authorization in " + this.getClass().toString());
+        }
+
         // parse input
         final String model = action.getModel();
         final String code = action.getCode();
@@ -307,12 +310,16 @@ public class ScanFolderHandler
 
     /**
      * Scan directory structure.
-     *
+     * 
      * @param wrongNames
-     * @param pathPrefix   the path prefix
-     * @param relativePath the relative path
-     * @param list         the list
-     * @param level        the level
+     * @param pathPrefix
+     *        the path prefix
+     * @param relativePath
+     *        the relative path
+     * @param list
+     *        the list
+     * @param level
+     *        the level
      * @return the list
      */
     private List<String> scanDirectoryStructure(String path,
@@ -351,24 +358,24 @@ public class ScanFolderHandler
     }
 
     /*
-* (non-Javadoc)
-* @see
-* com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType
-* ()
-*/
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType
+     * ()
+     */
     @Override
     public Class<ScanFolderAction> getActionType() {
         return ScanFolderAction.class;
     }
 
     /*
-* (non-Javadoc)
-* @see
-* com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
-* gwtplatform.dispatch.shared.Action,
-* com.gwtplatform.dispatch.shared.Result,
-* com.gwtplatform.dispatch.server.ExecutionContext)
-*/
+     * (non-Javadoc)
+     * @see
+     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#undo(com.
+     * gwtplatform.dispatch.shared.Action,
+     * com.gwtplatform.dispatch.shared.Result,
+     * com.gwtplatform.dispatch.server.ExecutionContext)
+     */
     @Override
     public void undo(ScanFolderAction action, ScanFolderResult result, ExecutionContext context)
             throws ActionException {

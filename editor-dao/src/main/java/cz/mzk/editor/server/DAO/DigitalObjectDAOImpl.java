@@ -41,7 +41,7 @@ import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
  * @version Oct 22, 2012
  */
 public class DigitalObjectDAOImpl
-        extends AbstractDAO
+        extends AbstractActionDAO
         implements DigitalObjectDAO {
 
     /** The Constant LOGGER. */
@@ -61,11 +61,14 @@ public class DigitalObjectDAOImpl
                     + Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT
                     + " SET timestamp = (CURRENT_TIMESTAMP) WHERE digital_object_uuid = (?) AND top_digital_object_uuid = (?) AND type='c'";
 
-    /** The Constant UPDATE_TOP_DO_UUID. */
-    public static final String UPDATE_TOP_DO_UUID =
+    /** The Constant UPDATE_TOP_DO_UUID_AND_STATE. */
+    public static final String UPDATE_TOP_DO_UUID_AND_STATE =
             "UPDATE "
                     + Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT
-                    + " SET top_digital_object_uuid = (?) WHERE top_digital_object_uuid = (?) AND digital_object_uuid = (?)";
+                    + " SET top_digital_object_uuid = (?), state = 'true' WHERE top_digital_object_uuid = (?) AND digital_object_uuid = (?)";
+
+    public static final String UPDATE_STATE = "UPDATE " + Constants.TABLE_DIGITAL_OBJECT
+            + " SET state = (?) WHERE uuid = (?)";
 
     /** The dao utils. */
     @Inject
@@ -81,20 +84,32 @@ public class DigitalObjectDAOImpl
         boolean successful = false;
 
         try {
-            if (daoUtils.checkDigitalObject(uuid, model, name, null, null, true)) {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
+
+        try {
+            if (daoUtils.checkDigitalObject(uuid, model, name, null, null, true, true)) {
                 deleteSt = getConnection().prepareStatement(DISABLE_DIGITAL_OBJECT_ITEM);
                 deleteSt.setString(1, uuid);
 
                 if (deleteSt.executeUpdate() == 1) {
                     LOGGER.debug("DB has been updated: The digital object: " + uuid + " has been disabled.");
-                    successful =
-                            daoUtils.insertCrudActionWithTopObject(getUserId(),
-                                                                   Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT,
-                                                                   "digital_object_uuid",
-                                                                   uuid,
-                                                                   CRUD_ACTION_TYPES.DELETE,
-                                                                   topObjectUuid,
-                                                                   true);
+                    if (insertCrudActionWithTopObject(getUserId(false),
+                                                      Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT,
+                                                      "digital_object_uuid",
+                                                      uuid,
+                                                      CRUD_ACTION_TYPES.DELETE,
+                                                      topObjectUuid,
+                                                      true)) {
+                        getConnection().commit();
+                        successful = true;
+                        LOGGER.debug("DB has been updated by commit.");
+                    } else {
+                        getConnection().rollback();
+                        LOGGER.debug("DB has not been updated -> rollback!");
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -103,6 +118,7 @@ public class DigitalObjectDAOImpl
             closeConnection();
         }
         return successful;
+
     }
 
     /**
@@ -113,7 +129,8 @@ public class DigitalObjectDAOImpl
                                           String model,
                                           String name,
                                           String input_queue_directory_path,
-                                          String top_digital_object_uuid) throws DatabaseException {
+                                          String top_digital_object_uuid,
+                                          boolean state) throws DatabaseException {
         String pid =
                 (uuid.startsWith(Constants.FEDORA_UUID_PREFIX)) ? uuid : Constants.FEDORA_UUID_PREFIX
                         .concat(uuid);
@@ -123,21 +140,37 @@ public class DigitalObjectDAOImpl
         boolean successful = false;
 
         try {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
+
+        try {
             if (daoUtils.checkDigitalObject(pid, model, name, null, DAOUtilsImpl
-                    .directoryPathToRightFormat(input_queue_directory_path), true))
-                successful =
-                        daoUtils.insertCrudActionWithTopObject(getUserId(),
-                                                               Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT,
-                                                               "digital_object_uuid",
-                                                               pid,
-                                                               CRUD_ACTION_TYPES.CREATE,
-                                                               top_digital_object_pid,
-                                                               true);
+                    .directoryPathToRightFormat(input_queue_directory_path), state, false))
+
+                if (insertCrudActionWithTopObject(getUserId(false),
+                                                  Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT,
+                                                  "digital_object_uuid",
+                                                  pid,
+                                                  CRUD_ACTION_TYPES.CREATE,
+                                                  top_digital_object_pid,
+                                                  false)) {
+                    getConnection().commit();
+                    successful = true;
+                    LOGGER.debug("DB has been updated by commit.");
+                } else {
+                    getConnection().rollback();
+                    LOGGER.debug("DB has not been updated -> rollback!");
+                }
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
+        } finally {
+            closeConnection();
         }
         return successful;
+
     }
 
     /**
@@ -167,6 +200,56 @@ public class DigitalObjectDAOImpl
         }
     }
 
+    @Override
+    public void updateState(List<String> objects, boolean state) throws DatabaseException {
+        PreparedStatement updateSt = null;
+
+        try {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
+
+        boolean successful = false;
+
+        try {
+
+            for (String uuid : objects) {
+                String pid =
+                        (uuid.startsWith(Constants.FEDORA_UUID_PREFIX)) ? uuid : Constants.FEDORA_UUID_PREFIX
+                                .concat(uuid);
+
+                updateSt = getConnection().prepareStatement(UPDATE_STATE);
+                updateSt.setBoolean(1, state);
+                updateSt.setString(2, pid);
+
+                if (updateSt.executeUpdate() == 1) {
+                    LOGGER.debug("DB has been updated: The digital object: " + pid + " has been updated.");
+                    successful = true;
+                } else {
+                    LOGGER.error("DB has not been updated: " + updateSt);
+                    successful = false;
+                    break;
+                }
+
+            }
+
+            if (successful) {
+                getConnection().commit();
+                LOGGER.debug("DB has been updated by commit.");
+            } else {
+                getConnection().rollback();
+                LOGGER.debug("DB has not been updated -> rollback!");
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error("Query: " + updateSt, e);
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -183,7 +266,8 @@ public class DigitalObjectDAOImpl
                                    model,
                                    name,
                                    DAOUtilsImpl.directoryPathToRightFormat(input_queue_directory_path),
-                                   newUuid)) {
+                                   newUuid,
+                                   true)) {
 
             try {
                 getConnection().setAutoCommit(false);
@@ -203,7 +287,7 @@ public class DigitalObjectDAOImpl
             try {
                 for (String lowerUuid : lowerObj) {
                     if (!(successful =
-                            (getUpdateUuidSt(updateSt, oldPid, newPid, lowerUuid).executeUpdate() == 0))) {
+                            (getUpdateUuidStateSt(updateSt, oldPid, newPid, lowerUuid).executeUpdate() == 0))) {
                         break;
                     }
                 }
@@ -228,7 +312,7 @@ public class DigitalObjectDAOImpl
     }
 
     /**
-     * Gets the update uuid st.
+     * Gets the update uuid state st.
      * 
      * @param updateSt
      *        the update st
@@ -238,27 +322,40 @@ public class DigitalObjectDAOImpl
      *        the new pid
      * @param lowerObjUuid
      *        the lower obj uuid
-     * @return the update uuid st
+     * @return the update uuid state st
      * @throws SQLException
      *         the sQL exception
      * @throws DatabaseException
      *         the database exception
      */
-    private PreparedStatement getUpdateUuidSt(PreparedStatement updateSt,
-                                              String oldPid,
-                                              String newPid,
-                                              String lowerObjUuid) throws SQLException, DatabaseException {
+    private PreparedStatement getUpdateUuidStateSt(PreparedStatement updateSt,
+                                                   String oldPid,
+                                                   String newPid,
+                                                   String lowerObjUuid) throws SQLException,
+            DatabaseException {
 
         String lowerObjPid =
                 (lowerObjUuid.startsWith(Constants.FEDORA_UUID_PREFIX)) ? lowerObjUuid
                         : Constants.FEDORA_UUID_PREFIX.concat(lowerObjUuid);
 
-        updateSt = getConnection().prepareStatement(UPDATE_TOP_DO_UUID);
+        updateSt = getConnection().prepareStatement(UPDATE_TOP_DO_UUID_AND_STATE);
         updateSt.setString(1, newPid);
         updateSt.setString(2, oldPid);
         updateSt.setString(3, lowerObjPid);
 
         return updateSt;
 
+    }
+
+    public void insertDOCrudAction(String tableName,
+                                   String fkNameCol,
+                                   Object foreignKey,
+                                   CRUD_ACTION_TYPES type) throws DatabaseException {
+        try {
+            insertCrudAction(tableName, fkNameCol, foreignKey, type, true);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

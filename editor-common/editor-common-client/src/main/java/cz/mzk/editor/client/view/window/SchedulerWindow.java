@@ -24,7 +24,7 @@
 
 package cz.mzk.editor.client.view.window;
 
-import com.google.gwt.event.shared.EventBus;
+import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Alignment;
@@ -114,24 +114,25 @@ public class SchedulerWindow
     }
 
     private void getJobs(final DispatchAsync dispatcher) {
-        dispatcher.execute(new QuartzScheduleJobsAction(), new DispatchCallback<QuartzScheduleJobsResult>() {
+        dispatcher.execute(new QuartzScheduleJobsAction(null),
+                           new DispatchCallback<QuartzScheduleJobsResult>() {
 
-            @Override
-            public void callback(QuartzScheduleJobsResult result) {
-                Record[] jobs = new Record[result.getJobs().size()];
-                int i = 0;
-                for (ProcessItem process : result.getJobs()) {
-                    Record processRecord = new Record();
-                    processRecord.setAttribute("group", process.getProcessGroup());
-                    processRecord.setAttribute("name", process.getProcessName());
-                    processRecord.setAttribute("action", "");
-                    processRecord.setAttribute("test", "test");
-                    jobs[i++] = processRecord;
-                }
-                jobsGrid.setData(jobs);
-            }
+                               @Override
+                               public void callback(QuartzScheduleJobsResult result) {
+                                   Record[] jobs = new Record[result.getJobs().size()];
+                                   int i = 0;
+                                   for (ProcessItem process : result.getJobs()) {
+                                       Record processRecord = new Record();
+                                       processRecord.setAttribute("group", process.getProcessGroup());
+                                       processRecord.setAttribute("name", process.getProcessName());
+                                       processRecord.setAttribute("action", "");
+                                       processRecord.setAttribute("test", "test");
+                                       jobs[i++] = processRecord;
+                                   }
+                                   jobsGrid.setData(jobs);
+                               }
 
-        });
+                           });
 
     }
 

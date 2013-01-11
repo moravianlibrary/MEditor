@@ -29,11 +29,8 @@ package cz.mzk.editor.client.presenter;
 
 import javax.inject.Inject;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.GwtEvent.Type;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.HasUiHandlers;
 import com.gwtplatform.mvp.client.Presenter;
@@ -43,30 +40,32 @@ import com.gwtplatform.mvp.client.annotations.ProxyStandard;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.Proxy;
+import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import com.gwtplatform.mvp.client.proxy.RevealContentHandler;
-import com.gwtplatform.mvp.client.proxy.RevealRootContentEvent;
 import com.smartgwt.client.types.Cursor;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 
 import cz.mzk.editor.client.LangConstants;
-import cz.mzk.editor.client.MEditor;
 import cz.mzk.editor.client.NameTokens;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
-import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.other.HotKeyPressManager;
 import cz.mzk.editor.client.uihandlers.MyUiHandlers;
-import cz.mzk.editor.client.view.other.HtmlCode;
+import cz.mzk.editor.client.util.ClientUtils;
+import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
+import cz.mzk.editor.client.util.HtmlCode;
 import cz.mzk.editor.client.view.window.IngestInfoWindow;
 import cz.mzk.editor.client.view.window.StoreWorkingCopyWindow;
 import cz.mzk.editor.client.view.window.UuidWindow;
 import cz.mzk.editor.shared.event.ChangeMenuWidthEvent;
-import cz.mzk.editor.shared.event.EscKeyPressedEvent;
 import cz.mzk.editor.shared.event.KeyPressedEvent;
 import cz.mzk.editor.shared.event.OpenFirstDigitalObjectEvent;
-import cz.mzk.editor.shared.event.SetEnabledHotKeysEvent;
 import cz.mzk.editor.shared.rpc.StoredItem;
 import cz.mzk.editor.shared.rpc.action.GetLoggedUserAction;
 import cz.mzk.editor.shared.rpc.action.GetLoggedUserResult;
+import cz.mzk.editor.shared.rpc.action.HasUserRightsAction;
+import cz.mzk.editor.shared.rpc.action.HasUserRightsResult;
 import cz.mzk.editor.shared.rpc.action.LogoutAction;
 import cz.mzk.editor.shared.rpc.action.LogoutResult;
 
@@ -79,10 +78,10 @@ public class AppPresenter
         implements MyUiHandlers {
 
     @ContentSlot
-    public static final Type<RevealContentHandler<?>> TYPE_MAIN_CONTENT = Constants.TYPE_MAIN_CONTENT;
+    public static final Type<RevealContentHandler<?>> TYPE_MEDIT_MAIN_CONTENT = Constants.TYPE_MEDIT_MAIN_CONTENT;
 
     @ContentSlot
-    public static final Type<RevealContentHandler<?>> TYPE_LEFT_CONTENT = Constants.TYPE_LEFT_CONTENT;
+    public static final Type<RevealContentHandler<?>> TYPE_MEDIT_LEFT_CONTENT = Constants.TYPE_MEDIT_LEFT_CONTENT;
 
     private LangConstants lang;
     private volatile boolean unknown = true;
@@ -130,7 +129,7 @@ public class AppPresenter
     /** The place manager. */
     private final PlaceManager placeManager;
 
-    private boolean isHotKeysEnabled = true;
+    private boolean canOpen = true;
 
     /**
      * Instantiates a new app presenter.
@@ -176,58 +175,7 @@ public class AppPresenter
     @Override
     protected void onBind() {
         super.onBind();
-
-        /** Hot-keys operations **/
-        Event.addNativePreviewHandler(new NativePreviewHandler() {
-
-            private boolean isKnownCtrlAltHotkey(NativePreviewEvent event) {
-                if (event.getNativeEvent().getCtrlKey() && event.getNativeEvent().getAltKey()) {
-                    int code = event.getNativeEvent().getKeyCode();
-                    for (Constants.HOT_KEYS_WITH_CTRL_ALT key : Constants.HOT_KEYS_WITH_CTRL_ALT.values()) {
-                        if (code == key.getCode()) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }
-
-            @Override
-            public void onPreviewNativeEvent(NativePreviewEvent event) {
-                //                System.out.println("ctrl " + event.getNativeEvent().getCtrlKey());
-                //                System.out.println("alt " + event.getNativeEvent().getAltKey());
-                //                System.out.println("keycode " + event.getNativeEvent().getKeyCode());
-
-                if (event.getTypeInt() != Event.ONKEYDOWN) {
-                    return;
-                }
-                int keyCode = event.getNativeEvent().getKeyCode();
-
-                //                System.err.println("pressed key code: " + event.getNativeEvent().getKeyCode());
-
-                if (keyCode != Constants.CODE_KEY_ESC && keyCode != Constants.CODE_KEY_ENTER
-                        && keyCode != Constants.CODE_KEY_DELETE && !isKnownCtrlAltHotkey(event)) {
-                    return;
-                }
-                if (isHotKeysEnabled) {
-                    if (keyCode == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_S.getCode()) {
-                        StoreWorkingCopyWindow.setInstanceOf(lang, dispatcher, getEventBus());
-                    }
-                    if (keyCode == Constants.CODE_KEY_ESC) {
-                        escShortCut();
-                        EscKeyPressedEvent.fire(AppPresenter.this);
-
-                    } else if (keyCode == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_U.getCode()) {
-                        displayEnterPIDWindow();
-                        return;
-                    }
-                    KeyPressedEvent.fire(AppPresenter.this, keyCode);
-                } else {
-                    event.cancel();
-                }
-            }
-
-        });
+        HotKeyPressManager.setInstanceOf(getEventBus());
 
         addRegisteredHandler(OpenFirstDigitalObjectEvent.getType(),
                              new OpenFirstDigitalObjectEvent.OpenFirstDigitalObjectHandler() {
@@ -246,15 +194,6 @@ public class AppPresenter
                                  }
                              });
 
-        addRegisteredHandler(SetEnabledHotKeysEvent.getType(),
-                             new SetEnabledHotKeysEvent.SetEnabledHotKeysHandler() {
-
-                                 @Override
-                                 public void onSetEnabledHotKeys(SetEnabledHotKeysEvent event) {
-                                     isHotKeysEnabled = event.isEnable();
-                                 }
-                             });
-
         addRegisteredHandler(ChangeMenuWidthEvent.getType(),
                              new ChangeMenuWidthEvent.ChangeMenuWidthHandler() {
 
@@ -268,11 +207,29 @@ public class AppPresenter
 
             @Override
             public void onKeyPressed(KeyPressedEvent event) {
+                if (event.getCode() == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_S.getCode() && canOpen) {
+                    StoreWorkingCopyWindow.setInstanceOf(lang, dispatcher, getEventBus());
+                    return;
+                }
+                if (event.getCode() == Constants.HOT_KEYS_WITH_CTRL_ALT.CODE_KEY_U.getCode() && canOpen) {
+                    displayEnterPIDWindow();
+                    return;
+                }
                 if (event.getCode() == Constants.CODE_KEY_ESC) {
                     getView().escShortCut();
+                    return;
                 }
             }
         });
+
+        dispatcher.execute(new HasUserRightsAction(new EDITOR_RIGHTS[] {EDITOR_RIGHTS.OPEN_OBJECT}),
+                           new DispatchCallback<HasUserRightsResult>() {
+
+                               @Override
+                               public void callback(HasUserRightsResult result) {
+                                   canOpen = result.getOk()[0];
+                               }
+                           });
     }
 
     /*
@@ -289,21 +246,20 @@ public class AppPresenter
                 @Override
                 public void callback(GetLoggedUserResult result) {
                     getView().getUsername().setContents(HtmlCode.bold(result.getName()));
-                    if (result.isEditUsers()) {
-                        getView().getEditUsers().setContents(lang.userMgmt());
-                        getView().getEditUsers().setCursor(Cursor.HAND);
-                        getView().getEditUsers().setWidth(120);
-                        getView().getEditUsers().setHeight(15);
-                        getView().getEditUsers().setStyleName("pseudolink");
-                        getView().getEditUsers()
-                                .addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+                    getView().getEditUsers().setContents(lang.userMgmt());
+                    getView().getEditUsers().setCursor(Cursor.HAND);
+                    getView().getEditUsers().setWidth(140);
+                    getView().getEditUsers().setHeight(15);
+                    getView().getEditUsers().setStyleName("pseudolink");
+                    getView().getEditUsers()
+                            .addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
-                                    @Override
-                                    public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                                        placeManager.revealRelativePlace(new PlaceRequest(NameTokens.USERS));
-                                    }
-                                });
-                    }
+                                @Override
+                                public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+                                    placeManager.revealRelativePlace(new PlaceRequest(NameTokens.ADMIN_HOME));
+                                }
+                            });
+
                 }
             });
         }
@@ -326,6 +282,7 @@ public class AppPresenter
     /**
      * Method for close currently displayed window
      */
+    @SuppressWarnings("unused")
     private void escShortCut() {
         if (uuidWindow != null) {
             uuidWindow.hide();
@@ -354,7 +311,7 @@ public class AppPresenter
      */
     @Override
     protected void revealInParent() {
-        RevealRootContentEvent.fire(this, this);
+        RevealContentEvent.fire(this, Constants.TYPE_ROOT_CONTENT, this);
     }
 
     /*
@@ -368,7 +325,7 @@ public class AppPresenter
             @Override
             public void callback(LogoutResult result) {
                 unknown = true;
-                MEditor.redirect(result.getUrl());
+                ClientUtils.redirect(result.getUrl());
             }
         });
     }

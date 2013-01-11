@@ -37,6 +37,8 @@ import java.net.MalformedURLException;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
 
+import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -53,9 +55,14 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
+import org.springframework.security.core.context.SecurityContext;
+
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.server.HttpCookies;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
+import cz.mzk.editor.server.EditorUserAuthentication;
 import cz.mzk.editor.server.URLS;
+import cz.mzk.editor.server.DAO.DAOUtils;
+import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.config.EditorConfiguration;
 
 // TODO: Auto-generated Javadoc
@@ -67,8 +74,17 @@ public class ServerUtils {
     /** The Constant LOGGER. */
     private static final Logger LOGGER = Logger.getLogger(ServerUtils.class);
 
+    /** The config. */
     @Inject
     private static EditorConfiguration config;
+
+    /** The dao utils. */
+    @Inject
+    private static DAOUtils daoUtils;
+
+    /** The http session provider. */
+    @Inject
+    private static Provider<HttpSession> httpSessionProvider;
 
     /**
      * Checks if is caused by exception.
@@ -89,14 +105,57 @@ public class ServerUtils {
         return false;
     }
 
-    public static void checkExpiredSession(Provider<HttpSession> httpSessionProvider) throws ActionException {
+    private static EditorUserAuthentication getEditorUserAuthentication(HttpSession session) {
+        SecurityContext secContext = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
+        EditorUserAuthentication authentication = null;
+        if (secContext != null) authentication = (EditorUserAuthentication) secContext.getAuthentication();
+        return authentication;
+    }
+
+    public static EditorUserAuthentication getEditorUserAuthentication() {
+        return getEditorUserAuthentication(httpSessionProvider.get());
+    }
+
+    public static Long checkExpiredSessionAndGetId(Provider<HttpSession> httpSessionProvider)
+            throws ActionException {
+        checkExpiredSession();
+        try {
+            return daoUtils.getUserId(true);
+        } catch (DatabaseException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            throw new ActionException(e);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            throw new ActionException(e);
+        }
+    }
+
+    private static void checkExpiredSession(HttpSession session) throws ActionException {
+        EditorUserAuthentication authentication = getEditorUserAuthentication(session);
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ActionException(Constants.SESSION_EXPIRED_FLAG + URLS.ROOT()
+                    + (URLS.LOCALHOST() ? URLS.LOGIN_LOCAL_PAGE : URLS.LOGIN_PAGE));
+        }
+    }
+
+    public static void checkExpiredSession() throws ActionException {
         checkExpiredSession(httpSessionProvider.get());
     }
 
-    public static void checkExpiredSession(HttpSession session) throws ActionException {
-        if (session.getAttribute(HttpCookies.SESSION_ID_KEY) == null) {
-            throw new ActionException(Constants.SESSION_EXPIRED_FLAG + URLS.ROOT()
-                    + (URLS.LOCALHOST() ? URLS.LOGIN_LOCAL_PAGE : URLS.LOGIN_PAGE));
+    public static boolean checkUserRightOrAll(EDITOR_RIGHTS right) {
+
+        return checkUserRight(EDITOR_RIGHTS.ALL) || checkUserRight(right);
+    }
+
+    public static boolean checkUserRight(EDITOR_RIGHTS right) {
+        try {
+            return daoUtils.hasUserRight(right);
+        } catch (DatabaseException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            return false;
         }
     }
 
@@ -115,15 +174,17 @@ public class ServerUtils {
 
     private enum KRAMERIUS_ACTION {
         REINDEX("reindex"), GENERATE_DEEP_ZOOM("generate deep zoom");
-        private String actionName;
+
+        private final String actionName;
+
         private KRAMERIUS_ACTION(String actionName) {
-            this.actionName  =  actionName;
+            this.actionName = actionName;
         }
+
         public String getActionName() {
             return this.actionName;
         }
     }
-
 
     public static boolean reindex(String pid) {
         return krameriusRest(KRAMERIUS_ACTION.REINDEX, pid);
@@ -136,7 +197,7 @@ public class ServerUtils {
 
     /**
      * Reindex.
-     *
+     * 
      * @param pid
      *        the pid
      */
@@ -152,14 +213,17 @@ public class ServerUtils {
         switch (action) {
             case REINDEX:
                 url =
-                        host + "/lr?action=start&def=reindex&out=text&params=fromKrameriusModel," + pid + "," + pid
-                                + "&userName=" + login + "&pswd=" + password;
+                        host + "/lr?action=start&def=reindex&out=text&params=fromKrameriusModel," + pid + ","
+                                + pid + "&userName=" + login + "&pswd=" + password;
                 break;
             case GENERATE_DEEP_ZOOM:
-                url = host + "/lr?action=start&def=generateDeepZoomTiles&out=text&params=fromKrameriusModel," + pid + "," + pid
-                        + "&userName=" + login + "&pswd=" + password;
+                url =
+                        host
+                                + "/lr?action=start&def=generateDeepZoomTiles&out=text&params=fromKrameriusModel,"
+                                + pid + "," + pid + "&userName=" + login + "&pswd=" + password;
                 break;
-            default: throw new IllegalArgumentException("Undefined rest action");
+            default:
+                throw new IllegalArgumentException("Undefined rest action");
         }
 
         if (KRAMERIUS_ACTION.REINDEX.equals(action)) {
@@ -169,8 +233,8 @@ public class ServerUtils {
         }
         if (KRAMERIUS_ACTION.GENERATE_DEEP_ZOOM.equals(action)) {
             LOGGER.info(action.getActionName() + pid + " sending HTTP GET to " + host
-                    + "/lr?action=start&def=generateDeepZoomTiles&out=text&params=fromKrameriusModel," + pid + "," + pid
-                    + "&userName=***&pswd=***");
+                    + "/lr?action=start&def=generateDeepZoomTiles&out=text&params=fromKrameriusModel," + pid
+                    + "," + pid + "&userName=***&pswd=***");
         }
         try {
             RESTHelper.get(url, login, password, false);

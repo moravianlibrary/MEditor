@@ -35,10 +35,10 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.HasUiHandlers;
 import com.gwtplatform.mvp.client.Presenter;
@@ -98,6 +98,7 @@ import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.client.mods.DateTypeClient;
 import cz.mzk.editor.client.mods.ModsCollectionClient;
 import cz.mzk.editor.client.mods.ModsTypeClient;
+import cz.mzk.editor.client.other.LabelAndModelConverter;
 import cz.mzk.editor.client.uihandlers.CreateStructureUiHandlers;
 import cz.mzk.editor.client.util.ClientCreateUtils;
 import cz.mzk.editor.client.util.ClientUtils;
@@ -106,7 +107,6 @@ import cz.mzk.editor.client.util.Constants.PERIODICAL_ITEM_GENRE_TYPES;
 import cz.mzk.editor.client.util.Constants.PERIODICAL_ITEM_LEVEL_NAMES;
 import cz.mzk.editor.client.util.Constants.STRUCTURE_TREE_ITEM_ACTION;
 import cz.mzk.editor.client.view.CreateStructureView;
-import cz.mzk.editor.client.view.other.LabelAndModelConverter;
 import cz.mzk.editor.client.view.other.PdfViewerPane;
 import cz.mzk.editor.client.view.other.ScanRecord;
 import cz.mzk.editor.client.view.other.SubstructureTreeNode;
@@ -135,8 +135,8 @@ import cz.mzk.editor.shared.rpc.MetadataBundle;
 import cz.mzk.editor.shared.rpc.NewDigitalObject;
 import cz.mzk.editor.shared.rpc.ServerActionResult;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle;
-import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureInfo;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureNode;
+import cz.mzk.editor.shared.rpc.TreeStructureInfo;
 import cz.mzk.editor.shared.rpc.action.ConvertToJPEG2000Action;
 import cz.mzk.editor.shared.rpc.action.ConvertToJPEG2000Result;
 import cz.mzk.editor.shared.rpc.action.GetOcrFromPdfAction;
@@ -351,7 +351,8 @@ public class CreateStructurePresenter
                                             .getTree().findById(SubstructureTreeNode.ROOT_ID)
                                             .getAttribute(Constants.ATTR_NAME));
                         else
-                            object.setName(ClientCreateUtils.trimLabel(object.getName(), Constants.MAX_LABEL_LENGTH));
+                            object.setName(ClientCreateUtils.trimLabel(object.getName(),
+                                                                       Constants.MAX_LABEL_LENGTH));
 
                         for (TreeNode node : leftPresenter.getView().getSubelementsGrid().getTree()
                                 .getAllNodes()) {
@@ -361,8 +362,8 @@ public class CreateStructurePresenter
                         }
 
                         List<TreeStructureNode> nodes =
-                                ClientCreateUtils.toNodes(leftPresenter.getView().getSubelementsGrid().getTree()
-                                        .getAllNodes());
+                                ClientCreateUtils.toNodes(leftPresenter.getView().getSubelementsGrid()
+                                        .getTree().getAllNodes());
 
                         if (nodes != null) {
                             bundle.getNodes().addAll(nodes);
@@ -434,7 +435,7 @@ public class CreateStructurePresenter
     protected void onReset() {
         super.onReset();
         processImages();
-        RevealContentEvent.fire(this, Constants.TYPE_LEFT_CONTENT, leftPresenter);
+        RevealContentEvent.fire(this, Constants.TYPE_MEDIT_LEFT_CONTENT, leftPresenter);
 
         leftPresenter.getView().setInputTree(dispatcher, placeManager);
         leftPresenter.getView().getSectionStack().collapseSection(0);
@@ -456,7 +457,7 @@ public class CreateStructurePresenter
         }
         leftPresenter.setDefaultDateIssued(getDateIssued());
 
-        ChangeMenuWidthEvent.fire(getEventBus(), "340");
+        getEventBus().fireEvent(new ChangeMenuWidthEvent("340"));
     }
 
     private String getDateIssued() {
@@ -1388,7 +1389,7 @@ public class CreateStructurePresenter
      */
     @Override
     protected void revealInParent() {
-        RevealContentEvent.fire(this, Constants.TYPE_MAIN_CONTENT, this);
+        RevealContentEvent.fire(this, Constants.TYPE_MEDIT_MAIN_CONTENT, this);
     }
 
     @ProxyEvent
@@ -1475,7 +1476,10 @@ public class CreateStructurePresenter
                                                } else if (!result.isReindexSuccess()) {
                                                    error = lang.reindexFail();
                                                } else {
-                                                   /** (internal image server is enabled) */
+                                                   /**
+                                                    * (internal image server is
+                                                    * enabled)
+                                                    */
                                                    error = lang.deepZoomFail();
                                                }
 
@@ -1486,8 +1490,7 @@ public class CreateStructurePresenter
                                                        openCreated(result.getNewPid());
                                                    }
                                                });
-                                           }
-                                           else {
+                                           } else {
                                                openCreated(result.getNewPid());
                                            }
                                        } else {

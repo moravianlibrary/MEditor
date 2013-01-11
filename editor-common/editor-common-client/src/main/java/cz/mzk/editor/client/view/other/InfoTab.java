@@ -13,6 +13,7 @@ import com.smartgwt.client.widgets.layout.VStack;
 import com.smartgwt.client.widgets.tab.Tab;
 
 import cz.mzk.editor.client.LangConstants;
+import cz.mzk.editor.client.util.HtmlCode;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.rpc.DigitalObjectDetail;
 import cz.mzk.editor.shared.rpc.DublinCore;

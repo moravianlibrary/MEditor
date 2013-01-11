@@ -27,6 +27,8 @@
 
 package cz.mzk.editor.server.handler;
 
+import java.sql.SQLException;
+
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpSession;
@@ -41,10 +43,9 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.server.HttpCookies;
+import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.RecentlyModifiedItemDAO;
-import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.LockInfo;
@@ -77,9 +78,9 @@ public class GetRecentlyModifiedHandler
     /** The GetLockInformationHandler handler */
     private final GetLockInformationHandler getLockInformationHandler;
 
-    /** The user DAO **/
+    /** The dao utils. */
     @Inject
-    private UserDAO userDAO;
+    private DAOUtils daoUtils;
 
     /**
      * Instantiates a new gets the recently modified handler.
@@ -108,13 +109,11 @@ public class GetRecentlyModifiedHandler
     public GetRecentlyModifiedResult execute(final GetRecentlyModifiedAction action,
                                              final ExecutionContext context) throws ActionException {
         LOGGER.debug("Processing action: GetRecentlyModified");
+        ServerUtils.checkExpiredSession();
 
         HttpSession session = httpSessionProvider.get();
-        ServerUtils.checkExpiredSession(session);
         Injector injector = (Injector) session.getServletContext().getAttribute(Injector.class.getName());
         injector.injectMembers(getLockInformationHandler);
-
-        String openID = (String) session.getAttribute(HttpCookies.SESSION_ID_KEY);
 
         try {
 
@@ -124,7 +123,7 @@ public class GetRecentlyModifiedHandler
             } else {
                 recItems =
                         recentlyModifiedDAO.getItems(configuration.getRecentlyModifiedNumber(),
-                                                     userDAO.getUsersId(openID));
+                                                     daoUtils.getUserId(true));
             }
 
             for (RecentlyModifiedItem item : recItems) {
@@ -135,6 +134,12 @@ public class GetRecentlyModifiedHandler
             }
             return new GetRecentlyModifiedResult(recItems);
         } catch (DatabaseException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            throw new ActionException(e);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
             throw new ActionException(e);
         }
     }

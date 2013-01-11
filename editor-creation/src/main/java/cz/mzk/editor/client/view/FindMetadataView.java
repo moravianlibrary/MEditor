@@ -60,7 +60,7 @@ import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.gwtrpcds.Z3950ResultDS;
 import cz.mzk.editor.client.presenter.FindMetadataPresenter;
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.client.view.other.HtmlCode;
+import cz.mzk.editor.client.util.HtmlCode;
 import cz.mzk.editor.client.view.window.ModalWindow;
 
 // TODO: Auto-generated Javadoc

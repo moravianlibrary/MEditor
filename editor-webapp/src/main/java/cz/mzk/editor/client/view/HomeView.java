@@ -45,7 +45,7 @@ import com.smartgwt.client.widgets.layout.VStack;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.presenter.HomePresenter;
-import cz.mzk.editor.client.view.other.HtmlCode;
+import cz.mzk.editor.client.util.HtmlCode;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -91,7 +91,7 @@ public class HomeView
     /** The open. */
     private final IButton open;
 
-    private final IButton scheduler;
+    private IButton scheduler;
 
     /** The uuid field. */
     private final TextItem uuidField;
@@ -113,7 +113,7 @@ public class HomeView
         layout.setHeight100();
         layout.setPadding(15);
         HTMLFlow html1 = new HTMLFlow();
-        html1.setContents(lang.introduction());
+        html1.setContents(lang.introduction() + HtmlCode.title(lang.availCoopSys(), 2));
         html1.setExtraSpace(15);
 
         status = new HTMLFlow(getStatusString());
@@ -149,8 +149,6 @@ public class HomeView
         open.setDisabled(true);
         open.setAutoShowParent(false);
 
-        scheduler = new IButton(lang.scheduler());
-
         HLayout hLayout = new HLayout();
         hLayout.setMembersMargin(10);
         hLayout.addMember(form);
@@ -166,10 +164,14 @@ public class HomeView
         layout.addMember(html1);
         layout.addMember(status);
         layout.addMember(checkButton);
-        layout.addMember(scheduler);
         layout.addMember(html2);
         layout.addMember(hLayout);
         layout.addMember(html3);
+    }
+
+    public void showSheduler() {
+        scheduler = new IButton(lang.scheduler());
+        layout.addMember(scheduler, 3);
     }
 
     /**

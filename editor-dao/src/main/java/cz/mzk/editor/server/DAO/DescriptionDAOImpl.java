@@ -40,7 +40,7 @@ import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
  * @version Oct 12, 2012
  */
 public class DescriptionDAOImpl
-        extends AbstractDAO
+        extends AbstractActionDAO
         implements DescriptionDAO {
 
     private static final Logger LOGGER = Logger.getLogger(DescriptionDAO.class);
@@ -101,14 +101,15 @@ public class DescriptionDAOImpl
         }
         try {
 
-            boolean successful = daoUtils.checkDigitalObject(uuid, null, null, description, null, false);
+            boolean successful =
+                    daoUtils.checkDigitalObject(uuid, null, null, description, null, true, false);
             successful =
-                    daoUtils.insertCrudAction(user_id,
-                                              Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION,
-                                              "digital_object_uuid",
-                                              uuid,
-                                              CRUD_ACTION_TYPES.UPDATE,
-                                              false);
+                    insertCrudAction(user_id,
+                                     Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION,
+                                     "digital_object_uuid",
+                                     uuid,
+                                     CRUD_ACTION_TYPES.UPDATE,
+                                     false);
 
             if (successful) {
                 getConnection().commit();
@@ -130,15 +131,14 @@ public class DescriptionDAOImpl
      * {@inheritDoc}
      */
     @Override
-    public String getUserDescription(String digital_object_uuid, Long editor_user_id)
-            throws DatabaseException {
+    public String getUserDescription(String digital_object_uuid) throws DatabaseException {
 
         PreparedStatement selSt = null;
         String desc = null;
         try {
             selSt = getConnection().prepareStatement(DESCRIPTION_SELECT_DESC_STATEMENT);
             selSt.setString(1, digital_object_uuid);
-            selSt.setLong(2, editor_user_id);
+            selSt.setLong(2, getUserId(false));
             ResultSet rs = selSt.executeQuery();
             if (rs.next()) {
                 desc = rs.getString("description");
@@ -159,10 +159,10 @@ public class DescriptionDAOImpl
      * {@inheritDoc}
      */
     @Override
-    public boolean checkUserDescription(String digital_object_uuid, Long editor_user_id, String description)
+    public boolean checkUserDescription(String digital_object_uuid, String description)
             throws DatabaseException {
 
-        String desc = getUserDescription(digital_object_uuid, editor_user_id);
+        String desc = getUserDescription(digital_object_uuid);
         boolean successful = false;
         PreparedStatement updateSt = null;
 
@@ -173,15 +173,16 @@ public class DescriptionDAOImpl
         }
 
         try {
+            Long editor_user_id = getUserId(false);
             if (desc == null) {
                 successful = daoUtils.insertDescription(editor_user_id, digital_object_uuid, description);
                 if (successful)
-                    daoUtils.insertCrudAction(editor_user_id,
-                                              Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION,
-                                              "digital_object_uuid",
-                                              digital_object_uuid,
-                                              CRUD_ACTION_TYPES.UPDATE,
-                                              false);
+                    insertCrudAction(editor_user_id,
+                                     Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION,
+                                     "digital_object_uuid",
+                                     digital_object_uuid,
+                                     CRUD_ACTION_TYPES.UPDATE,
+                                     false);
             } else if (!desc.equals(description)) {
 
                 updateSt = getConnection().prepareStatement(DESCRIPTION_UPDATE_DESC_STATEMENT);
@@ -194,12 +195,12 @@ public class DescriptionDAOImpl
                     LOGGER.debug("DB has been updated: The user's: " + editor_user_id
                             + " description of object: " + digital_object_uuid + " has been updated.");
 
-                    daoUtils.insertCrudAction(editor_user_id,
-                                              Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION,
-                                              "digital_object_uuid",
-                                              digital_object_uuid,
-                                              CRUD_ACTION_TYPES.UPDATE,
-                                              false);
+                    insertCrudAction(editor_user_id,
+                                     Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION,
+                                     "digital_object_uuid",
+                                     digital_object_uuid,
+                                     CRUD_ACTION_TYPES.UPDATE,
+                                     false);
                     successful = true;
                 } else {
                     LOGGER.error("DB has not been updated! " + updateSt);

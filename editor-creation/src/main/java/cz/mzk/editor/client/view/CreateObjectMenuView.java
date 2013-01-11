@@ -33,8 +33,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
@@ -79,11 +79,11 @@ import com.smartgwt.client.widgets.tree.TreeGridField;
 import com.smartgwt.client.widgets.tree.TreeNode;
 
 import cz.mzk.editor.client.LangConstants;
+import cz.mzk.editor.client.other.LabelAndModelConverter;
 import cz.mzk.editor.client.presenter.CreateObjectMenuPresenter;
 import cz.mzk.editor.client.uihandlers.CreateObjectMenuUiHandlers;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.view.other.InputQueueTree;
-import cz.mzk.editor.client.view.other.LabelAndModelConverter;
 import cz.mzk.editor.client.view.other.SubstructureTreeNode;
 import cz.mzk.editor.client.view.window.ConnectExistingObjectWindow;
 import cz.mzk.editor.client.view.window.ModalWindow;
@@ -1074,7 +1074,7 @@ public class CreateObjectMenuView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                SaveStructureEvent.fire(getUiHandlers().getBus());
+                getUiHandlers().getBus().fireEvent(new SaveStructureEvent());
             }
         });
         loadStructure.addClickHandler(new ClickHandler() {

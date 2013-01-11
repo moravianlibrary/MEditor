@@ -28,30 +28,29 @@
 
 package cz.mzk.editor.server.handler;
 
+import java.sql.SQLException;
+
 import java.text.DateFormat;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.server.HttpCookies;
+import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.TreeStructureDAO;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.util.ServerUtils;
-import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureInfo;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureNode;
+import cz.mzk.editor.shared.rpc.TreeStructureInfo;
 import cz.mzk.editor.shared.rpc.action.StoreTreeStructureAction;
 import cz.mzk.editor.shared.rpc.action.StoreTreeStructureResult;
 
@@ -69,12 +68,13 @@ public class StoreTreeStructureHandler
     @Inject
     private TreeStructureDAO treeDAO;
 
+    @SuppressWarnings("unused")
     @Inject
     private UserDAO userDAO;
 
-    /** The http session provider. */
+    /** The dao utils. */
     @Inject
-    private Provider<HttpSession> httpSessionProvider;
+    private DAOUtils daoUtils;
 
     @Inject
     public StoreTreeStructureHandler() {
@@ -90,6 +90,14 @@ public class StoreTreeStructureHandler
     @Override
     public StoreTreeStructureResult execute(final StoreTreeStructureAction action,
                                             final ExecutionContext context) throws ActionException {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Processing action: StoreTreeStructureResult role:"
+                    + action
+                    + ((action.getId() == null && action.getBundle() != null) ? (" for object: " + action
+                            .getBundle().getInfo().getInputPath()) : ""));
+        }
+        ServerUtils.checkExpiredSession();
+
         switch (action.getVerb()) {
             case PUT:
                 if (action.getBundle() == null || action.getBundle().getInfo() == null
@@ -108,21 +116,20 @@ public class StoreTreeStructureHandler
                 throw new IllegalArgumentException("bad verb");
 
         }
-        if (LOGGER.isDebugEnabled()) {
 
-            LOGGER.debug("Processing action: StoreTreeStructureResult role:"
-                    + action
-                    + ((action.getId() == null && action.getBundle() != null) ? (" for object: " + action
-                            .getBundle().getInfo().getInputPath()) : ""));
-        }
-        HttpSession session = httpSessionProvider.get();
-        ServerUtils.checkExpiredSession(session);
         long userId = 0;
         try {
-            userId = userDAO.getUsersId(String.valueOf(session.getAttribute(HttpCookies.SESSION_ID_KEY)));
+            userId = daoUtils.getUserId(true);
         } catch (DatabaseException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            throw new ActionException(e);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
             throw new ActionException(e);
         }
+
         try {
             switch (action.getVerb()) {
                 case PUT:

@@ -70,11 +70,10 @@ public class ConversionDAOImpl
     @Override
     public void insertConversionInfo(String directoryPath) throws DatabaseException {
         PreparedStatement insertSt = null;
-        Long userId = getUserId();
         try {
             if (daoUtils.checkInputQueue(directoryPath, null, true)) {
                 insertSt = getConnection().prepareStatement(INSERT_CONVERSION_ITEM_STATEMENT);
-                insertSt.setLong(1, userId);
+                insertSt.setLong(1, getUserId(true));
                 insertSt.setString(2, DAOUtilsImpl.directoryPathToRightFormat(directoryPath));
 
                 if (insertSt.executeUpdate() == 1) {
@@ -87,6 +86,8 @@ public class ConversionDAOImpl
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
+        } finally {
+            closeConnection();
         }
     }
 
@@ -108,7 +109,7 @@ public class ConversionDAOImpl
                 ResultSet rs = selectSt.executeQuery();
 
                 if (rs.next()) {
-                    item.setConversionDate(formatTimestamp(rs.getTimestamp("lastTimestamp")));
+                    item.setConversionDate(formatTimestampToSeconds(rs.getTimestamp("lastTimestamp")));
                     if (numberOfDays > 0) {
                         item.setConverted(!rs.getBoolean("isOlder"));
                     } else {
@@ -119,6 +120,8 @@ public class ConversionDAOImpl
             } catch (SQLException e) {
                 LOGGER.error("Select statement: " + selectSt + " " + e.getMessage());
                 e.printStackTrace();
+            } finally {
+                closeConnection();
             }
         }
         return data;

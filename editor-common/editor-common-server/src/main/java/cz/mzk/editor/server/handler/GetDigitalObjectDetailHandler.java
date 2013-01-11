@@ -31,8 +31,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import java.sql.SQLException;
-
 import java.util.Date;
 
 import javax.servlet.http.HttpSession;
@@ -50,11 +48,10 @@ import org.apache.log4j.Logger;
 import cz.mzk.editor.client.ConnectionException;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
-import cz.mzk.editor.server.HttpCookies;
-import cz.mzk.editor.server.DAO.DAOUtils;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.DescriptionDAO;
-import cz.mzk.editor.server.DAO.UserDAO;
+import cz.mzk.editor.server.DAO.DigitalObjectDAO;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
 import cz.mzk.editor.server.modelHandler.FedoraDigitalObjectHandler;
 import cz.mzk.editor.server.modelHandler.StoredDigitalObjectHandler;
@@ -92,16 +89,12 @@ public class GetDigitalObjectDetailHandler
     /** The GetLockInformationHandler handler */
     private final GetLockInformationHandler getLockInformationHandler;
 
-    /** The user DAO **/
-    @Inject
-    private UserDAO userDAO;
-
     /** The description dao. */
     @Inject
     private DescriptionDAO descriptionDAO;
 
     @Inject
-    private DAOUtils daoUtils;
+    private DigitalObjectDAO digObjDAO;
 
     /**
      * Instantiates a new gets the digital object detail handler.
@@ -128,15 +121,26 @@ public class GetDigitalObjectDetailHandler
     @Override
     public GetDigitalObjectDetailResult execute(final GetDigitalObjectDetailAction action,
                                                 final ExecutionContext context) throws ActionException {
+
+        LOGGER.debug("Processing action: GetDigitalObjectDetailAction " + action.getUuid());
+        ServerUtils.checkExpiredSession();
+
+        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.OPEN_OBJECT)) {
+            LOGGER.warn("Bad authorization in " + this.getClass().toString());
+            throw new ActionException("Bad authorization in " + this.getClass().toString());
+        }
+
         // parse input
         String uuid = action.getUuid();
         String storedFOXMLFilePath = null;
+
         if (action.getSavedEditedObject() != null && action.getSavedEditedObject().getFileName() != null
                 && !action.getSavedEditedObject().getFileName().equals("")) {
             storedFOXMLFilePath = action.getSavedEditedObject().getFileName();
         }
 
         try {
+
             if (storedFOXMLFilePath == null) {
                 LOGGER.debug("Processing action: GetDigitalObjectDetailAction: " + action.getUuid());
             } else {
@@ -150,13 +154,6 @@ public class GetDigitalObjectDetailHandler
             Injector injector = (Injector) ses.getServletContext().getAttribute(Injector.class.getName());
             injector.injectMembers(descritptionHandler);
             injector.injectMembers(getLockInformationHandler);
-            ServerUtils.checkExpiredSession(ses);
-            Long usersId = null;
-            try {
-                usersId = userDAO.getUsersId(String.valueOf(ses.getAttribute(HttpCookies.SESSION_ID_KEY)));
-            } catch (DatabaseException e) {
-                throw new ActionException(e);
-            }
 
             DigitalObjectDetail obj = null;
             if (storedFOXMLFilePath == null) {
@@ -171,17 +168,11 @@ public class GetDigitalObjectDetailHandler
                                                                    storedFOXMLFilePath,
                                                                    action.getModel());
                 try {
-                    daoUtils.insertCrudAction(usersId,
-                                              Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION,
-                                              "",
-                                              action.getSavedEditedObject().getId(),
-                                              CRUD_ACTION_TYPES.READ,
-                                              true);
+                    digObjDAO.insertDOCrudAction(Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION,
+                                                 "saved_edited_object_id",
+                                                 action.getSavedEditedObject().getId(),
+                                                 CRUD_ACTION_TYPES.READ);
                 } catch (DatabaseException e) {
-                    LOGGER.error(e.getMessage());
-                    e.printStackTrace();
-                    throw new ActionException(e);
-                } catch (SQLException e) {
                     LOGGER.error(e.getMessage());
                     e.printStackTrace();
                     throw new ActionException(e);
@@ -198,7 +189,7 @@ public class GetDigitalObjectDetailHandler
             String description = null;
             Date modified = null;
             try {
-                description = descriptionDAO.getUserDescription(uuid, usersId);
+                description = descriptionDAO.getUserDescription(uuid);
 
                 // TODO: is the given user authorized to this operation?
             } catch (DatabaseException e) {

@@ -29,14 +29,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.SQLException;
 
-import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
@@ -44,10 +42,9 @@ import com.gwtplatform.dispatch.shared.ActionException;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.server.HttpCookies;
+import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.StoredItemsDAO;
-import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
 import cz.mzk.editor.server.modelHandler.StoredDigitalObjectHandlerImpl;
@@ -68,13 +65,9 @@ public class StoredItemsHandler
     @Inject
     private StoredItemsDAO storeDao;
 
-    /** The user DAO **/
+    /** The dao utils. */
     @Inject
-    private UserDAO userDAO;
-
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
+    private DAOUtils daoUtils;
 
     /** The configuration. */
     private final EditorConfiguration configuration;
@@ -95,25 +88,31 @@ public class StoredItemsHandler
     public StoredItemsResult execute(StoredItemsAction action, ExecutionContext context)
             throws ActionException {
 
-        HttpSession session = httpSessionProvider.get();
-        ServerUtils.checkExpiredSession(session);
+        LOGGER.debug("Processing action: StoredItemsAction " + action.getStoredItem().getFileName());
+        ServerUtils.checkExpiredSession();
 
         long userId = 0;
         try {
-            userId = userDAO.getUsersId(String.valueOf(session.getAttribute(HttpCookies.SESSION_ID_KEY)));
+            userId = daoUtils.getUserId(true);
         } catch (DatabaseException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            throw new ActionException(e);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
             throw new ActionException(e);
         }
 
         if (action.getVerb() == Constants.VERB.GET) {
-            List<StoredItem> storedItems = new ArrayList<StoredItem>();
-            try {
-                storedItems = storeDao.getStoredItems(userId);
-            } catch (DatabaseException e) {
-                throw new ActionException(e);
-            }
-
-            return new StoredItemsResult(storedItems);
+            //            List<StoredItem> storedItems = new ArrayList<StoredItem>();
+            //            try {
+            //            storedItems = storeDao.getStoredItems(userId);
+            //            } catch (DatabaseException e) {
+            //                throw new ActionException(e);
+            //            }
+            //
+            //            return new StoredItemsResult(storedItems);
 
         } else if (action.getVerb() == Constants.VERB.PUT) {
             String workingCopyFoxml =
@@ -149,19 +148,19 @@ public class StoredItemsHandler
             }
 
         } else if (action.getVerb() == Constants.VERB.DELETE) {
-            try {
-                if (storeDao.deleteItem(action.getStoredItem().getId())) {
-                    File deleteFile = new File(action.getStoredItem().getFileName());
-                    if (deleteFile.exists()) {
-                        deleteFile.delete();
-                    }
-                    return new StoredItemsResult(new ArrayList<StoredItem>());
-                } else {
-                    return new StoredItemsResult(null);
-                }
-            } catch (DatabaseException e) {
-                throw new ActionException(e);
-            }
+            //            try {
+            //                            if (storeDao.deleteItem(action.getStoredItem().getId())) {
+            //                    File deleteFile = new File(action.getStoredItem().getFileName());
+            //                    if (deleteFile.exists()) {
+            //                        deleteFile.delete();
+            //                    }
+            //                    return new StoredItemsResult(new ArrayList<StoredItem>());
+            //                } else {
+            //                    return new StoredItemsResult(null);
+            //                }
+            //            } catch (DatabaseException e) {
+            //                throw new ActionException(e);
+            //            }
         }
         return null;
     }

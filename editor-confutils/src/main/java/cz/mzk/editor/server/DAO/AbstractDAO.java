@@ -71,10 +71,13 @@ import org.w3c.dom.NodeList;
 
 import org.xml.sax.SAXException;
 
+import org.springframework.security.core.context.SecurityContext;
+
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.DEFAULT_SYSTEM_USERS;
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
-import cz.mzk.editor.server.HttpCookies;
+import cz.mzk.editor.server.EditorUserAuthentication;
+import cz.mzk.editor.server.URLS;
 import cz.mzk.editor.server.config.EditorConfiguration;
 
 // TODO: Auto-generated Javadoc
@@ -101,8 +104,11 @@ public abstract class AbstractDAO {
     /** Must be the same as in the META-INF/context.xml and WEB-INF/web.xml */
     private static final String JNDI_DB_POOL_ID = "jdbc/editor";
 
-    /** The Constant FORMATTER with format: yyyy/MM/dd HH:mm:ss. */
-    public static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    /** The Constant FORMATTER with format: dd.MM.yyyy HH:mm:ss. */
+    public static final SimpleDateFormat FORMATTER_TO_SECONDS = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+
+    //      /** The Constant FORMATTER with format: yyyy/MM/dd. */
+    //    public static final SimpleDateFormat FORMATTER_TO_DAYS = new SimpleDateFormat("yyyy/MM/dd");
 
     /** The Constant POOLABLE_YES. */
     private static final int POOLABLE_YES = 1;
@@ -375,27 +381,32 @@ public abstract class AbstractDAO {
      * @return the users id
      * @throws DatabaseException
      *         the database exception
+     * @throws SQLException
      */
-    protected long getUsersId(String identifier, USER_IDENTITY_TYPES type) throws DatabaseException {
+    protected long getUsersId(String identifier, USER_IDENTITY_TYPES type, boolean closeCon)
+            throws DatabaseException, SQLException {
         PreparedStatement selectSt = null;
         long userId = -1;
         try {
-            StringBuffer sql = new StringBuffer("SELECT editor_user_id FROM ");
+            StringBuffer sql = new StringBuffer("SELECT editor_user_id FROM (");
+            String tableIdentity = "";
 
             switch (type) {
                 case OPEN_ID:
-                    sql.append(Constants.TABLE_OPEN_ID_IDENTITY);
+                    tableIdentity = Constants.TABLE_OPEN_ID_IDENTITY;
                     break;
                 case SHIBBOLETH:
-                    sql.append(Constants.TABLE_SHIBBOLETH_IDENTITY);
+                    tableIdentity = Constants.TABLE_SHIBBOLETH_IDENTITY;
                     break;
                 case LDAP:
-                    sql.append(Constants.TABLE_LDAP_IDENTITY);
+                    tableIdentity = Constants.TABLE_LDAP_IDENTITY;
                     break;
                 default:
                     return DEFAULT_SYSTEM_USERS.NON_EXISTENT.getUserId();
             }
-            sql.append(" WHERE identity = (?)");
+            sql.append(tableIdentity).append(" INNER JOIN editor_user ON ").append(tableIdentity)
+                    .append(".editor_user_id = editor_user.id)");
+            sql.append(" WHERE state = 'true' AND identity = (?)");
             selectSt = getConnection().prepareStatement(sql.toString());
             selectSt.setString(1, identifier);
 
@@ -409,8 +420,13 @@ public abstract class AbstractDAO {
             }
         } catch (SQLException e) {
             LOGGER.error("Query: " + selectSt, e);
+            if (closeCon) {
+                e.printStackTrace();
+            } else {
+                throw new SQLException(e);
+            }
         } finally {
-            closeConnection();
+            if (closeCon) closeConnection();
         }
         return userId;
     }
@@ -418,41 +434,58 @@ public abstract class AbstractDAO {
     /**
      * Gets the user id.
      * 
+     * @param closeCon
+     *        the close con
      * @return the user id
      * @throws DatabaseException
      *         the database exception
+     * @throws SQLException
      */
-    protected Long getUserId() throws DatabaseException {
-        String openID = (String) httpSessionProvider.get().getAttribute(HttpCookies.SESSION_ID_KEY);
-        return getUsersId(openID, USER_IDENTITY_TYPES.OPEN_ID);
+    protected Long getUserId(boolean closeCon) throws DatabaseException, SQLException {
+        SecurityContext secContext =
+                (SecurityContext) httpSessionProvider.get().getAttribute("SPRING_SECURITY_CONTEXT");
+        EditorUserAuthentication authentication = null;
+        if (secContext != null) authentication = (EditorUserAuthentication) secContext.getAuthentication();
+        if (authentication != null) {
+            return getUsersId((String) authentication.getPrincipal(),
+                              authentication.getIdentityType(),
+                              closeCon);
+        } else {
+            throw new DatabaseException(Constants.SESSION_EXPIRED_FLAG + URLS.ROOT()
+                    + (URLS.LOCALHOST() ? URLS.LOGIN_LOCAL_PAGE : URLS.LOGIN_PAGE));
+        }
     }
 
     /**
-     * Format date with format: yyyy/MM/dd HH:mm:ss.
+     * Format date to seconds, the format: dd.MM.yyyy HH:mm:ss.
      * 
      * @param date
      *        the date
      * @return the string
      */
-    /**
-     * Format date with format: yyyy/MM/dd HH:mm:ss.
-     * 
-     * @param date
-     *        the date
-     * @return the string
-     */
-    protected String formatDate(java.sql.Date date) {
-        return FORMATTER.format(date);
+    protected String formatDateToSeconds(java.sql.Date date) {
+        return FORMATTER_TO_SECONDS.format(date);
     }
 
     /**
-     * Format timestamp.
+     * Format timestamp to seconds, the format: dd.MM.yyyy HH:mm:ss.
      * 
      * @param timestamp
      *        the timestamp
      * @return the string
      */
-    protected String formatTimestamp(Timestamp timestamp) {
-        return FORMATTER.format(timestamp);
+    protected String formatTimestampToSeconds(Timestamp timestamp) {
+        return FORMATTER_TO_SECONDS.format(timestamp);
     }
+
+    // /**
+    // * Format timestamp to days, the format: yyyy/MM/dd.
+    // *
+    // * @param timestamp
+    // * the timestamp
+    // * @return the string
+    // */
+    // protected String formatTimestampToDays(Timestamp timestamp) {
+    // return FORMATTER_TO_DAYS.format(timestamp);
+    // }
 }

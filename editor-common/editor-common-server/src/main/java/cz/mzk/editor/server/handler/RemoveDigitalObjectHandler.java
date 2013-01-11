@@ -33,14 +33,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathException;
 
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
@@ -51,6 +48,7 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.server.DAO.DigitalObjectDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.FedoraAccess;
@@ -75,9 +73,6 @@ public class RemoveDigitalObjectHandler
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(RemoveDigitalObjectHandler.class.getPackage()
             .toString());
-
-    /** The http session provider. */
-    private final Provider<HttpSession> httpSessionProvider;
 
     /** The configuration. */
     private final EditorConfiguration configuration;
@@ -149,10 +144,8 @@ public class RemoveDigitalObjectHandler
      */
     @Inject
     public RemoveDigitalObjectHandler(final EditorConfiguration configuration,
-                                      Provider<HttpSession> httpSessionProvider,
                                       @Named("securedFedoraAccess") FedoraAccess fedoraAccess) {
         this.configuration = configuration;
-        this.httpSessionProvider = httpSessionProvider;
         this.getDoModelHandler = new GetDOModelHandler();
         this.fedoraAccess = fedoraAccess;
     }
@@ -168,7 +161,13 @@ public class RemoveDigitalObjectHandler
     public RemoveDigitalObjectResult execute(final RemoveDigitalObjectAction action,
                                              final ExecutionContext context) throws ActionException {
 
-        ServerUtils.checkExpiredSession(httpSessionProvider);
+        LOGGER.debug("Processing action: RemoveDigitalObjectAction " + action.getUuid());
+        ServerUtils.checkExpiredSession();
+
+        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.DELETE)) {
+            LOGGER.warn("Bad authorization in " + this.getClass().toString());
+            throw new ActionException("Bad authorization in " + this.getClass().toString());
+        }
 
         removedDigitalObjects = new ArrayList<RemovedDigitalObject>();
         List<String> uuidNotToRemove = action.getUuidNotToRemove();

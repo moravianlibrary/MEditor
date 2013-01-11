@@ -34,6 +34,7 @@ import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.client.util.Constants.REQUESTS_TO_ADMIN_TYPES;
 
 /**
@@ -49,88 +50,9 @@ public class DAOUtilsImpl
     public static final String ACTION_UPDATE_SUCCESS_STATEMENT = "UPDATE " + Constants.TABLE_ACTION
             + " (editor_user_id, timestamp, successful) VALUES ((?),(?),(?))";
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws SQLException
-     */
-    @Override
-    public boolean insertCrudAction(long editor_user_id,
-                                    String tableName,
-                                    String fkNameCol,
-                                    Object foreignKey,
-                                    CRUD_ACTION_TYPES type,
-                                    boolean closeCon) throws DatabaseException, SQLException {
-        return insertAnyCrudAction(editor_user_id, tableName, fkNameCol, foreignKey, type, null, closeCon);
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws SQLException
-     */
-    @Override
-    public boolean insertCrudActionWithTopObject(long editor_user_id,
-                                                 String tableName,
-                                                 String fkNameCol,
-                                                 Object foreignKey,
-                                                 CRUD_ACTION_TYPES type,
-                                                 String top_digital_object_uuid,
-                                                 boolean closeCon) throws DatabaseException, SQLException {
-        return insertAnyCrudAction(editor_user_id,
-                                   tableName,
-                                   fkNameCol,
-                                   foreignKey,
-                                   type,
-                                   top_digital_object_uuid,
-                                   closeCon);
-    }
-
-    private boolean insertAnyCrudAction(long editor_user_id,
-                                        String tableName,
-                                        String fkNameCol,
-                                        Object foreignKey,
-                                        CRUD_ACTION_TYPES type,
-                                        String top_digital_object_uuid,
-                                        boolean closeCon) throws DatabaseException, SQLException {
-
-        PreparedStatement insertSt = null;
-        boolean successful = false;
-        String sql =
-                "INSERT INTO " + tableName + " (editor_user_id, timestamp, " + fkNameCol + ", type"
-                        + (top_digital_object_uuid == null ? "" : ", top_digital_object_uuid")
-                        + ") VALUES ((?),(CURRENT_TIMESTAMP),(?),(?)"
-                        + (top_digital_object_uuid == null ? "" : ",(?)") + ")";
-
-        try {
-            insertSt = getConnection().prepareStatement(sql);
-            insertSt.setLong(1, editor_user_id);
-            insertSt.setObject(2, foreignKey);
-            insertSt.setString(3, type.getValue());
-            if (top_digital_object_uuid != null) insertSt.setString(4, top_digital_object_uuid);
-
-            int updated = insertSt.executeUpdate();
-
-            if (updated == 1) {
-                LOGGER.debug("DB has been updated: The " + tableName + " item has been inserted.");
-                successful = true;
-            } else {
-                LOGGER.error("DB has not been updated! " + insertSt);
-            }
-
-        } catch (SQLException ex) {
-            LOGGER.error("Could not get insert item statement " + insertSt, ex);
-            if (closeCon) {
-                ex.printStackTrace();
-            } else {
-                throw new SQLException(ex);
-            }
-        } finally {
-            if (closeCon) closeConnection();
-        }
-
-        return successful;
-    }
+    /** The Constant SELECT_USER_NAME. */
+    public static final String SELECT_USER_NAME = "SELECT name, surname FROM " + Constants.TABLE_EDITOR_USER
+            + " WHERE id=(?)";
 
     /**
      * {@inheritDoc}
@@ -143,6 +65,7 @@ public class DAOUtilsImpl
                                       String name,
                                       String description,
                                       String input_queue_dir_path,
+                                      boolean state,
                                       boolean closeCon) throws DatabaseException, SQLException {
 
         PreparedStatement selSt = null;
@@ -177,7 +100,7 @@ public class DAOUtilsImpl
                     changed = true;
                 }
 
-                if (!rs.getBoolean("state")) {
+                if (state == rs.getBoolean("state")) {
                     changed = true;
                 }
 
@@ -189,6 +112,7 @@ public class DAOUtilsImpl
                                                 chaName,
                                                 chaDescription,
                                                 chaInputPath,
+                                                state,
                                                 closeCon);
                 } else {
                     successful = true;
@@ -200,6 +124,7 @@ public class DAOUtilsImpl
                                             name,
                                             description,
                                             input_queue_directory_path,
+                                            state,
                                             closeCon);
             }
 
@@ -228,6 +153,7 @@ public class DAOUtilsImpl
                                        String name,
                                        String description,
                                        String input_queue_directory_path,
+                                       boolean state,
                                        boolean closeCon) throws DatabaseException, SQLException {
         PreparedStatement updateSt = null;
         boolean successful = false;
@@ -244,7 +170,8 @@ public class DAOUtilsImpl
             updateSt.setString(2, name);
             updateSt.setString(3, description);
             updateSt.setString(4, directoryPathToRightFormat(input_queue_directory_path));
-            updateSt.setString(5, uuid);
+            updateSt.setBoolean(5, state);
+            updateSt.setString(6, uuid);
             int updated = updateSt.executeUpdate();
 
             if (updated == 1) {
@@ -270,6 +197,7 @@ public class DAOUtilsImpl
     /**
      * {@inheritDoc}
      * 
+     * @param closeCon2
      * @throws SQLException
      */
     @Override
@@ -278,6 +206,7 @@ public class DAOUtilsImpl
                                        String name,
                                        String description,
                                        String input_queue_directory_path,
+                                       boolean state,
                                        boolean closeCon) throws DatabaseException, SQLException {
         PreparedStatement insertSt = null;
         boolean successful = false;
@@ -288,6 +217,7 @@ public class DAOUtilsImpl
             insertSt.setString(3, name);
             insertSt.setString(4, description);
             insertSt.setString(5, directoryPathToRightFormat(input_queue_directory_path));
+            insertSt.setBoolean(6, state);
             int updated = insertSt.executeUpdate();
 
             if (updated == 1) {
@@ -900,5 +830,78 @@ public class DAOUtilsImpl
         } else {
             return null;
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @throws SQLException
+     */
+    @Override
+    public Long getUserId(boolean closeCon) throws DatabaseException, SQLException {
+        return super.getUserId(closeCon);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getName(Long key) throws DatabaseException {
+        PreparedStatement selectSt = null;
+        String name = "unknown";
+        try {
+
+            selectSt = getConnection().prepareStatement(SELECT_USER_NAME);
+            selectSt.setLong(1, Long.valueOf(key));
+
+        } catch (SQLException e) {
+            LOGGER.error("Could not get select statement", e);
+        }
+        try {
+            ResultSet rs = selectSt.executeQuery();
+            while (rs.next()) {
+                name = rs.getString("name") + " " + rs.getString("surname");
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Query: " + selectSt, e);
+        } finally {
+            closeConnection();
+        }
+        return name;
+    }
+
+    @Override
+    public boolean hasUserRight(EDITOR_RIGHTS right) throws DatabaseException {
+        PreparedStatement selSt = null;
+
+        String HAS_USER_ROLE =
+                "SELECT ((?) IN (SELECT editor_right_name FROM "
+                        + Constants.TABLE_USERS_ROLE
+                        + " uro INNER JOIN "
+                        + Constants.TABLE_RIGHT_IN_ROLE
+                        + " rro ON uro.role_name = rro.role_name WHERE editor_user_id = (?)) OR (?) IN (SELECT editor_right_name FROM "
+                        + Constants.TABLE_USERS_RIGHT + " WHERE editor_user_id = (?))) AS ok";
+
+        boolean ok = false;
+
+        try {
+            selSt = getConnection().prepareStatement(HAS_USER_ROLE);
+            selSt.setString(1, right.toString());
+            selSt.setLong(2, getUserId(false));
+            selSt.setString(3, right.toString());
+            selSt.setLong(4, getUserId(false));
+
+            ResultSet rs = selSt.executeQuery();
+            if (rs.next()) {
+                ok = rs.getBoolean("ok");
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error("Query: " + selSt, e);
+        } finally {
+            closeConnection();
+        }
+
+        return ok;
     }
 }

@@ -170,7 +170,8 @@ public class CreateObject {
                                                         node.getModel().getValue(),
                                                         node.getName(),
                                                         inputDirPath,
-                                                        node.getUuid());
+                                                        node.getUuid(),
+                                                        false);
             } catch (DatabaseException e) {
                 LOGGER.error("DB ERROR!!!: " + e.getMessage() + ": " + e);
                 e.printStackTrace();
@@ -300,7 +301,8 @@ public class CreateObject {
                                                             node.getModel().getValue(),
                                                             node.getName(),
                                                             inputDirPath,
-                                                            node.getUuid());
+                                                            node.getUuid(),
+                                                            false);
                 } catch (DatabaseException e) {
                     LOGGER.error("DB ERROR!!!: " + e.getMessage() + ": " + e);
                     e.printStackTrace();
@@ -413,7 +415,7 @@ public class CreateObject {
         String foxmlRepresentation = builder.getDocument(false);
         boolean success =
                 IngestUtils.ingest(foxmlRepresentation, node.getName(), node.getUuid(), node.getModel()
-                        .toString(), topLevelUuid, inputDirPath);
+                        .getValue(), topLevelUuid, inputDirPath);
 
         if (success) ingestedObjects.add(node.getUuid());
 

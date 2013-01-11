@@ -26,11 +26,8 @@ package cz.mzk.editor.server.handler;
 
 import java.sql.SQLException;
 
-import javax.servlet.http.HttpSession;
-
 import javax.inject.Inject;
 
-import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
@@ -40,6 +37,7 @@ import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.CreateObjectException;
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.DigitalObjectDAO;
@@ -60,10 +58,6 @@ public class InsertNewDigitalObjectHandler
         implements ActionHandler<InsertNewDigitalObjectAction, InsertNewDigitalObjectResult> {
 
     private static final Logger LOGGER = Logger.getLogger(InsertNewDigitalObjectHandler.class);
-
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
 
     /** The fedora access. */
     @Inject
@@ -96,8 +90,15 @@ public class InsertNewDigitalObjectHandler
     @Override
     public InsertNewDigitalObjectResult execute(InsertNewDigitalObjectAction action, ExecutionContext context)
             throws ActionException {
-        HttpSession ses = httpSessionProvider.get();
-        ServerUtils.checkExpiredSession(ses);
+
+        LOGGER.debug("Processing action: InsertNewDigitalObjectAction " + action.getObject().getUuid());
+        ServerUtils.checkExpiredSession();
+
+        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.CREATE_NEW_OBJECTS)) {
+            LOGGER.warn("Bad authorization in " + this.getClass().toString());
+            throw new ActionException("Bad authorization in " + this.getClass().toString());
+        }
+
         NewDigitalObject object = action.getObject();
         if (object == null) throw new NullPointerException("object");
         if (LOGGER.isInfoEnabled()) {
@@ -145,8 +146,19 @@ public class InsertNewDigitalObjectHandler
                 } catch (DatabaseException e) {
                     LOGGER.error("DB ERROR!!!: " + e.getMessage() + ": " + e);
                     e.printStackTrace();
+                    throw new ActionException(e);
                 }
 
+            } else {
+                try {
+
+                    digitalObjectDAO.updateState(createObject.getIngestedObjects(), true);
+
+                } catch (DatabaseException e) {
+                    LOGGER.error("DB ERROR!!!: " + e.getMessage() + ": " + e);
+                    e.printStackTrace();
+                    throw new ActionException(e);
+                }
             }
 
             if (object.getUuid() != null && object.getUuid().contains(Constants.FEDORA_UUID_PREFIX)) {

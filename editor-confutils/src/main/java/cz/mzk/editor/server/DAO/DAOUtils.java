@@ -29,9 +29,13 @@ import java.sql.Timestamp;
 
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.client.util.Constants.REQUESTS_TO_ADMIN_TYPES;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Interface DAOUtils.
+ * 
  * @author Matous Jobanek
  * @version Oct 11, 2012
  */
@@ -75,7 +79,7 @@ public interface DAOUtils {
     public static final String DIGITAL_OBJECT_INSERT_ITEM_STATEMENT =
             "INSERT INTO "
                     + Constants.TABLE_DIGITAL_OBJECT
-                    + " (uuid, model, name, description, input_queue_directory_path, state) VALUES ((?),(?),(?),(?),(?), 'true')";
+                    + " (uuid, model, name, description, input_queue_directory_path, state) VALUES ((?),(?),(?),(?),(?), (?))";
 
     /** The Constant DIGITAL_OBJECT_SELECT_ITEM_STATEMENT. */
     public static final String DIGITAL_OBJECT_SELECT_ITEM_STATEMENT = "SELECT * FROM "
@@ -85,7 +89,7 @@ public interface DAOUtils {
     public static final String DIGITAL_OBJECT_UPDATE_ITEM_STATEMENT =
             "UPDATE "
                     + Constants.TABLE_DIGITAL_OBJECT
-                    + " SET model=(?), name=(?), description=(?), input_queue_directory_path=(?), state = 'true' WHERE uuid=(?)";
+                    + " SET model=(?), name=(?), description=(?), input_queue_directory_path=(?), state = (?) WHERE uuid=(?)";
 
     /** The Constant EDITOR_RIGHT_INSERT_ITEM_STATEMENT. */
     public static final String EDITOR_RIGHT_INSERT_ITEM_STATEMENT = "INSERT INTO "
@@ -185,63 +189,6 @@ public interface DAOUtils {
             + " (editor_user_id, role_name) VALUES ((?),(?))";
 
     /**
-     * Insert crud action.
-     * 
-     * @param editor_user_id
-     *        the editor_user_id
-     * @param tableName
-     *        the table name
-     * @param fkNameCol
-     *        the fk name col
-     * @param foreignKey
-     *        the foreign key
-     * @param type
-     *        the type
-     * @param closeCon
-     *        the close con
-     * @return true, if successful
-     * @throws DatabaseException
-     *         the database exception
-     * @throws SQLException
-     */
-    boolean insertCrudAction(long editor_user_id,
-                             String tableName,
-                             String fkNameCol,
-                             Object foreignKey,
-                             CRUD_ACTION_TYPES type,
-                             boolean closeCon) throws DatabaseException, SQLException;
-
-    /**
-     * Insert crud action with top object.
-     * 
-     * @param editor_user_id
-     *        the editor_user_id
-     * @param tableName
-     *        the table name
-     * @param fkNameCol
-     *        the fk name col
-     * @param foreignKey
-     *        the foreign key
-     * @param type
-     *        the type
-     * @param top_digital_object_uuid
-     *        the top_digital_object_uuid
-     * @param closeCon
-     *        the close con
-     * @return true, if successful
-     * @throws DatabaseException
-     *         the database exception
-     * @throws SQLException
-     */
-    boolean insertCrudActionWithTopObject(long editor_user_id,
-                                          String tableName,
-                                          String fkNameCol,
-                                          Object foreignKey,
-                                          CRUD_ACTION_TYPES type,
-                                          String top_digital_object_uuid,
-                                          boolean closeCon) throws DatabaseException, SQLException;
-
-    /**
      * Check digital object.
      * 
      * @param uuid
@@ -254,18 +201,22 @@ public interface DAOUtils {
      *        the description
      * @param input_queue_directory_path
      *        the input_queue_directory_path
+     * @param state
+     *        the state
      * @param closeCon
      *        the close con
      * @return true, if successful
      * @throws DatabaseException
      *         the database exception
      * @throws SQLException
+     *         the sQL exception
      */
     boolean checkDigitalObject(String uuid,
                                String model,
                                String name,
                                String description,
                                String input_queue_directory_path,
+                               boolean state,
                                boolean closeCon) throws DatabaseException, SQLException;
 
     /**
@@ -281,18 +232,22 @@ public interface DAOUtils {
      *        the description
      * @param input_queue_directory_path
      *        the input_queue_directory_path
+     * @param state
+     *        the state
      * @param closeCon
      *        the close con
      * @return true, if successful
      * @throws DatabaseException
      *         the database exception
      * @throws SQLException
+     *         the sQL exception
      */
     boolean updateDigitalObject(String uuid,
                                 String model,
                                 String name,
                                 String description,
                                 String input_queue_directory_path,
+                                boolean state,
                                 boolean closeCon) throws DatabaseException, SQLException;
 
     /**
@@ -308,18 +263,22 @@ public interface DAOUtils {
      *        the description
      * @param input_queue_directory_path
      *        the input_queue_directory_path
+     * @param state
+     *        the state
      * @param closeCon
      *        the close con
      * @return true, if successful
      * @throws DatabaseException
      *         the database exception
      * @throws SQLException
+     *         the sQL exception
      */
     boolean insertDigitalObject(String uuid,
                                 String model,
                                 String name,
                                 String description,
                                 String input_queue_directory_path,
+                                boolean state,
                                 boolean closeCon) throws DatabaseException, SQLException;
 
     /**
@@ -400,6 +359,7 @@ public interface DAOUtils {
      * @throws DatabaseException
      *         the database exception
      * @throws SQLException
+     *         the sQL exception
      */
     boolean checkInputQueue(String directory_path, String name, boolean closeCon) throws DatabaseException,
             SQLException;
@@ -417,6 +377,7 @@ public interface DAOUtils {
      * @throws DatabaseException
      *         the database exception
      * @throws SQLException
+     *         the sQL exception
      */
     boolean updateInputQueue(String directory_path, String name, boolean closeCon) throws DatabaseException,
             SQLException;
@@ -434,6 +395,7 @@ public interface DAOUtils {
      * @throws DatabaseException
      *         the database exception
      * @throws SQLException
+     *         the sQL exception
      */
     boolean insertInputQueue(String directory_path, String name, boolean closeCon) throws DatabaseException,
             SQLException;
@@ -634,5 +596,40 @@ public interface DAOUtils {
                                  String prop_part_number_or_alto,
                                  String prop_aditional_info_or_ocr,
                                  boolean prop_exist) throws DatabaseException;
+
+    /**
+     * Gets the user id.
+     * 
+     * @param closeCon
+     *        the close con
+     * @return the user id
+     * @throws DatabaseException
+     *         the database exception
+     * @throws SQLException
+     *         the sQL exception
+     */
+    Long getUserId(boolean closeCon) throws DatabaseException, SQLException;
+
+    /**
+     * Gets the name.
+     * 
+     * @param key
+     *        the key
+     * @return the name
+     * @throws DatabaseException
+     *         the database exception
+     */
+    String getName(Long key) throws DatabaseException;
+
+    /**
+     * Checks for user right.
+     * 
+     * @param right
+     *        the right
+     * @return true, if successful
+     * @throws DatabaseException
+     *         the database exception
+     */
+    boolean hasUserRight(EDITOR_RIGHTS right) throws DatabaseException;
 
 }

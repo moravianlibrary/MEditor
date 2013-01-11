@@ -24,9 +24,9 @@
 
 package cz.mzk.editor.client.view.window;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window.Location;
+import com.google.web.bindery.event.shared.EventBus;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
@@ -38,8 +38,8 @@ import com.smartgwt.client.widgets.layout.VLayout;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.HtmlCode;
 import cz.mzk.editor.client.view.other.EditorTabSet;
-import cz.mzk.editor.client.view.other.HtmlCode;
 
 import static cz.mzk.editor.client.util.Constants.DATASTREAM_ID.BIBLIO_MODS;
 import static cz.mzk.editor.client.util.Constants.DATASTREAM_ID.DC;
