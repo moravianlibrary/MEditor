@@ -56,6 +56,7 @@ public class NewDigitalObject
     private String aditionalInfoOrOcr;
     private String base;
     private String signature;
+    private String thumbnail;
 
     @SuppressWarnings("unused")
     private NewDigitalObject() {
@@ -220,6 +221,21 @@ public class NewDigitalObject
      */
     public void setType(String type) {
         this.type = type;
+    }
+
+
+    /**
+     * @return the type
+     */
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    /**
+     * @return the type
+     */
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
     /**

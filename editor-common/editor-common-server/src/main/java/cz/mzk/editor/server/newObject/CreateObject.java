@@ -344,10 +344,7 @@ public class CreateObject {
         String imageUrl = null;
         String newFilePath = null;
 
-        if (isTrack) {
-            //newFilePath = addSlash(config.getSoundRecordingServ)
-            //builder.setUuid(node.getUuid());
-        }
+
 
         if (isPage) {
             String url = config.getImageServerUrl();
@@ -381,6 +378,34 @@ public class CreateObject {
                 }
             }
             builder.setImageUrl(imageUrl);
+        } else if (isTrack) {
+            String url = config.getRecordingServerUrl();
+            url = addSlash(url);
+            if (!url.startsWith("http://")) {
+                if (url.startsWith("https://")) {
+                    url = url.substring(8);
+                }
+                url = "http://" + url;
+            }
+            String soundUrl;
+            if (!isSysno(sysno)) {
+                soundUrl =
+                        url + "meditor" + getPathFromNonSysno(sysno)
+                                + (node.getUuid());
+            } else {
+                String basePath = "";
+                if (base != null && !"".equals(base)) {
+                    basePath = base.toLowerCase() + "/";
+                }
+                soundUrl =  url + basePath + getSysnoPath(sysno) + (node.getUuid());
+
+                newFilePath =
+                            addSlash(config.getRecordingServerKnown()) + basePath + getSysnoPath(sysno)
+                                    + node.getUuid();
+
+            }
+            builder.setImageUrl(soundUrl);
+
         }
 
         builder.createDocument();
@@ -434,8 +459,31 @@ public class CreateObject {
         }
 
         if (isTrack && success) {
-            //TODO-MR
-            node.getPath();
+            boolean copySuccessWav;
+            boolean copySuccessMp3;
+            boolean copySuccessOgg;
+            String soundPath;
+            try {
+                soundPath = imageResolverDAO.getNewImageFilePath(node.getPath());
+                soundPath = soundPath.substring(0, soundPath.length()-4);
+                copySuccessWav = IOUtils.copyFile(soundPath + Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getExtension(),
+                        newFilePath + Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getExtension());
+                copySuccessMp3 = IOUtils.copyFile(soundPath + Constants.AUDIO_MIMETYPES.MP3_MIMETYPE.getExtension(),
+                        newFilePath + Constants.AUDIO_MIMETYPES.MP3_MIMETYPE.getExtension());
+                copySuccessOgg = IOUtils.copyFile(soundPath + Constants.AUDIO_MIMETYPES.OGG_MIMETYPE.getExtension(),
+                        newFilePath + Constants.AUDIO_MIMETYPES.OGG_MIMETYPE.getExtension());
+
+            } catch (DatabaseException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+                throw new CreateObjectException(e.getMessage(), e);
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+                throw new CreateObjectException(e.getMessage(), e);
+            }
+
+
         }
 
         if (!success) {

@@ -175,8 +175,11 @@ public class ConvertToJPEG2000Handler
                 .append("convert.").append("sh")
                 .append(" ");
         sb.append(path).append(" ");
-        String command = new StringBuffer(sb).append(jpeg2000fspathWithoutExtension).append(".ogg").append(" ").append("ogg").toString();
-        //String execMp3 = new StringBuffer(sb).append(pathWithoutExtension).append(".mp3").append(" ").append("mp3").toString();
+        //String command = new StringBuffer(sb).append(jpeg2000fspathWithoutExtension).append(".ogg").append(" ").append("ogg").toString();
+        String command = new StringBuffer(sb).append(jpeg2000fspathWithoutExtension).toString();
+
+        //String commandMp3 = new StringBuffer(sb).append(pathWithoutExtension).append(".mp3").append(" ").append("mp3").toString();
+
         Process p;
         try {
             if (LOGGER.isDebugEnabled()) {

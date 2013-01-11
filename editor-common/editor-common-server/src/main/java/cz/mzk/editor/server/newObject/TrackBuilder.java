@@ -36,56 +36,59 @@ public class TrackBuilder extends FoxmlBuilder {
         Element modsCollection = FoxmlUtils.createModsCollectionEl();
         Namespace modsNs = Namespaces.mods;
         Element mods = modsCollection.addElement(new QName("mods", modsNs));
-        mods.addAttribute("version", "3.3");
-        mods.addAttribute("ID", "MODS_VOLUME_0001");
+        mods.addAttribute("version", "3.4");
+        mods.addAttribute("ID", getAditionalInfo());
         Element idUrn = mods.addElement(new QName("identifier", modsNs));
-        idUrn.addAttribute("type", "urn");
+        idUrn.addAttribute("type", "uuid");
         idUrn.addText(getUuid());
+
         Element titleInfo = mods.addElement(new QName("titleInfo", modsNs));
-        Element title = titleInfo.addElement(new QName("title", modsNs));
-        title.addText(getLabel());
+        addRootTitle(titleInfo.addElement(new QName("title", modsNs)));
 
         if (isNotNullOrEmpty(getPartNumber())) {
             Element partNumber = titleInfo.addElement(new QName("partNumber", modsNs));
             partNumber.addText(getPartNumber());
         }
-
-        Element typeOfResource = mods.addElement(new QName("typeOfResource", modsNs));
-        typeOfResource.addText("sound recording");
-
-        Element genre = typeOfResource.addElement(new QName("genre", modsNs));
-        genre.addAttribute("type", "track");
+        if (isNotNullOrEmpty(getName())) {
+            Element partName = titleInfo.addElement(new QName("partName", modsNs));
+            partName.addText(getName());
+        }
 
         addRootLanguage(mods);
 
-        Element physicalDescription = addRootPhysicalDescriptionForm(mods);
+        if (isNotNullOrEmpty(getTypeOfResource())) {
+            Element typeOfResourceEl = mods.addElement(new QName("typeOfResource", modsNs));
+            typeOfResourceEl.addText(getTypeOfResource());
+        }
 
-
-
-
+        Element genre = mods.addElement(new QName("genre", modsNs));
+        genre.addAttribute("type", "model");
+        genre.addText("track");
+        addIdentifierUuid(mods, getUuid());
+        addRootRecordInfo(mods);
 
 
         appendDatastream(Constants.DATASTREAM_CONTROLGROUP.X, Constants.DATASTREAM_ID.BIBLIO_MODS, modsCollection, null, null);
     }
 
-    @Override
-    protected void decorateDCStream() {
-        Element rootElement = DocumentHelper.createElement(new QName("dc", Namespaces.oai_dc));
-        rootElement.add(Namespaces.dc);
-        rootElement.add(Namespaces.xsi);
-        Element title = rootElement.addElement(new QName("title", Namespaces.dc));
-        title.addText(getLabel());
-        Element identifier = rootElement.addElement(new QName("identifier", Namespaces.dc));
-        identifier.setText(getPid());
-        Element type = rootElement.addElement(new QName("type", Namespaces.dc));
-        type.addText("model:" + model.getValue());
-        Element rights = rootElement.addElement(new QName("rights", Namespaces.dc));
-        rights.addText("policy:" + getPolicy().toString().toLowerCase());
-        appendDatastream(Constants.DATASTREAM_CONTROLGROUP.X,
-                Constants.DATASTREAM_ID.DC,
-                getDcXmlContent().getRootElement(),
-                null,
-                null);
+    @SuppressWarnings("unchecked")
+    private void updateDcDoc(Document dcDoc,
+                             String pid,
+                             String signature,
+                             String sysno,
+                             DigitalObjectModel model) {
+        Element dcRootEl = dcDoc.getRootElement();
+        Attribute schemaLoc = dcRootEl.attribute("schemaLocation");
+        dcRootEl.remove(schemaLoc);
+        Namespace xsi = DocumentHelper.createNamespace("xsi2", FedoraNamespaces.SCHEMA_NAMESPACE_URI);
+        dcRootEl.add(xsi);
+        dcRootEl.addAttribute(new QName("schemaLocation", xsi),
+                "http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd");
+
+        Element typeEl = dcRootEl.addElement("dc:type");
+        typeEl.addText("model:" + model.getValue());
+        Element rightsEl = dcRootEl.addElement("dc:rights");
+        rightsEl.addText("policy:" + getPolicy().toString().toLowerCase());
     }
 
     @Override

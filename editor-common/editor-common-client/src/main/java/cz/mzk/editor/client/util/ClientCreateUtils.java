@@ -40,6 +40,7 @@ import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.regexp.shared.SplitResult;
 import com.google.gwt.user.client.DOM;
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
 import com.smartgwt.client.widgets.tree.Tree;
 import com.smartgwt.client.widgets.tree.TreeNode;
@@ -245,6 +246,28 @@ public class ClientCreateUtils {
         } catch (RuntimeException ex) {
             throw new CreateObjectException("unknown type");
         }
+
+        //sound_unit have a child with picture, but I want it put to datastream
+        if (DigitalObjectModel.SOUND_UNIT.equals(model)) {
+            for (TreeNode treeNode:tree.getChildren(node)) {
+                String nodeString = treeNode.getAttributeAsString(Constants.ATTR_MODEL_ID);
+                if (nodeString == null || "".equals(nodeString)) {
+                    throw new CreateObjectException("unknown type");
+                }
+                DigitalObjectModel nodeModel = null;
+                try {
+                    nodeModel = DigitalObjectModel.parseString(nodeString);
+                } catch (RuntimeException ex) {
+                    throw new CreateObjectException("unknown type");
+                }
+                if (DigitalObjectModel.PAGE.equals(nodeModel)) {
+
+                    tree.getParent(treeNode).setAttribute(Constants.ATTR_THUMBNAIL, "test");
+                    tree.remove(treeNode);
+                }
+            }
+        }
+
         String imgUuid = node.getAttribute(Constants.ATTR_PICTURE_OR_UUID);
 
         if (!processedPages.containsKey(imgUuid)) {
@@ -283,6 +306,11 @@ public class ClientCreateUtils {
             String noteOrIntSubtitle = node.getAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE);
             if (noteOrIntSubtitle != null && !"".equals(noteOrIntSubtitle)) {
                 newObj.setNoteOrIntSubtitle(noteOrIntSubtitle);
+            }
+
+            String thumbnail = node.getAttribute(Constants.ATTR_THUMBNAIL);
+            if (thumbnail != null && !"".equals(noteOrIntSubtitle)) {
+                newObj.setThumbnail(thumbnail);
             }
 
             String type = node.getAttribute(Constants.ATTR_TYPE);

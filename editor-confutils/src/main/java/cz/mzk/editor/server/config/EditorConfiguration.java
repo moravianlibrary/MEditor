@@ -64,14 +64,19 @@ public abstract class EditorConfiguration {
         /** The Constant IMAGE_SERVER_UNKNOWN. */
         public static final String IMAGE_SERVER_UNKNOWN = "imageServer.unknown";
 
+        /** The Constant IMAGE_SERVER_URL. */
+        public static final String RECORDING_SERVER_URL = "recordingServer.url";
+
+        /** The Constant IMAGE_SERVER_KNOWN. */
+        public static final String RECORDING_SERVER_KNOWN = "recordingServer.known";
+
+        /** The Constant IMAGE_SERVER_UNKNOWN. */
+        public static final String RECORDING_SERVER_UNKNOWN = "recordingServer.unknown";
+
         /** The Constant DJATOKA_HOME. */
         public static final String DJATOKA_HOME = "djatoka.home";
 
         public static final String EDITOR_HOME = "editor.home";
-
-        public static final String SOUND_RECORDING_SERVER_URL = "soundRecordingServer.url";
-
-        public static final String SOUND_RECORDING_HOME = "soundRecordingServer.path";
 
         /** The Constant IMAGE_EXTENSIONS. */
         public static final String IMAGE_EXTENSIONS = "imageExtension";
@@ -356,6 +361,20 @@ public abstract class EditorConfiguration {
         return getConfiguration().getString(ServerConstants.IMAGE_SERVER_UNKNOWN);
     }
 
+    public String getRecordingServerKnown() {
+        return getConfiguration().getString(ServerConstants.RECORDING_SERVER_KNOWN);
+    }
+
+    public String getRecordingServerUnknown() {
+        return getConfiguration().getString(ServerConstants.RECORDING_SERVER_UNKNOWN);
+    }
+
+    public String getRecordingServerUrl() {
+        return getConfiguration().getString(ServerConstants.RECORDING_SERVER_URL);
+    }
+
+
+
     /**
      * Gets the scan Djatoka home path.
      * 
@@ -365,9 +384,6 @@ public abstract class EditorConfiguration {
         return getConfiguration().getString(ServerConstants.DJATOKA_HOME);
     }
 
-    public String getSoundRecordingServerUrl() {
-        return getConfiguration().getString(ServerConstants.SOUND_RECORDING_SERVER_URL);
-    }
 
     /**
      * Gets the editor home path.

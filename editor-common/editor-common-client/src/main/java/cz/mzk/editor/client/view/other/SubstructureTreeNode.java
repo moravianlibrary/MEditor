@@ -67,6 +67,11 @@ public class SubstructureTreeNode
         setAttribute(Constants.ATTR_CREATE, !exist);
 
         if (modelId != null && !"".equals(modelId))
+
+            if (DigitalObjectModel.parseString(modelId).equals(DigitalObjectModel.TRACK)) {
+                setIcon("icons/16/sound_recording.png");
+            }
+
             setIsFolder(DigitalObjectModel.parseString(modelId) != DigitalObjectModel.PAGE
                     && DigitalObjectModel.parseString(modelId) != DigitalObjectModel.TRACK);
     }

@@ -79,6 +79,10 @@ public abstract class NewDigitalObjectItemManager
 
     protected abstract TextItem getXOfLevelNamesItem();
 
+    protected abstract TextItem getRelatedItemPartNumber();
+
+    protected abstract TextItem getRelatedItemPartName();
+
     protected abstract DigitalObjectModel getCurrentModel();
 
     public String getNote() {
@@ -129,6 +133,21 @@ public abstract class NewDigitalObjectItemManager
     public String getPartName() {
         return getPartNameItem().getValueAsString();
     }
+
+    /**
+     * @return the partName
+     */
+    public String getRelatedPartName() {
+        return getRelatedItemPartName().getValueAsString();
+    }
+
+    /**
+     * @return the partNumber
+     */
+    public String getRelatedPartNumber() {
+        return getRelatedItemPartNumber().getValueAsString();
+    }
+
 
     /**
      * @return the type
@@ -201,8 +220,7 @@ public abstract class NewDigitalObjectItemManager
         DigitalObjectModel model = getCurrentModel();
 
         // TODO-MR: recording, potrebuju nejakou kontrolu?
-        if (model == DigitalObjectModel.TRACK || model == DigitalObjectModel.IMAGE_UNIT
-                || model == DigitalObjectModel.SOUND_UNIT) {
+        if (model == DigitalObjectModel.TRACK || model == DigitalObjectModel.SOUND_UNIT) {
             return null;
         }
 

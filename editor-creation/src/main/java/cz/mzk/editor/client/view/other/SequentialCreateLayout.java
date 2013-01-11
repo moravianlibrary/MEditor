@@ -27,9 +27,18 @@ package cz.mzk.editor.client.view.other;
 import java.util.LinkedHashMap;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.IButton;
+import com.smartgwt.client.widgets.Label;
 import com.smartgwt.client.widgets.events.ClickEvent;
+import com.smartgwt.client.widgets.events.DropEvent;
+import com.smartgwt.client.widgets.events.DropHandler;
+import com.smartgwt.client.widgets.events.DropOutEvent;
+import com.smartgwt.client.widgets.events.DropOutHandler;
+import com.smartgwt.client.widgets.events.DropOverEvent;
+import com.smartgwt.client.widgets.events.DropOverHandler;
 import com.smartgwt.client.widgets.form.DynamicForm;
 import com.smartgwt.client.widgets.form.fields.ButtonItem;
 import com.smartgwt.client.widgets.form.fields.CheckboxItem;
@@ -92,6 +101,10 @@ public class SequentialCreateLayout
 
     private CreateDynamicForm relatedItemPartNumberForm;
 
+    private TextItem relatedItemPartName;
+
+    private CreateDynamicForm relatedItemPartNameForm;
+
     private TextItem xOfSequence;
 
     private CreateDynamicForm xOfSequenceForm;
@@ -143,17 +156,18 @@ public class SequentialCreateLayout
     }
 
     public VLayout getSequentialCreateLayout() {
-        //        ATTR_PICTURE_OR_UUID        uuid      uuid        uuid        picture        uuid                 uuid
-        //        ATTR_MODEL_ID               modelId   modelid     modelid     modelid     modelid                 modelid
+        //        ATTR_PICTURE_OR_UUID        uuid      uuid        uuid        picture        uuid                 uuid                   uuid
+        //        ATTR_MODEL_ID               modelId   modelid     modelid     modelid     modelid                 modelid                modelid
 
-        //                                    vol       item        int p       page        int p       mon un      sound un
+        //                                    vol       item        int p       page        int p       mon un      sound unit               track
 
         //        ATTR_NAME                             part name   title       name        title       part name   title
-        //        ATTR_TYPE                             genre       genre       spec type   genre    
+        //        ATTR_TYPE                             genre       genre       spec type   genre
         //        ATTR_DATE_OR_INT_PART_NAME  date      date        part name               part name   date        part name
         //        ATTR_NOTE_OR_INT_SUBTITLE   note      note        subtitle                subtitle    note        related part num
         //        ATTR_PART_NUMBER_OR_ALTO    part num  part num    part num    alto        part num    part num    part num
-        //        ATTR_ADITIONAL_INFO_OR_OCR            item/suppl  art/pic     ocr         pict/chapt  suppl
+        //        ATTR_ADITIONAL_INFO_OR_OCR            item/suppl  art/pic     ocr         pict/chapt  suppl       related part name
+        //        ATTR_THUMBNAIL                                                                                    picture uuid
 
         nameOrTitle = new TextItem("name", lang.name());
         nameOrTitleForm = new CreateDynamicForm(nameOrTitle);
@@ -164,8 +178,6 @@ public class SequentialCreateLayout
         levelNames = new SelectItem("levelNames", lang.levelName());
         levelNamesForm = new CreateDynamicForm(levelNames);
 
-        relatedItemPartNumber = new TextItem("relatedItemPartName", "");
-        relatedItemPartNumberForm = new CreateDynamicForm(relatedItemPartNumber);
 
         xOfLevelNames = new TextItem("xOfLevelNames", "XXXX");
         xOfLevelNames.setWidth(50);
@@ -188,6 +200,12 @@ public class SequentialCreateLayout
 
         partName = new TextItem("partName", lang.intPartPartName());
         partNameForm = new CreateDynamicForm(partName);
+
+        relatedItemPartNumber = new TextItem("relatedPartNumber", "related number (t)");
+        relatedItemPartNumberForm = new CreateDynamicForm(relatedItemPartNumber);
+
+        relatedItemPartName = new TextItem("relatedPartName", "related name (t)");
+        relatedItemPartNameForm = new CreateDynamicForm(relatedItemPartName);
 
         type = new SelectItem("type", lang.dcType());
         type.setWidth(90);
@@ -294,8 +312,6 @@ public class SequentialCreateLayout
                 case PAGE:
                     setCreatePage();
                     break;
-
-                //TODO-MR: recording, co zde pridat?
                 case SOUND_UNIT:
                     setCreateSoundUnit();
                     break;
@@ -315,8 +331,8 @@ public class SequentialCreateLayout
 
     private void setCreateTrack() {
         nameOrTitle.setTitle(lang.dcTitle());
-        partNumber.setTitle(lang.partNumber());
-        otherLayout.addMember(partNameForm);
+        partNumber.setTitle(lang.trackNumber());
+        otherLayout.addMember(partNumberForm);
         otherLayout.addMember(nameOrTitleForm);
     }
 
@@ -356,17 +372,16 @@ public class SequentialCreateLayout
     }
 
     private void setCreateSoundUnit() {
-        nameOrTitle.setTitle(lang.title());
-        //subtitle.setTitle(lang.subtitle());
+        nameOrTitle.setTitle("Název strany desky");
+        partName.setTitle("Slovní označení desky");
+        partNumber.setTitle("Číslo strany desky");
+        relatedItemPartName.setTitle("Název desky");
+        relatedItemPartNumber.setTitle("Číslo desky");
         otherLayout.addMember(nameOrTitleForm);
-        //otherLayout.addMember(subtitleForm);
-        partName.setTitle(lang.intPartPartName());
         otherLayout.addMember(partNumberForm);
         otherLayout.addMember(partNameForm);
-
-
-
-
+        otherLayout.addMember(relatedItemPartNumberForm);
+        otherLayout.addMember(relatedItemPartNameForm);
     }
 
     /**
@@ -603,6 +618,22 @@ public class SequentialCreateLayout
     @Override
     protected TextItem getXOfLevelNamesItem() {
         return xOfLevelNames;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected TextItem getRelatedItemPartNumber() {
+        return relatedItemPartNumber;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected TextItem getRelatedItemPartName() {
+        return relatedItemPartName;
     }
 
     /**

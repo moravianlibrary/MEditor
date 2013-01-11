@@ -185,6 +185,8 @@ public class CreateObjectMenuView
         structureTreeGrid.setRecordEditProperty(Constants.ATTR_CREATE);
         structureTreeGrid.setCanSort(true);
 
+
+
         undoButton = new ImgButton();
         redoButton = new ImgButton();
         undoList = new ArrayList<Tree>();
@@ -328,8 +330,11 @@ public class CreateObjectMenuView
                                 movedModel = DigitalObjectModel.PAGE;
                             }
                         }
+
                         if ((possibleChildModels == null || !possibleChildModels.contains(movedModel))
-                                && (targetModel != DigitalObjectModel.PAGE || targetModel != DigitalObjectModel.PAGE)) {
+                                && (targetModel != DigitalObjectModel.PAGE)
+                                && !((targetModel == DigitalObjectModel.SOUND_UNIT) && (movedModel == DigitalObjectModel.PAGE)) ) {
+
 
                             if (targetModel == movedModel) {
 
@@ -369,7 +374,9 @@ public class CreateObjectMenuView
                     final DigitalObjectModel parentModel =
                             DigitalObjectModel.parseString(parentNode.getAttribute(Constants.ATTR_MODEL_ID));
 
-                    validateRecordingPageDrop(movedModel, parentNode, structureTreeGrid, selection);
+                    if (!validateRecordingPageDrop(movedModel, parentNode, structureTreeGrid, selection)) {
+                        return;
+                    };
 
                     if ((movedModel == DigitalObjectModel.PAGE
                             && targetModel == DigitalObjectModel.INTERNALPART || parentModel == DigitalObjectModel.INTERNALPART)) {
@@ -798,22 +805,20 @@ public class CreateObjectMenuView
         final DigitalObjectModel targetModel =
                 DigitalObjectModel.parseString(targetNode.getAttribute(Constants.ATTR_MODEL_ID));
 
+        if (movedModel == DigitalObjectModel.PAGE && targetModel == DigitalObjectModel.SOUND_UNIT) {
+            TreeNode[] allNodes = structureTreeGrid.getTree().getChildren(targetNode);
 
-        //exclusivity relationship, page is on IMAGE_UNIT xor RECORDING. Not both!
-        if (movedModel == DigitalObjectModel.PAGE && targetModel == DigitalObjectModel.SOUNDRECORDING) {
-            //TreeNode parentNode = structureTreeGrid.getTree().getParent(targetNode);
-            SC.say(getPagesWithRedundantRelationship(targetNode, selection, true).toString());
+            for (int i = 0; i < allNodes.length; i++) {
+                String childItem = allNodes[i].getAttribute(Constants.ATTR_MODEL_ID);
+                if ("page".equals(childItem)) {
+                    SC.say("TODO: Side muze mit pouze jeden nahled");
+                    return false;
+                }
+
+            }
         }
-        if (movedModel == DigitalObjectModel.PAGE && targetModel == DigitalObjectModel.IMAGE_UNIT) {
-            TreeNode parentNode = structureTreeGrid.getTree().getParent(targetNode);
-            SC.say(getPagesWithRedundantRelationship(parentNode, selection, false).toString());
-        }
 
-
-//        if ((movedModel == DigitalObjectModel.PAGE
-//                && targetModel == DigitalObjectModel.INTERNALPART || parentModel == DigitalObjectModel.INTERNALPART)) {
-
-            return true;
+        return true;
     }
 
     private void undo() {

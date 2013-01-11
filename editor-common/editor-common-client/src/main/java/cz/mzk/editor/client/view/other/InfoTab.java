@@ -86,9 +86,6 @@ public abstract class InfoTab
         form.setFields(labelItem);
         form.setWidth(150);
         form.setExtraSpace(5);
-        HTMLFlow img =
-                new HTMLFlow("<img class='infoTabImg' src='./images/full/" + (isPage ? "" : "uuid:")
-                        + firstPageURL + "' />");
 
         quickEdit.setTitle(lang.quickEdit());
         quickEdit.setExtraSpace(15);
@@ -100,9 +97,15 @@ public abstract class InfoTab
             lockLayout.addMember(lockInfoButton);
         }
         lockLayout.setAutoHeight();
+        if (!"track".equals(model.getValue())) {
+        HTMLFlow img =
+                new HTMLFlow("<img class='infoTabImg' src='./images/full/" + (isPage ? "" : "uuid:")
+                        + firstPageURL + "' />");
 
         layout.setMembers(lockLayout, info, pid, tit, typ, form, quickEdit, prev, img);
-
+        } else {
+            layout.setMembers(lockLayout, info, pid, tit, typ, form, quickEdit);
+        }
         setPane(layout);
     }
 

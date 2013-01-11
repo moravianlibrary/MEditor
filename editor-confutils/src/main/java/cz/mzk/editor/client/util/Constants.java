@@ -415,6 +415,9 @@ public class Constants {
     /** The Constant ATTR_ADITIONAL_INFO_OR_OCR. */
     public static final String ATTR_ADITIONAL_INFO_OR_OCR = "aditionalInfoOrOcr";
 
+    /** The Constant ATTR_THUMBNAIL. used in soundunit */
+    public static final String ATTR_THUMBNAIL = "thubmbnail";
+
     /** The Constant ATTR_INGEST_INFO. */
     public static final String ATTR_INGEST_INFO = "ingestInfo";
 
@@ -502,6 +505,8 @@ public class Constants {
 
     /** The Constant JPEG_2000_EXTENSION. */
     public static final String JPEG_2000_EXTENSION = ".jp2";
+
+
 
     /** The Constant PDF_EXTENSION. */
     public static final String PDF_EXTENSION = ".pdf";

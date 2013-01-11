@@ -477,6 +477,9 @@ public class ModifyView
             labels.put(DigitalObjectModel.MONOGRAPHUNIT.getValue(), lang.monographunits());
             labels.put(DigitalObjectModel.PERIODICALITEM.getValue(), lang.periodicalitems());
             labels.put(DigitalObjectModel.PERIODICALVOLUME.getValue(), lang.periodicalvolumes());
+            labels.put(DigitalObjectModel.SOUNDRECORDING.getValue(), lang.soundrecording());
+            labels.put(DigitalObjectModel.SOUND_UNIT.getValue(), lang.soundUnit());
+            labels.put(DigitalObjectModel.TRACK.getValue(), lang.track());
             int i = 0;
             for (DigitalObjectModel md : models) {
                 Tab containerTab = null;
@@ -511,6 +514,9 @@ public class ModifyView
         labelsSingular.put(DigitalObjectModel.MAP.getValue(), lang.map());
         labelsSingular.put(DigitalObjectModel.SUPPLEMENT.getValue(), lang.supplement());
         labelsSingular.put(DigitalObjectModel.GRAPHIC.getValue(), lang.graphic());
+        labelsSingular.put(DigitalObjectModel.SOUNDRECORDING.getValue(), lang.soundrecording());
+        labelsSingular.put(DigitalObjectModel.SOUND_UNIT.getValue(), lang.soundUnit());
+        labelsSingular.put(DigitalObjectModel.TRACK.getValue(), lang.track());
         String previewPID = DigitalObjectModel.PAGE.equals(model) ? uuid : detail.getFirstPageURL();
         topTabSet.setModsCollection(mods);
         topTabSet.setDc(dc);

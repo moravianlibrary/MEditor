@@ -129,6 +129,7 @@ import cz.mzk.editor.client.view.window.CreateWindow;
 import cz.mzk.editor.client.view.window.ModalWindow;
 import cz.mzk.editor.client.view.window.RenumberWindow;
 import cz.mzk.editor.client.view.window.RenumberWindow.ToAbcWindow;
+import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.event.ChangeStructureTreeItemEvent;
 import cz.mzk.editor.shared.rpc.DublinCore;
 
@@ -268,8 +269,9 @@ public class CreateStructureView
         this.clipboard = data;
     }
 
-    /*
+    /**
      * (non-Javadoc)
+     *
      * @see cz.mzk.editor.client.presenter.CreatePresenter.MyView#
      * getPopupPanel()
      */
@@ -356,14 +358,21 @@ public class CreateStructureView
                 public void onDragMove(DragMoveEvent event) {
                     if (tileGrid.getSelectedRecord() != null) {
                         tileGrid.setDragAppearance(DragAppearance.TRACKER);
-                        String pageIcon =
-                                Canvas.imgHTML(getImageURLPrefix()
-                                                       + tileGrid
-                                                               .getSelectedRecord()
-                                                               .getAttributeAsString(Constants.ATTR_PICTURE_OR_UUID),
-                                               25,
-                                               35);
-                        dragHandler.setMoveTracker(pageIcon);
+
+                        if ("track".equals(tileGrid.getSelectedRecord().getAttribute(Constants.ATTR_MODEL_ID))) {
+                            String trackIcon = Canvas.imgHTML("icons/16/sound_recording.png", 16, 16);
+                            dragHandler.setMoveTracker(trackIcon);
+                        } else {
+                            String pageIcon =
+                                    Canvas.imgHTML(getImageURLPrefix()
+                                            + tileGrid
+                                            .getSelectedRecord()
+                                            .getAttributeAsString(Constants.ATTR_PICTURE_OR_UUID),
+                                            25,
+                                            35);
+                            dragHandler.setMoveTracker(pageIcon);
+                        }
+
                     } else {
                         tileGrid.setDragAppearance(DragAppearance.NONE);
                     }
@@ -435,7 +444,7 @@ public class CreateStructureView
                     if ("track".equals(tileGrid.getSelection()[0].getAttribute(Constants.ATTR_MODEL_ID))) {
                         String uuid = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_PICTURE_OR_UUID);
                         String modelid = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_MODEL_ID);
-                        Window audioPlayer = new AudioPlayerWindow(eventBus, uuid, modelid);
+                        Window audioPlayer = new AudioPlayerWindow(eventBus, uuid, modelid, hostname);
                         audioPlayer.show();
 
                     } else {
@@ -541,41 +550,49 @@ public class CreateStructureView
                 @Override
                 public void onRecordDoubleClick(final RecordDoubleClickEvent event) {
                     if (event.getRecord() != null) {
-                        try {
-                            final ModalWindow mw = new ModalWindow(layout);
-                            mw.setLoadingIcon("loadingAnimation.gif");
-                            mw.show(true);
-                            StringBuffer sb = new StringBuffer();
-                            sb.append(Constants.SERVLET_IMAGES_PREFIX).append(Constants.SERVLET_SCANS_PREFIX)
-                                    .append('/')
-                                    .append(event.getRecord().getAttribute(Constants.ATTR_PICTURE_OR_UUID))
-                                    .append("?" + Constants.URL_PARAM_FULL + "=yes");
-                            final Image full = new Image(sb.toString());
-                            full.setHeight(Constants.IMAGE_FULL_HEIGHT + "px");
-                            full.addLoadHandler(new LoadHandler() {
+                        if ("track".equals(tileGrid.getSelection()[0].getAttribute(Constants.ATTR_MODEL_ID))) {
+                            String uuid = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_PICTURE_OR_UUID);
+                            String modelid = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_MODEL_ID);
+                            Window audioPlayer = new AudioPlayerWindow(eventBus, uuid, modelid, hostname);
+                            audioPlayer.show();
 
-                                @Override
-                                public void onLoad(LoadEvent event) {
-                                    mw.hide();
-                                    getPopupPanel().setVisible(true);
-                                    getPopupPanel().center();
-                                }
-                            });
-                            getPopupPanel().setWidget(full);
-                            getPopupPanel().addCloseHandler(new CloseHandler<PopupPanel>() {
+                        } else {
+                            try {
+                                final ModalWindow mw = new ModalWindow(layout);
+                                mw.setLoadingIcon("loadingAnimation.gif");
+                                mw.show(true);
+                                StringBuffer sb = new StringBuffer();
+                                sb.append(Constants.SERVLET_IMAGES_PREFIX).append(Constants.SERVLET_SCANS_PREFIX)
+                                        .append('/')
+                                        .append(event.getRecord().getAttribute(Constants.ATTR_PICTURE_OR_UUID))
+                                        .append("?" + Constants.URL_PARAM_FULL + "=yes");
+                                final Image full = new Image(sb.toString());
+                                full.setHeight(Constants.IMAGE_FULL_HEIGHT + "px");
+                                full.addLoadHandler(new LoadHandler() {
 
-                                @Override
-                                public void onClose(CloseEvent<PopupPanel> event) {
-                                    mw.hide();
-                                    getPopupPanel().setWidget(null);
-                                }
-                            });
-                            getPopupPanel().center();
-                            getPopupPanel().setVisible(false);
+                                    @Override
+                                    public void onLoad(LoadEvent event) {
+                                        mw.hide();
+                                        getPopupPanel().setVisible(true);
+                                        getPopupPanel().center();
+                                    }
+                                });
+                                getPopupPanel().setWidget(full);
+                                getPopupPanel().addCloseHandler(new CloseHandler<PopupPanel>() {
 
-                        } catch (Throwable t) {
+                                    @Override
+                                    public void onClose(CloseEvent<PopupPanel> event) {
+                                        mw.hide();
+                                        getPopupPanel().setWidget(null);
+                                    }
+                                });
+                                getPopupPanel().center();
+                                getPopupPanel().setVisible(false);
 
-                            // TODO: handle
+                            } catch (Throwable t) {
+
+                                // TODO: handle
+                            }
                         }
                     }
                 }
@@ -638,7 +655,7 @@ public class CreateStructureView
                 }
             });
 
-            pictureField.setDetailFormatter(new DetailFormatter() {  // TODO audio image
+            pictureField.setDetailFormatter(new DetailFormatter() {
                 public String format(Object value, Record record, DetailViewerField field) {
                     String modelId = record.getAttribute(Constants.ATTR_MODEL_ID);
 
@@ -657,13 +674,17 @@ public class CreateStructureView
 
                 @Override
                 public String format(Object value, Record record, DetailViewerField field) {
+                    String modelId = record.getAttribute(Constants.ATTR_MODEL_ID);
+
                     StringBuffer sb = new StringBuffer();
-                    sb.append(lang.scan()).append(": ").append(value);
+                    sb.append("track".equals(modelId)? lang.track() : lang.scan()).append(": ")
+                            .append(value);
                     String pageType = record.getAttribute(Constants.ATTR_TYPE);
                     if (!Constants.PAGE_TYPES.NP.toString().equals(pageType)) {
                         sb.append("<br/>").append("<div class='pageType'>").append(pageType).append("</div>");
                     }
                     return sb.toString();
+
                 }
             });
             nameField.setCellStyleHandler(new CellStyleHandler() {
@@ -834,6 +855,9 @@ public class CreateStructureView
                 }
             }
         });
+
+
+
         toolStrip.addButton(zoomButton);
 
         ToolStripButton zoomIn = new ToolStripButton();

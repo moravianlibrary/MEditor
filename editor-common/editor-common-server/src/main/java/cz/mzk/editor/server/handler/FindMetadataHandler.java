@@ -106,7 +106,7 @@ public class FindMetadataHandler
     @Override
     public FindMetadataResult execute(final FindMetadataAction action, final ExecutionContext context)
             throws ActionException {
-        if (LOGGER.isDebugEnabled()) {
+            if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Processing action: FindMetadataAction: for id (" + action.getSearchType() + ") "
                     + action.getId());
         }

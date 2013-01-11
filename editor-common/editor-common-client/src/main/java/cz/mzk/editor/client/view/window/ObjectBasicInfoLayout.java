@@ -90,6 +90,10 @@ public abstract class ObjectBasicInfoLayout
 
         private TextItem partName;
 
+        private TextItem relatedItemPartNumber;
+
+        private TextItem relatedItemPartName;
+
         private TextItem xOfSequence;
 
         private TextItem xOfLevelNames;
@@ -164,6 +168,11 @@ public abstract class ObjectBasicInfoLayout
 
             partName = new TextItem("partName", lang.intPartPartName());
             partName.setWidth(coeficientOfLength * 23);
+
+            relatedItemPartNumber = new TextItem("relatedPartNumber", "related number (t)");
+            relatedItemPartNumber.setWidth(coeficientOfLength * 8);
+            relatedItemPartName = new TextItem("relatedPartName", "related name (t)");
+            relatedItemPartName.setWidth(coeficientOfLength * 23);
 
             type = new SelectItem("type", lang.dcType());
             type.setWidth(coeficientOfLength * 14);
@@ -261,16 +270,24 @@ public abstract class ObjectBasicInfoLayout
             nameOrTitle.setTitle(lang.dcTitle());
             nameOrTitle.setValue(record.getAttribute(Constants.ATTR_NAME));
             partNumber.setValue(record.getAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO));
-            otherLayout.addMember(new MyDynamicForm(nameOrTitle));
-            otherLayout.addMember(new MyDynamicForm(partNumber));
+            otherLayout.addMember(new MyDynamicForm(partNumber, nameOrTitle));
+            ObjectBasicInfoLayout.this.setWindowHeight(120);
         }
 
         private void setEditSoundUnit() {
-            nameOrTitle.setTitle(lang.dcTitle());
+            nameOrTitle.setTitle(lang.title());
             nameOrTitle.setValue(record.getAttribute(Constants.ATTR_NAME));
+            partNumber.setTitle("Číslo strany desky");
             partNumber.setValue(record.getAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO));
-            otherLayout.addMember(new MyDynamicForm(nameOrTitle));
-            //otherLayout.addMember(partNumber);
+            partName.setTitle("Označení strany desky");
+            partName.setValue(record.getAttribute(Constants.ATTR_DATE_OR_INT_PART_NAME));
+            relatedItemPartName.setTitle("Název desky");
+            relatedItemPartName.setValue(record.getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR));
+            relatedItemPartNumber.setTitle("Číslo desky");
+            relatedItemPartNumber.setValue(record.getAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE));
+            otherLayout.addMember(new MyDynamicForm(nameOrTitle, partNumber, partName,
+                    relatedItemPartNumber, relatedItemPartName));
+            ObjectBasicInfoLayout.this.setWindowHeight(260);
         }
 
         /**
@@ -515,6 +532,7 @@ public abstract class ObjectBasicInfoLayout
             noteItem.setDefaultValue(record.getAttributeAsString(Constants.ATTR_NOTE_OR_INT_SUBTITLE));
             otherLayout.addMember(new MyDynamicForm(partNumber, dateIssued, noteItem));
             ObjectBasicInfoLayout.this.setWindowHeight(210);
+
         }
 
         private void setDefaultXOfLevelNames(String levelName) {
@@ -530,6 +548,16 @@ public abstract class ObjectBasicInfoLayout
         @Override
         protected TextItem getXOfLevelNamesItem() {
             return xOfLevelNames;
+        }
+
+        @Override
+        protected TextItem getRelatedItemPartNumber() {
+            return relatedItemPartNumber;
+        }
+
+        @Override
+        protected TextItem getRelatedItemPartName() {
+            return relatedItemPartName;
         }
 
         @Override

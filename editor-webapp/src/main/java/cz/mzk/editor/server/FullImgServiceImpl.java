@@ -98,7 +98,7 @@ public class FullImgServiceImpl
                         + Constants.SERVLET_FULL_PREFIX.length() + 1);
         boolean notScale = ClientUtils.toBoolean(req.getParameter(Constants.URL_PARAM_NOT_SCALE));
         ServletOutputStream os = resp.getOutputStream();
-        if (uuid != null && !"".equals(uuid)) {
+        if (uuid != null && !"".equals(uuid) && !"uuid:null".equals(uuid)) {
 
             try {
                 String mimetype = fedoraAccess.getMimeTypeForStream(uuid, FedoraUtils.IMG_FULL_STREAM);

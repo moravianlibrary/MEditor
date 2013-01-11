@@ -378,10 +378,9 @@ public class DigitalObjectMenuPresenter
         getView().setRelatedDocuments(related);
         RecentlyModifiedRecord record = ClientCreateUtils.toRecord(item);
         if (getView().getRecentlyModifiedGrid().getDataAsRecordList().contains(record)) {
-            //            System.err.println(record);
             getView().getRecentlyModifiedGrid().getDataSource().updateData(record);
         } else {
-            getView().getRecentlyModifiedGrid().addData(record);
+            getView().getRecentlyModifiedGrid().addData(record); //TODO-MR REMOVE
         }
     }
 

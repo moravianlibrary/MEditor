@@ -839,7 +839,7 @@ public class CreateStructurePresenter
                         event.cancel();
                         return;
                     }
-                    for (ListGridRecord rec : selection) {  //TODO-MR:recording
+                    for (ListGridRecord rec : selection) {
                         if (!(DigitalObjectModel.PAGE.getValue()
                                 .equals(rec.getAttribute(Constants.ATTR_MODEL_ID)) || DigitalObjectModel.TRACK.getValue()
                                 .equals(rec.getAttribute(Constants.ATTR_MODEL_ID)))) {
@@ -1332,6 +1332,19 @@ public class CreateStructurePresenter
                 partNumOrAlto = leftPresenter.getSequentialCreateLayout().getPartNumber();
                 aditionalInfoOrOcr = leftPresenter.getSequentialCreateLayout().getLevelName();
                 break;
+
+            case SOUND_UNIT:
+                name = leftPresenter.getSequentialCreateLayout().getNameOrTitle();
+                dateOrIntPartName = leftPresenter.getSequentialCreateLayout().getPartName();
+                noteOrSubtitle = leftPresenter.getSequentialCreateLayout().getRelatedPartNumber();
+                partNumOrAlto = leftPresenter.getSequentialCreateLayout().getPartNumber();
+                aditionalInfoOrOcr = leftPresenter.getSequentialCreateLayout().getRelatedPartName();
+                break;
+            case TRACK:
+                partNumOrAlto = leftPresenter.getSequentialCreateLayout().getPartNumber();
+                name = leftPresenter.getSequentialCreateLayout().getNameOrTitle();
+                break;
+
 
             default:
                 break;

@@ -198,7 +198,6 @@ public class ScanFolderHandler
                     if (!audioMimeType.equals(Constants.AUDIO_MIMETYPES.UNKOWN_MIMETYPE)) {
                         item.setMimeType(audioMimeType.getMimeType());
                         sb = new StringBuffer();
-                        //TODO-MR: record should be have a special directory (no imagesDir)
                         StringBuffer sbA;
                         sb.append(configuration.getImagesPath()).append(newIdentifier)
                                 .append(Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getExtension());

@@ -68,8 +68,8 @@ public class LabelAndModelConverter {
         getModelFromLabel().put(lang.supplement(), DigitalObjectModel.SUPPLEMENT);
         getLabelFromModel().put(DigitalObjectModel.SOUNDRECORDING.getValue(), lang.soundrecording());
         getModelFromLabel().put(lang.soundrecording(), DigitalObjectModel.SOUNDRECORDING);
-        getLabelFromModel().put(DigitalObjectModel.IMAGE_UNIT.getValue(), lang.imageUnit());
-        getModelFromLabel().put(lang.imageUnit(), DigitalObjectModel.IMAGE_UNIT);
+        //getLabelFromModel().put(DigitalObjectModel.IMAGE_UNIT.getValue(), lang.imageUnit());
+        //getModelFromLabel().put(lang.imageUnit(), DigitalObjectModel.IMAGE_UNIT);
         getLabelFromModel().put(DigitalObjectModel.SOUND_UNIT.getValue(), lang.soundUnit());
         getModelFromLabel().put(lang.soundUnit(), DigitalObjectModel.SOUND_UNIT);
         getLabelFromModel().put(DigitalObjectModel.TRACK.getValue(), lang.track());

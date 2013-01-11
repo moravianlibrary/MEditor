@@ -49,11 +49,13 @@ import static cz.mzk.editor.shared.domain.DigitalObjectModel.PERIODICALVOLUME;
 import static cz.mzk.editor.shared.domain.DigitalObjectModel.ARCHIVE;
 import static cz.mzk.editor.shared.domain.DigitalObjectModel.SOUNDRECORDING;
 import static cz.mzk.editor.shared.domain.DigitalObjectModel.TRACK;
-import static cz.mzk.editor.shared.domain.DigitalObjectModel.IMAGE_UNIT;
 import static cz.mzk.editor.shared.domain.DigitalObjectModel.SOUND_UNIT;
+import static cz.mzk.editor.shared.domain.FedoraRelationship.containsTrack;
 import static cz.mzk.editor.shared.domain.FedoraRelationship.hasIntCompPart;
 import static cz.mzk.editor.shared.domain.FedoraRelationship.hasItem;
 import static cz.mzk.editor.shared.domain.FedoraRelationship.hasPage;
+import static cz.mzk.editor.shared.domain.FedoraRelationship.hasSoundUnit;
+import static cz.mzk.editor.shared.domain.FedoraRelationship.hasTrack;
 import static cz.mzk.editor.shared.domain.FedoraRelationship.hasUnit;
 import static cz.mzk.editor.shared.domain.FedoraRelationship.hasVolume;
 import static cz.mzk.editor.shared.domain.FedoraRelationship.isOnPage;
@@ -111,13 +113,11 @@ public class NamedGraphModel
         putRelationship(PERIODICALITEM, hasIntCompPart, INTERNALPART);
 
         /** The Sound recording */
-        putRelationship(SOUNDRECORDING, hasUnit, TRACK);
-        putRelationship(SOUNDRECORDING, hasUnit, PAGE);
-        putRelationship(SOUNDRECORDING, hasUnit, IMAGE_UNIT);
-        putRelationship(SOUNDRECORDING, hasUnit, SOUND_UNIT);
-        putRelationship(IMAGE_UNIT, hasUnit, PAGE);
-        putRelationship(SOUND_UNIT, hasUnit, TRACK);
-        putRelationship(SOUND_UNIT, isOnPage, PAGE);
+        putRelationship(SOUNDRECORDING, hasTrack, TRACK);
+        putRelationship(SOUNDRECORDING, hasPage, PAGE);
+        putRelationship(SOUNDRECORDING, hasSoundUnit, SOUND_UNIT);
+        //putRelationship(IMAGE_UNIT, hasUnit, PAGE);
+        putRelationship(SOUND_UNIT, containsTrack, TRACK);
     }
 
     private static void putRelationship(DigitalObjectModel source,
