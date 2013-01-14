@@ -120,7 +120,7 @@ public class UserDAOImpl
             + " (name, description) VALUES ((?),(?))";
 
     public static final String INSERT_RIGHT_IN_ROLE_STATEMENT = "INSERT INTO "
-            + Constants.TABLE_RIGHT_IN_ROLE + " (editor_right_name, role_name) VALUES ((?),(?))";
+            + Constants.TABLE_RIGHT_IN_ROLE + " (role_name, editor_right_name) VALUES ((?),(?))";
 
     public static final String DELETE_RIGHT_IN_ROLE_STATEMENT = "DELETE FROM "
             + Constants.TABLE_RIGHT_IN_ROLE + " WHERE role_name = (?)";
@@ -568,7 +568,7 @@ public class UserDAOImpl
                 EDITOR_RIGHTS right = EDITOR_RIGHTS.parseString(name);
                 if (right != null) {
                     String desc = rs.getString("description");
-                    if (!desc.equals(right.getDesc())) {
+                    if (desc == null || !desc.equals(right.getDesc())) {
                         toUpdate.add(right);
                     }
                     sysRights.remove(right);
@@ -593,6 +593,7 @@ public class UserDAOImpl
         return toRemove;
     }
 
+    @Override
     public List<String> getReferencesToRight(String rightName, boolean getRoles) throws DatabaseException {
         ArrayList<String> references = null;
         PreparedStatement selSt = null;
@@ -810,7 +811,7 @@ public class UserDAOImpl
                                                  userIdentity.getUserId(),
                                                  "An identity has been " + (add ? "added." : "removed."),
                                                  CRUD_ACTION_TYPES.UPDATE,
-                                                 true);
+                                                 false);
 
                 if (crudSucc) {
                     getConnection().commit();
@@ -1029,6 +1030,7 @@ public class UserDAOImpl
                         getConnection().prepareStatement(add ? INSERT_RIGHT_IN_ROLE_STATEMENT
                                 : DELETE_RIGHT_IN_ROLE_STATEMENT);
                 updateSt.setString(1, roleName);
+                if (add) updateSt.setString(2, right.toString());
 
                 if (updateSt.executeUpdate() > 0) {
                     LOGGER.debug("DB has been updated: The right" + (add ? " " + right.toString() : "s ")

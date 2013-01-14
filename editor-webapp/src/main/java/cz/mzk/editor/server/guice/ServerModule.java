@@ -38,6 +38,7 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import cz.mzk.editor.server.OAIPMHClient;
 import cz.mzk.editor.server.OAIPMHClientImpl;
+import cz.mzk.editor.server.RequestForAddingServiceImpl;
 import cz.mzk.editor.server.SessionListener;
 import cz.mzk.editor.server.URLS;
 import cz.mzk.editor.server.Z3950Client;
@@ -346,5 +347,6 @@ public class ServerModule
         requestStaticInjection(ShibbolethClient.class);
         requestStaticInjection(LDAPAuthenticationProvider.class);
         requestStaticInjection(LDAPAuthenticationFilter.class);
+        requestStaticInjection(RequestForAddingServiceImpl.class);
     }
 }

@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.inject.Inject;
 
@@ -748,7 +749,7 @@ public class ModifyView
         });
 
         // MENU
-        final Menu menu = getMenu(topTabSet, model, dc, mods);
+        final Menu menu = getMenu(topTabSet, dc, mods);
         IMenuButton menuButton = new IMenuButton("Menu", menu);
         menuButton.setWidth(60);
         menuButton.setHeight(16);
@@ -876,6 +877,33 @@ public class ModifyView
         }
         layout.redraw();
         getUiHandlers().onAddDigitalObject(uuid, closeButton);
+    }
+
+    private void sortTab() {
+        EditorTabSet selectedTabSet = null;
+        if (!isSecondFocused || topTabSet2 == null) {
+            selectedTabSet = topTabSet1;
+        } else {
+            selectedTabSet = topTabSet2;
+        }
+        Tab selectedTab = selectedTabSet.getSelectedTab();
+        String modelString = selectedTab.getAttribute(ID_MODEL);
+
+        if (modelString != null) {
+            DigitalObjectModel model = DigitalObjectModel.parseString(modelString);
+            TileGrid grid = selectedTabSet.getItemGrid().get(model);
+            Record[] data = grid.getData();
+            if (data != null && data.length > 1) {
+                TreeMap<String, Integer> toSort = new TreeMap<String, Integer>();
+                for (int i = 0; i < data.length; i++) {
+                    toSort.put(data[i].getAttribute(Constants.ATTR_NAME), i);
+                }
+                for (String name : toSort.keySet()) {
+                    Integer pos = toSort.get(name);
+                    //                    grid.setpo
+                }
+            }
+        }
     }
 
     private void addAllStreams(List<DigitalObjectDetail> itemList, String uuid) {
@@ -1249,10 +1277,7 @@ public class ModifyView
         openedObjectsTabsets.remove(u);
     }
 
-    private Menu getMenu(final EditorTabSet topTabSet,
-                         final DigitalObjectModel model,
-                         final DublinCore dc,
-                         final ModsCollectionClient mods) {
+    private Menu getMenu(final EditorTabSet topTabSet, final DublinCore dc, final ModsCollectionClient mods) {
         Menu menu = new Menu();
         menu.setShowShadow(true);
         menu.setShadowDepth(10);
