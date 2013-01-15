@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.inject.Inject;
 
@@ -52,11 +53,9 @@ import com.reveregroup.gwt.imagepreloader.ImageLoadHandler;
 import com.reveregroup.gwt.imagepreloader.ImagePreloader;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.data.RecordList;
-import com.smartgwt.client.data.SortSpecifier;
 import com.smartgwt.client.types.DragAppearance;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Side;
-import com.smartgwt.client.types.SortDirection;
 import com.smartgwt.client.types.TabBarControls;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
@@ -98,6 +97,7 @@ import com.smartgwt.client.widgets.viewer.DetailViewerField;
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.config.EditorClientConfiguration;
 import cz.mzk.editor.client.mods.ModsCollectionClient;
+import cz.mzk.editor.client.other.AlphanumComparator;
 import cz.mzk.editor.client.presenter.ModifyPresenter.MyView;
 import cz.mzk.editor.client.uihandlers.ModifyUiHandlers;
 import cz.mzk.editor.client.util.ClientCreateUtils;
@@ -881,7 +881,7 @@ public class ModifyView
         getUiHandlers().onAddDigitalObject(uuid, closeButton);
     }
 
-    private void sortTab(SortDirection sortDirection) {
+    private void sortTab(boolean descending) {
         EditorTabSet selectedTabSet = null;
         if (!isSecondFocused || topTabSet2 == null) {
             selectedTabSet = topTabSet1;
@@ -894,10 +894,22 @@ public class ModifyView
         if (modelString != null) {
             DigitalObjectModel model = DigitalObjectModel.parseString(modelString);
             TileGrid grid = selectedTabSet.getItemGrid().get(model);
-            Record[] data = grid.getData();
-            if (data != null && data.length > 1) {
-                RecordList recordList = grid.getRecordList();
-                recordList.setSort(new SortSpecifier(Constants.ATTR_NAME, sortDirection));
+            RecordList data = grid.getRecordList();
+
+            if (data != null && data.getLength() > 1) {
+                TreeMap<String, Record> sorted = new TreeMap<String, Record>(new AlphanumComparator());
+
+                for (int i = 0; i < data.getLength(); i++) {
+                    sorted.put(data.get(i).getAttributeAsString(Constants.ATTR_NAME), data.get(i));
+                }
+
+                int index = 0;
+                Object[] keys = sorted.keySet().toArray();
+                for (int i = (descending ? sorted.size() - 1 : 0); descending ? (i >= 0) : i < sorted.size(); i +=
+                        (descending ? -1 : 1)) {
+                    data.remove(sorted.get(keys[i]));
+                    data.addAt(sorted.get(keys[i]), index++);
+                }
             }
         }
     }
@@ -1047,7 +1059,7 @@ public class ModifyView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                sortTab(SortDirection.ASCENDING);
+                sortTab(false);
             }
         });
         MenuItem descSortItem = new MenuItem(lang.descending(), "icons/16/sort_descending.png");
@@ -1055,7 +1067,7 @@ public class ModifyView
 
             @Override
             public void onClick(MenuItemClickEvent event) {
-                sortTab(SortDirection.DESCENDING);
+                sortTab(true);
             }
         });
         menu.setItems(ascSortItem);

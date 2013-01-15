@@ -214,7 +214,7 @@ public class CreateStructureView
     private ToolStripButton undoButton;
     private List<Record[]> redoList;
     private ToolStripButton redoButton;
-    int positionBeforeMoving;
+    private int positionBeforeMoving;
     private final EventBus eventBus;
     private String model;
     private String hostname;
