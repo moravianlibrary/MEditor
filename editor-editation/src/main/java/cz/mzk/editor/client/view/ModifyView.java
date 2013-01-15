@@ -32,7 +32,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.inject.Inject;
 
@@ -52,9 +51,12 @@ import com.reveregroup.gwt.imagepreloader.ImageLoadEvent;
 import com.reveregroup.gwt.imagepreloader.ImageLoadHandler;
 import com.reveregroup.gwt.imagepreloader.ImagePreloader;
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.data.RecordList;
+import com.smartgwt.client.data.SortSpecifier;
 import com.smartgwt.client.types.DragAppearance;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Side;
+import com.smartgwt.client.types.SortDirection;
 import com.smartgwt.client.types.TabBarControls;
 import com.smartgwt.client.util.BooleanCallback;
 import com.smartgwt.client.util.SC;
@@ -879,7 +881,7 @@ public class ModifyView
         getUiHandlers().onAddDigitalObject(uuid, closeButton);
     }
 
-    private void sortTab() {
+    private void sortTab(SortDirection sortDirection) {
         EditorTabSet selectedTabSet = null;
         if (!isSecondFocused || topTabSet2 == null) {
             selectedTabSet = topTabSet1;
@@ -894,14 +896,8 @@ public class ModifyView
             TileGrid grid = selectedTabSet.getItemGrid().get(model);
             Record[] data = grid.getData();
             if (data != null && data.length > 1) {
-                TreeMap<String, Integer> toSort = new TreeMap<String, Integer>();
-                for (int i = 0; i < data.length; i++) {
-                    toSort.put(data[i].getAttribute(Constants.ATTR_NAME), i);
-                }
-                for (String name : toSort.keySet()) {
-                    Integer pos = toSort.get(name);
-                    //                    grid.setpo
-                }
+                RecordList recordList = grid.getRecordList();
+                recordList.setSort(new SortSpecifier(Constants.ATTR_NAME, sortDirection));
             }
         }
     }
@@ -979,6 +975,7 @@ public class ModifyView
         tileGrid.setCanDrag(true);
         tileGrid.setCanAcceptDrop(true);
         tileGrid.setShowAllRecords(true);
+
         Menu menu = new Menu();
         menu.setShowShadow(true);
         menu.setShadowDepth(10);
@@ -1045,6 +1042,23 @@ public class ModifyView
                 return tileGrid.getSelection().length > 0;
             }
         });
+        MenuItem ascSortItem = new MenuItem(lang.ascending(), "icons/16/sort_ascending.png");
+        ascSortItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                sortTab(SortDirection.ASCENDING);
+            }
+        });
+        MenuItem descSortItem = new MenuItem(lang.descending(), "icons/16/sort_descending.png");
+        descSortItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                sortTab(SortDirection.DESCENDING);
+            }
+        });
+        menu.setItems(ascSortItem);
 
         menu.setItems(editItem,
                       separator,
@@ -1055,7 +1069,9 @@ public class ModifyView
                       copyItem,
                       pasteItem,
                       removeSelectedItem,
-                      completelyRemove);
+                      completelyRemove,
+                      descSortItem,
+                      ascSortItem);
         tileGrid.setContextMenu(menu);
         tileGrid.setDropTypes(model);
         tileGrid.setDragType(model);
