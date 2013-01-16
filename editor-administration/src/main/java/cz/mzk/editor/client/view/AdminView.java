@@ -102,7 +102,7 @@ public class AdminView
         this.eventBus = eventBus;
         widget = new VLayout();
         leftContainer = new VLayout();
-        leftContainer.setWidth("20%");
+        leftContainer.setWidth("18%");
         leftContainer.setShowResizeBar(true);
         mainContainer = new VLayout();
         mainContainer.setWidth("*");

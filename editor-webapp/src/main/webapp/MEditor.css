@@ -408,3 +408,125 @@ body {
 	font-family: monospace;
 }
 
+.a-btn{
+    background: #8cb0da;
+    padding-left: 10px;
+    padding-right: 60px;
+    display: inline-block;
+    position: relative;
+    border: 1px solid #5d81ab;
+    box-shadow:
+        0px 1px 1px rgba(255,255,255,0.8) inset,
+        1px 1px 3px rgba(0,0,0,0.2),
+        0px 0px 0px 4px rgba(188,188,188,0.5);
+    border-radius: 20px;
+    float: left;
+    clear: both;
+    margin: 5px 5px;
+    overflow: hidden;
+    transition: all 0.3s linear;
+    cursor:pointer;
+    width: 60%;
+}
+.a-btn-text{
+    padding-top: 5px;
+    padding-bottom: 5px;
+    display: block;
+    font-size: 18px;
+    white-space: nowrap;
+    text-shadow: 0px 1px 1px rgba(255,255,255,0.3);
+    color: #364e6b;
+    transition: all 0.2s linear;
+    font-weight: 550;
+}
+.a-btn-icon-right{
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    height: 100%;
+    width: 52px;
+    border-left: 1px solid #5d81ab;
+    box-shadow: 1px 0px 1px rgba(255,255,255,0.4) inset;
+}
+.a-btn-icon-right span{
+    width: 38px;
+    height: 38px;
+    opacity: 0.7;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: -20px 0px 0px -20px;
+    background: transparent url(images/other/button_menu.png) no-repeat 50% 55%;
+    transition: all 0.3s linear;
+}
+ .a-btn:hover{
+    box-shadow: 0px 1px 1px rgba(255,255,255,0.8) inset, 1px 1px 3px rgba(0,0,0,0.2);
+}
+.a-btn:hover .a-btn-text{
+    text-shadow: 0px 1px 1px #5d81ab;
+    color: #fff;
+} 
+ .a-btn:hover .a-btn-slide-text{
+    width: 100px;
+} 
+.a-btn:hover .a-btn-icon-right span{
+    opacity: 1;
+}
+.a-btn:active {
+    position: absolute;
+    top: 1px;
+    background: #5d81ab;
+    box-shadow: 1px 1px 2px rgba(0,0,0,0.4) inset;
+    border-color: #80a9da;
+}
+
+.a-btn-selected{
+    background: #a5bdda;
+    padding-left: 10px;
+    padding-right: 60px;
+    display: inline-block;
+    position: relative;
+    border: 1px solid #5d81ab;
+    border-radius: 20px;
+    float: left;
+    clear: both;
+    margin: 5px 5px;
+    overflow: hidden;
+    transition: all 0.3s linear;
+    cursor:pointer;
+    width: 60%;
+}
+
+.a-btn-text-selected{
+    padding-top: 5px;
+    padding-bottom: 5px;
+    display: block;
+    font-size: 18px;
+    white-space: nowrap;
+    text-shadow: 0px 1px 1px rgba(255,255,255,0.3);
+    color: #8197b1;
+    transition: all 0.2s linear;
+    font-weight: 550;
+}
+
+.a-btn-icon-right-selected{
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    height: 100%;
+    width: 52px;
+    border-left: 1px solid #5d81ab;
+    box-shadow: 1px 0px 1px rgba(255,255,255,0.4) inset;
+}
+
+.a-btn-icon-right-selected span{
+    width: 38px;
+    height: 38px;
+    opacity: 0.8;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: -20px 0px 0px -20px;
+    background: transparent url(images/other/button_menu_selected.png) no-repeat 50% 55%;
+    transition: all 0.3s linear;
+}
