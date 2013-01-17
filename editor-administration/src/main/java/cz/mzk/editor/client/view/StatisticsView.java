@@ -24,10 +24,8 @@
 
 package cz.mzk.editor.client.view;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -41,7 +39,6 @@ import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.SelectionAppearance;
 import com.smartgwt.client.types.SelectionStyle;
 import com.smartgwt.client.types.VerticalAlignment;
-import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -63,9 +60,7 @@ import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.layout.VStack;
 
 import cz.mzk.editor.client.LangConstants;
-import cz.mzk.editor.client.config.EditorClientConfiguration;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
-import cz.mzk.editor.client.other.LabelAndModelConverter;
 import cz.mzk.editor.client.presenter.StatisticsPresenter;
 import cz.mzk.editor.client.uihandlers.StatisticsUiHandlers;
 import cz.mzk.editor.client.util.Constants;
@@ -73,10 +68,6 @@ import cz.mzk.editor.client.util.Constants.STATISTICS_SEGMENTATION;
 import cz.mzk.editor.client.util.HtmlCode;
 import cz.mzk.editor.client.view.other.MonthsUtils;
 import cz.mzk.editor.client.view.other.UserStatisticsLayout;
-import cz.mzk.editor.shared.domain.DigitalObjectModel;
-import cz.mzk.editor.shared.domain.NamedGraphModel;
-import cz.mzk.editor.shared.event.ConfigReceivedEvent;
-import cz.mzk.editor.shared.event.ConfigReceivedEvent.ConfigReceivedHandler;
 import cz.mzk.editor.shared.rpc.EditorDate;
 import cz.mzk.editor.shared.rpc.IntervalStatisticData;
 import cz.mzk.editor.shared.rpc.UserInfoItem;
@@ -95,7 +86,6 @@ public class StatisticsView
     private final LangConstants lang;
     private final DispatchAsync dispatcher;
     private final EventBus eventBus;
-    private final EditorClientConfiguration config;
 
     private DateItem fromDate;
     private DateItem toDate;
@@ -111,14 +101,10 @@ public class StatisticsView
     private String[] intervals = null;
 
     @Inject
-    public StatisticsView(final EventBus eventBus,
-                          final LangConstants lang,
-                          DispatchAsync dispatcher,
-                          final EditorClientConfiguration config) {
+    public StatisticsView(final EventBus eventBus, final LangConstants lang, DispatchAsync dispatcher) {
         this.mainLayout = new VStack();
         this.lang = lang;
         this.dispatcher = dispatcher;
-        this.config = config;
         this.eventBus = eventBus;
         this.statPart = new VLayout();
 
@@ -339,8 +325,8 @@ public class StatisticsView
         selObjDateLayout.setWidth100();
         selObjDateLayout.setExtraSpace(10);
 
-        VLayout selObjLayout = new VLayout();
-        DynamicForm objectAndTime = new DynamicForm();
+        final VLayout selObjLayout = new VLayout();
+        final DynamicForm objectAndTime = new DynamicForm();
         selObject = new SelectItem("selectObject");
         selObject.setShowTitle(false);
         selObject.setWrapTitle(false);
@@ -383,54 +369,6 @@ public class StatisticsView
         intevalFlow.setHeight(30);
         selIntLayout.addMember(intevalFlow);
         selIntLayout.addMember(dates);
-
-        eventBus.addHandler(ConfigReceivedEvent.getType(), new ConfigReceivedHandler() {
-
-            @Override
-            public void onConfigReceived(ConfigReceivedEvent event) {
-                String[] documentTypes;
-                if (event.isStatusOK()) {
-                    documentTypes = config.getDocumentTypes();
-                } else {
-                    documentTypes = EditorClientConfiguration.Constants.DOCUMENT_DEFAULT_TYPES;
-                }
-
-                LinkedHashMap<String, String> models = new LinkedHashMap<String, String>();
-                boolean isPage = false;
-
-                for (String docType : documentTypes) {
-
-                    try {
-                        ArrayList<DigitalObjectModel> modelList = new ArrayList<DigitalObjectModel>();
-                        modelList.add(DigitalObjectModel.parseString(docType));
-                        LabelAndModelConverter.setLabelAndModelConverter(lang);
-
-                        while (!modelList.isEmpty()) {
-                            DigitalObjectModel lastObj = modelList.remove(modelList.size() - 1);
-                            //                              title,
-                            if (!isPage && lastObj == DigitalObjectModel.PAGE) isPage = true;
-                            String labelModel =
-                                    LabelAndModelConverter.getLabelFromModel().get(lastObj.getValue());
-
-                            if (!models.containsKey(labelModel)) {
-                                models.put(lastObj.getValue(), labelModel);
-                            }
-
-                            List<DigitalObjectModel> children = NamedGraphModel.getChildren(lastObj);
-                            if (children != null) {
-                                modelList.addAll(children);
-                            }
-
-                        }
-
-                    } catch (RuntimeException e) {
-                        SC.warn(lang.operationFailed() + ": " + e);
-                    }
-                }
-                selObject.setValueMap(models);
-                if (isPage) selObject.setValue(DigitalObjectModel.PAGE.getValue());
-            }
-        });
 
         selObjDateLayout.addMember(selObjLayout);
         selObjDateLayout.addMember(selIntLayout);
@@ -527,6 +465,14 @@ public class StatisticsView
     @Override
     public Widget asWidget() {
         return mainLayout;
+    }
+
+    /**
+     * @return the selObject
+     */
+    @Override
+    public SelectItem getSelObject() {
+        return selObject;
     }
 
 }

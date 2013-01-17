@@ -100,7 +100,7 @@ public class StoredAndLocksPresenter
                                    final AdminMenuPresenter leftPresenter) {
         super(eventBus, view, proxy);
         this.leftPresenter = leftPresenter;
-
+        bind();
     }
 
     /**

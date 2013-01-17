@@ -100,7 +100,7 @@ public class MyAcountPresenter
                              final AdminMenuPresenter leftPresenter) {
         super(eventBus, view, proxy);
         this.leftPresenter = leftPresenter;
-
+        bind();
     }
 
     /**

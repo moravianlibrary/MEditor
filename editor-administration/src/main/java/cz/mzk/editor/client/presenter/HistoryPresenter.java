@@ -132,7 +132,7 @@ public class HistoryPresenter
         this.lang = lang;
         this.dispatcher = dispatcher;
         this.leftPresenter = leftPresenter;
-
+        bind();
     }
 
     /**
