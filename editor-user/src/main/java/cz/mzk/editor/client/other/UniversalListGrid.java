@@ -45,5 +45,7 @@ public class UniversalListGrid
         setHoverStyle("interactImageHover");
         setShowHeader(false);
         setCanSelectText(true);
+        setWidth100();
+        setHeight100();
     }
 }

@@ -178,6 +178,7 @@ public class UserDetailLayout
 
             if (!isMyAcount) sectionStackSection.setControls(add, remove);
             addSection(sectionStackSection);
+            setCanDragResize(true);
         }
 
         /**

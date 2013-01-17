@@ -238,6 +238,7 @@ public class StatisticsView
         });
 
         selLayout.setExtraSpace(5);
+        selLayout.setBackgroundColor("white");
         mainLayout.addMember(selLayout);
     }
 

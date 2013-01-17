@@ -179,6 +179,7 @@ public abstract class UserStatisticsLayout
         nameFlow.setHeight(40);
         addMember(nameFlow);
         addMember(chartsLayout);
+        setBackgroundColor("white");
 
         htmlPieFlow = new HTMLFlow(html.replace("%s", PIE_CHART_NESTED_DIV_ID + userId));
         htmlPieFlow.setWidth("40%");

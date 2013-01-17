@@ -530,3 +530,7 @@ body {
     background: transparent url(images/other/button_menu_selected.png) no-repeat 50% 55%;
     transition: all 0.3s linear;
 }
+
+.stuccoBkgnd{
+	background: url("images/other/stucco.png") repeat scroll left top rgb(249, 249, 249);
+}
