@@ -409,17 +409,17 @@ body {
 }
 
 .a-btn{
-    background: #8cb0da;
+    background: #9BA6B3;
     padding-left: 10px;
     padding-right: 60px;
     display: inline-block;
     position: relative;
-    border: 1px solid #5d81ab;
+    border: 1px solid #648BB9;
     box-shadow:
         0px 1px 1px rgba(255,255,255,0.8) inset,
         1px 1px 3px rgba(0,0,0,0.2),
         0px 0px 0px 4px rgba(188,188,188,0.5);
-    border-radius: 20px;
+    border-radius: 10px;
     float: left;
     clear: both;
     margin: 5px 5px;
@@ -434,8 +434,8 @@ body {
     display: block;
     font-size: 18px;
     white-space: nowrap;
-    text-shadow: 0px 1px 1px rgba(255,255,255,0.3);
-    color: #364e6b;
+    text-shadow: 0px 1px 1px rgba(213, 213, 213, 0.3);
+    color: #283442;
     transition: all 0.2s linear;
     font-weight: 550;
 }
@@ -445,7 +445,7 @@ body {
     top: 0px;
     height: 100%;
     width: 52px;
-    border-left: 1px solid #5d81ab;
+    border-left: 1px solid #5F7186;
     box-shadow: 1px 0px 1px rgba(255,255,255,0.4) inset;
 }
 .a-btn-icon-right span{
@@ -456,7 +456,6 @@ body {
     left: 50%;
     top: 50%;
     margin: -20px 0px 0px -20px;
-    background: transparent url(images/other/button_menu.png) no-repeat 50% 55%;
     transition: all 0.3s linear;
 }
  .a-btn:hover{
@@ -475,9 +474,9 @@ body {
 .a-btn:active {
     position: absolute;
     top: 1px;
-    background: #5d81ab;
+    background: #7A8592;
     box-shadow: 1px 1px 2px rgba(0,0,0,0.4) inset;
-    border-color: #80a9da;
+    border-color: #80a9a2;
 }
 
 .a-btn-selected{
@@ -487,7 +486,7 @@ body {
     display: inline-block;
     position: relative;
     border: 1px solid #5d81ab;
-    border-radius: 20px;
+    border-radius: 10px;
     float: left;
     clear: both;
     margin: 5px 5px;
@@ -503,8 +502,8 @@ body {
     display: block;
     font-size: 18px;
     white-space: nowrap;
-    text-shadow: 0px 1px 1px rgba(255,255,255,0.3);
-    color: #8197b1;
+    text-shadow: 0px 1px 1px rgba(53, 53, 53, 0.3);
+    color: #FFFFFF;
     transition: all 0.2s linear;
     font-weight: 550;
 }
@@ -515,7 +514,7 @@ body {
     top: 0px;
     height: 100%;
     width: 52px;
-    border-left: 1px solid #5d81ab;
+    border-left: 1px solid #697583;
     box-shadow: 1px 0px 1px rgba(255,255,255,0.4) inset;
 }
 
