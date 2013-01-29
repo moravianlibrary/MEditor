@@ -97,6 +97,7 @@ public class StoredAndLocksView
             setShowDown(true);
             setWidth(200);
             setLayoutAlign(Alignment.RIGHT);
+            setExtraSpace(5);
             addClickHandler(new ClickHandler() {
 
                 @Override

@@ -333,7 +333,7 @@ public class UserDAOImpl
                 boolean crudSucc =
                         insertEditUserActionItem(getUserId(false),
                                                  userId,
-                                                 "The role has been disabled.",
+                                                 "The user account has been disabled",
                                                  CRUD_ACTION_TYPES.DELETE,
                                                  false);
                 if (crudSucc) {

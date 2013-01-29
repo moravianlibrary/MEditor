@@ -335,7 +335,7 @@ public class StatisticsView
 
         HTMLFlow selObjFlow =
                 new HTMLFlow(HtmlCode.title(lang.show() + " " + lang.insertedObjCount().toLowerCase(), 3));
-        selObjFlow.setWidth(selObjFlow.getContents().length() * 5 + 10);
+        selObjFlow.setWidth100();
         selObjFlow.setHeight(30);
 
         selObjLayout.addMember(selObjFlow);
