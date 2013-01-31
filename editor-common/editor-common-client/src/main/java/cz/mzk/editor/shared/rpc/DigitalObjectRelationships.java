@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.shared.domain.DigitalObjectModel;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -47,6 +48,8 @@ public class DigitalObjectRelationships
     private Map<String, List<DigitalObjectRelationships>> children;
     private String uuid;
     private Constants.CONFLICT conflict = Constants.CONFLICT.NO_CONFLICT;
+    private String title;
+    private DigitalObjectModel model;
 
     public DigitalObjectRelationships() {
     }
@@ -126,13 +129,47 @@ public class DigitalObjectRelationships
     }
 
     /**
+     * @return the title
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * @param title
+     *        the title to set
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    /**
+     * @return the model
+     */
+    public DigitalObjectModel getModel() {
+        return model;
+    }
+
+    /**
+     * @param model
+     *        the model to set
+     */
+    public void setModel(DigitalObjectModel model) {
+        this.model = model;
+    }
+
+    /**
      * {@inheritDoc}
      */
-
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + ((children == null) ? 0 : children.hashCode());
+        result = prime * result + ((conflict == null) ? 0 : conflict.hashCode());
+        result = prime * result + ((model == null) ? 0 : model.hashCode());
+        result = prime * result + ((parents == null) ? 0 : parents.hashCode());
+        result = prime * result + ((title == null) ? 0 : title.hashCode());
         result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
         return result;
     }
@@ -140,13 +177,23 @@ public class DigitalObjectRelationships
     /**
      * {@inheritDoc}
      */
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
         DigitalObjectRelationships other = (DigitalObjectRelationships) obj;
+        if (children == null) {
+            if (other.children != null) return false;
+        } else if (!children.equals(other.children)) return false;
+        if (conflict != other.conflict) return false;
+        if (model != other.model) return false;
+        if (parents == null) {
+            if (other.parents != null) return false;
+        } else if (!parents.equals(other.parents)) return false;
+        if (title == null) {
+            if (other.title != null) return false;
+        } else if (!title.equals(other.title)) return false;
         if (uuid == null) {
             if (other.uuid != null) return false;
         } else if (!uuid.equals(other.uuid)) return false;
@@ -156,11 +203,10 @@ public class DigitalObjectRelationships
     /**
      * {@inheritDoc}
      */
-
     @Override
     public String toString() {
         return "DigitalObjectRelationships [parents=" + parents + ", children=" + children + ", uuid=" + uuid
-                + ", conflict=" + conflict + "]";
+                + ", conflict=" + conflict + ", title=" + title + ", model=" + model + "]";
     }
 
     /**

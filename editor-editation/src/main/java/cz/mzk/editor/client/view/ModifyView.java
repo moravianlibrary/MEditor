@@ -201,6 +201,9 @@ public class ModifyView
         /** The value of unlock-item. */
         UNLOCK,
 
+        /** The SORT. */
+        SORT,
+
         /** The value of refresh-item. */
         REFRESH;
     }
@@ -1319,6 +1322,7 @@ public class ModifyView
         MenuItem publishItem = new MenuItem(lang.publishItem(), "icons/16/add.png", "Ctrl+Alt+P");
         MenuItem persistentUrlItem = new MenuItem(lang.persistentUrl(), "icons/16/url.png", "Ctrl+Alt+W");
         MenuItem changeRightsItem = new MenuItem(lang.changeRight(), "icons/16/door.png", "Ctrl+Alt+A");
+        MenuItem sortItem = new MenuItem(lang.sort(), "icons/16/sort_ascending.png", "");
 
         removeItem.setAttribute(ID_MENU_ITEM, ATTR_MENU_ITEM.REMOVE);
         removeItem.setAttribute(ID_UUID, topTabSet.getUuid());
@@ -1410,6 +1414,18 @@ public class ModifyView
             }
         });
 
+        sortItem.setAttribute(ID_TABSET, topTabSet);
+        sortItem.setAttribute(ID_MENU_ITEM, ATTR_MENU_ITEM.SORT);
+        sortItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(final MenuItemClickEvent event) {
+                getUiHandlers().sortWithChildren(((EditorTabSet) event.getItem()
+                        .getAttributeAsObject(ID_TABSET)).getUuid());
+            }
+
+        });
+
         menu.setItems(lockItem,
                       unlockItem,
                       saveItem,
@@ -1418,7 +1434,8 @@ public class ModifyView
                       removeItem,
                       publishItem,
                       persistentUrlItem,
-                      changeRightsItem);
+                      changeRightsItem,
+                      sortItem);
         return menu;
     }
 
