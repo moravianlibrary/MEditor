@@ -11,15 +11,30 @@
         Allow from all
     </Proxy>
 
-        ErrorLog /var/log/apache2/error.log
+    # GWT Perfect Caching
+    <IfModule mod_expires.c>
+        <Files *.nocache.*>
+            ExpiresActive on
+            ExpiresDefault "now"
+            <IfModule mod_headers.c>
+                Header merge Cache-Control "public, max-age=0, must-revalidate"
+            </IfModule>
+        </Files>
 
-        # Possible values include: debug, info, notice, warn, error, crit,
-        # alert, emerg.
-        LogLevel warn
+        <Files *.cache.*>
+            ExpiresActive on
+            ExpiresDefault "now plus 1 year"
+        </Files>
+    </IfModule>
 
-        CustomLog /var/log/apache2/access.log combined
-        ServerSignature On
+    ErrorLog /var/log/apache2/error.log
 
+    # Possible values include: debug, info, notice, warn, error, crit,
+    # alert, emerg.
+    LogLevel warn
+
+    CustomLog /var/log/apache2/access.log combined
+    ServerSignature On
 
     ProxyRequests Off
     ProxyPreserveHost On
