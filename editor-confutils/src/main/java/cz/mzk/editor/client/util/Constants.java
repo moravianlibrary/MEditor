@@ -220,9 +220,6 @@ public class Constants {
     /** Path to directory of audio converter */
     public static final String CONVERT_AUDIO_DIR = "convertAudio";
 
-    /** Path to directory of audio converter */
-    public static final String CONVERT_AUDIO_DIR = "convertAudio";
-
    /** A name of the script for running a process via ssh on a remote machine. */
     public static final String SCRIPT_FOR_REMOTE_PROCESS = "runRemoteProcess.sh";
 
@@ -1103,8 +1100,6 @@ public class Constants {
      * Fedora FOXML related constants.
      */
     public static enum DATASTREAM_ID {
-        DC("DC"), RELS_EXT("RELS-EXT"), BIBLIO_MODS("BIBLIO_MODS"), POLICY("POLICY"), IMG_FULL("IMG_FULL"),
-        IMG_THUMB("IMG_THUMB"), IMG_PREVIEW("IMG_PREVIEW"), TEI("TEI"), TEXT_OCR("TEXT_OCR"), ALTO("ALTO");
 
         /** The DC. */
         DC("DC"),
@@ -1125,15 +1120,19 @@ public class Constants {
         TEI("TEI"),
         /** The TEX t_ ocr. */
         TEXT_OCR("TEXT_OCR"),
+        WAV("WAV"),
+        OGG("OGG"),
+        MP3("MP3"),
         /** The ALTO. */
         ALTO("ALTO");
+
 
         /** The value. */
         private final String value;
 
         /**
          * Instantiates a new dATASTREA m_ id.
-         * 
+         *
          * @param value
          *        the value
          */
@@ -1143,7 +1142,7 @@ public class Constants {
 
         /**
          * Gets the value.
-         * 
+         *
          * @return the value
          */
         public String getValue() {

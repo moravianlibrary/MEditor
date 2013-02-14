@@ -58,10 +58,10 @@ public enum FedoraRelationship {
     isOnPage(null, "isOnPage", "/rdf:RDF/rdf:Description/kramerius:isOnPage"),
     /** The has track. */
     hasTrack(null, "hasTrack", "/rdf:RDF/rdf:Description/kramerius:hasTrack"),
+    /** The has track. */
+    containsTrack(null, "containsTrack", "/rdf:RDF/rdf:Description/kramerius:containsTrack"),
     /** The has unit. */
-    hasSoundUnit(null, "has", "/rdf:RDF/rdf:Description/kramerius:hasSoundUnit"),
-    /** The contains track. */
-    containsTrack(null, "containsTrack", "/rdf:RDF/rdf:Description/kramerius:containsTrack");
+    hasSoundUnit(null, "hasSoundUnit", "/rdf:RDF/rdf:Description/kramerius:hasSoundUnit");
 
     public static final String ATTR_RESOURCE_SUFIX = "/@rdf:resource";
 

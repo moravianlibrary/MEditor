@@ -208,23 +208,31 @@ public class ClientCreateUtils {
         for (TreeNode child : children) {
             if (child.getAttribute(tree.getIsFolderProperty()) == null) {
                 NewDigitalObject newChild =
-                        createTheStructure(bundle,
-                                           tree,
-                                           child,
-                                           visible,
-                                           childrenLastPageIndex,
-                                           processedPages);
-                newObj.getChildren().add(newChild);
-                childrenLastPageIndex = newChild.getPageIndex();
+                    createTheStructure(bundle,
+                                    tree,
+                                    child,
+                                    visible,
+                                    childrenLastPageIndex,
+                                    processedPages);
+                    newObj.getChildren().add(newChild);
+                    childrenLastPageIndex = newChild.getPageIndex();
             } else {
                 folders.add(child);
             }
         }
         for (TreeNode folder : folders) {
-            NewDigitalObject newChild =
-                    createTheStructure(bundle, tree, folder, visible, childrenLastPageIndex, processedPages);
-            newObj.getChildren().add(newChild);
-            childrenLastPageIndex = newChild.getPageIndex();
+            //sound_unit have a child with picture, but I need put it to datastream
+            String nodeString = folder.getAttributeAsString(Constants.ATTR_MODEL_ID);
+            if (DigitalObjectModel.PAGE.getValue().equals(nodeString) &&
+                DigitalObjectModel.SOUND_UNIT.getValue().equals(tree.getParent(folder).getAttributeAsString(Constants.ATTR_MODEL_ID))) {
+                newObj.setThumbnail(folder.getAttributeAsString(Constants.ATTR_PICTURE_OR_UUID));
+                newObj.setPath(folder.getAttributeAsString(Constants.ATTR_PICTURE_OR_UUID));
+            } else {
+                NewDigitalObject newChild =
+                        createTheStructure(bundle, tree, folder, visible, childrenLastPageIndex, processedPages);
+                newObj.getChildren().add(newChild);
+                childrenLastPageIndex = newChild.getPageIndex();
+            }
         }
     }
 
@@ -247,26 +255,6 @@ public class ClientCreateUtils {
             throw new CreateObjectException("unknown type");
         }
 
-        //sound_unit have a child with picture, but I want it put to datastream
-        if (DigitalObjectModel.SOUND_UNIT.equals(model)) {
-            for (TreeNode treeNode:tree.getChildren(node)) {
-                String nodeString = treeNode.getAttributeAsString(Constants.ATTR_MODEL_ID);
-                if (nodeString == null || "".equals(nodeString)) {
-                    throw new CreateObjectException("unknown type");
-                }
-                DigitalObjectModel nodeModel = null;
-                try {
-                    nodeModel = DigitalObjectModel.parseString(nodeString);
-                } catch (RuntimeException ex) {
-                    throw new CreateObjectException("unknown type");
-                }
-                if (DigitalObjectModel.PAGE.equals(nodeModel)) {
-
-                    tree.getParent(treeNode).setAttribute(Constants.ATTR_THUMBNAIL, "test");
-                    tree.remove(treeNode);
-                }
-            }
-        }
 
         String imgUuid = node.getAttribute(Constants.ATTR_PICTURE_OR_UUID);
 

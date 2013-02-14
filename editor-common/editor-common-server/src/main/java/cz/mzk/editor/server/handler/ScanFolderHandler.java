@@ -1,4 +1,4 @@
-/*
+/*   jijiji
  * Metadata Editor
  * @author Jiri Kremser
  * 
@@ -45,7 +45,9 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.mzk.editor.server.util.AudioUtils;
 import cz.mzk.editor.shared.rpc.ImageItem;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
@@ -128,10 +130,6 @@ public class ScanFolderHandler
         }
         final String base = configuration.getScanInputQueuePath();
         LOGGER.debug("Scanning folder: (model = " + model + ", code = " + code + ")");
-        if (context != null) {
-            HttpServletRequest req = requestProvider.get();
-            ServerUtils.checkExpiredSession(req.getSession());
-        }
 
         try {
             String name = action.getName();
@@ -201,7 +199,6 @@ public class ScanFolderHandler
                     if (!audioMimeType.equals(Constants.AUDIO_MIMETYPES.UNKOWN_MIMETYPE)) {
                         item.setMimeType(audioMimeType.getMimeType());
                         sb = new StringBuffer();
-                        StringBuffer sbA;
                         sb.append(configuration.getImagesPath()).append(newIdentifier)
                                 .append(Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getExtension());
                         item.setJpeg2000FsPath(sb.toString());
@@ -214,7 +211,20 @@ public class ScanFolderHandler
                                 .substring(resolvedIdentifier.lastIndexOf('/') + 1,
                                         resolvedIdentifier.lastIndexOf('.'));
                 ImageItem item = new ImageItem(uuid, resolvedIdentifier, imgFileNames.get(i));
+
+                String name = FilenameUtils.getBaseName(imgFileNames.get(i));
+                String[] splits = name.split("-");
+
+                /** audio files - special name convection */
+                if (splits.length == 4 && "DS".equals(splits[0])) {
+                    item.setName(splits[2] + "-" + splits[3]);
+                }
+                if (splits.length == 5 && "MC".equals(splits[0])) {
+                    item.setName(splits[2] + "-" + splits[3] + "-" + splits[4]);
+                }
+
                 if (imgFileNames.get(i).endsWith(".wav")) {
+                    item.setLength(AudioUtils.getTwoDigitLength(imgFileNames.get(i)));
                     item.setMimeType(Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getMimeType());
                 }
                 result.add(item);

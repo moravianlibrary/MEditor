@@ -107,6 +107,9 @@ public class CreateObject {
     /** The base. */
     private String base;
 
+    /** The model */
+    private DigitalObjectModel model;
+
     /** The ingested objects. */
     private final List<String> ingestedObjects;
 
@@ -164,6 +167,8 @@ public class CreateObject {
 
         sysno = node.getSysno();
         base = node.getBase();
+        model = node.getModel();
+
         if (node.getExist() && node.getUuid() != null) {
             try {
                 digitalObjectDAO.insertNewDigitalObject(node.getUuid(),
@@ -178,7 +183,7 @@ public class CreateObject {
             }
         }
 
-        checkAccessRightsAndCreateDirectories(sysno, base);
+        checkAccessRightsAndCreateDirectories(sysno, base, model);
         insertFOXML(node, mods, dc);
         return true;
     }
@@ -311,6 +316,7 @@ public class CreateObject {
         }
         boolean isPage = node.getModel() == DigitalObjectModel.PAGE;
         boolean isTrack = node.getModel() == DigitalObjectModel.TRACK;
+        boolean isSoundUnit = node.getModel() == DigitalObjectModel.SOUND_UNIT;
 
         builder.setSignature(node.getSignature());
         builder.setBase(base);
@@ -348,7 +354,7 @@ public class CreateObject {
 
 
 
-        if (isPage) {
+        if (isPage || isSoundUnit) {
             String url = config.getImageServerUrl();
             url = addSlash(url);
             if (!url.startsWith("http://")) {
@@ -419,7 +425,7 @@ public class CreateObject {
 
         if (success) ingestedObjects.add(node.getUuid());
 
-        if (isPage && success) {
+        if ((isPage || isSoundUnit) && success) {
             if (!internal) {
                 // TODO: StringBuffer
                 boolean copySuccess;
@@ -449,14 +455,16 @@ public class CreateObject {
                 }
             }
 
-            String ocrPath = node.getAditionalInfoOrOcr();
-            if (ocrPath != null && !"".equals(ocrPath)) {
-                insertManagedDatastream(DATASTREAM_ID.TEXT_OCR, node.getUuid(), ocrPath, true, "text/xml");
-            }
+            if (isPage) {
+                String ocrPath = node.getAditionalInfoOrOcr();
+                if (ocrPath != null && !"".equals(ocrPath)) {
+                    insertManagedDatastream(DATASTREAM_ID.TEXT_OCR, node.getUuid(), ocrPath, true, "text/xml");
+                }
 
-            String altoPath = node.getPartNumberOrAlto();
-            if (altoPath != null && !"".equals(altoPath)) {
-                insertManagedDatastream(DATASTREAM_ID.ALTO, node.getUuid(), altoPath, true, "text/xml");
+                String altoPath = node.getPartNumberOrAlto();
+                if (altoPath != null && !"".equals(altoPath)) {
+                    insertManagedDatastream(DATASTREAM_ID.ALTO, node.getUuid(), altoPath, true, "text/xml");
+                }
             }
         }
 
@@ -484,8 +492,6 @@ public class CreateObject {
                 e.printStackTrace();
                 throw new CreateObjectException(e.getMessage(), e);
             }
-
-
         }
 
         if (!success) {
@@ -751,39 +757,74 @@ public class CreateObject {
      * @throws CreateObjectException
      *         the create object exception
      */
-    private void checkAccessRightsAndCreateDirectories(String sysno, String base)
+    private void checkAccessRightsAndCreateDirectories(String sysno, String base, DigitalObjectModel model)
             throws CreateObjectException {
-        String unknown = config.getImageServerUnknown();
-        String known = config.getImageServerKnown();
-        String url = config.getImageServerUrl();
-        boolean internal = config.getImageServerInternal();
-        if (url == null || "".equals(url)) {
-            String errorMsg = "URL of the imageserver has not been set in the configuration.";
-            LOGGER.error(errorMsg);
-            throw new CreateObjectException(errorMsg);
-        }
-        if (!internal && (unknown == null || "".equals(unknown) || known == null || "".equals(known))) {
-            String errorMsg =
-                    "Error, one of folloving compulsory options have not been set ["
-                            + EditorConfiguration.ServerConstants.IMAGE_SERVER_KNOWN + " ,"
-                            + EditorConfiguration.ServerConstants.IMAGE_SERVER_UNKNOWN + "]";
-            LOGGER.error(errorMsg);
-            throw new CreateObjectException(errorMsg);
-        }
 
         File imagesDir = null;
-        if (internal) {
-            imagesDir = new File(config.getEditorHome() + '/' + ".images");
-        } else {
+
+        if (DigitalObjectModel.SOUNDRECORDING.equals(model)) {
+
+            String recordingUnknown = config.getRecordingServerKnown();
+            String recordingKnown = config.getRecordingServerKnown();
+            String recordingUrl = config.getRecordingServerUrl();
+            if (recordingUrl == null || "".equals(recordingUrl)) {
+                String errorMsg = "URL of the recordingserver has not been set in the configuration.";
+                LOGGER.error(errorMsg);
+                throw new CreateObjectException(errorMsg);
+            }
+
+            if (recordingUnknown == null || "".equals(recordingUnknown) || recordingKnown == null || "".equals(recordingKnown)) {
+                String errorMsg =
+                        "Error, one of folloving compulsory options have not been set ["
+                                + EditorConfiguration.ServerConstants.RECORDING_SERVER_KNOWN + " ,"
+                                + EditorConfiguration.ServerConstants.RECORDING_SERVER_UNKNOWN + "]";
+                LOGGER.error(errorMsg);
+                throw new CreateObjectException(errorMsg);
+            }
+
             String basePath = "";
             if (base != null && !"".equals(base)) {
                 basePath = base.toLowerCase() + "/";
             }
             imagesDir =
-                    new File(isSysno(sysno) ? config.getImageServerKnown() + '/' + basePath
-                            + getSysnoPath(sysno) : config.getImageServerUnknown()
+                    new File(isSysno(sysno) ? config.getRecordingServerKnown() + '/' + basePath
+                            + getSysnoPath(sysno) : config.getRecordingServerUnknown()
                             + getPathFromNonSysno(sysno));
+
+        } else {
+
+            String unknown = config.getImageServerUnknown();
+            String known = config.getImageServerKnown();
+            String url = config.getImageServerUrl();
+            boolean internal = config.getImageServerInternal();
+            if (url == null || "".equals(url)) {
+                String errorMsg = "URL of the imageserver has not been set in the configuration.";
+                LOGGER.error(errorMsg);
+                throw new CreateObjectException(errorMsg);
+            }
+            if (!internal && (unknown == null || "".equals(unknown) || known == null || "".equals(known))) {
+                String errorMsg =
+                        "Error, one of folloving compulsory options have not been set ["
+                                + EditorConfiguration.ServerConstants.IMAGE_SERVER_KNOWN + " ,"
+                                + EditorConfiguration.ServerConstants.IMAGE_SERVER_UNKNOWN + "]";
+                LOGGER.error(errorMsg);
+                throw new CreateObjectException(errorMsg);
+            }
+
+            if (internal) {
+                imagesDir = new File(config.getEditorHome() + '/' + ".images");
+            } else {
+                String basePath = "";
+                if (base != null && !"".equals(base)) {
+                    basePath = base.toLowerCase() + "/";
+                }
+                imagesDir =
+                        new File(isSysno(sysno) ? config.getImageServerKnown() + '/' + basePath
+                                + getSysnoPath(sysno) : config.getImageServerUnknown()
+                                + getPathFromNonSysno(sysno));
+            }
         }
+
         if (!imagesDir.exists()) {
             boolean mkdirs = imagesDir.mkdirs();
             if (!mkdirs) {

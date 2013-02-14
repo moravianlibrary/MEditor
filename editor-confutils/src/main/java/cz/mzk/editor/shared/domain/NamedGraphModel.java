@@ -116,7 +116,6 @@ public class NamedGraphModel
         putRelationship(SOUNDRECORDING, hasTrack, TRACK);
         putRelationship(SOUNDRECORDING, hasPage, PAGE);
         putRelationship(SOUNDRECORDING, hasSoundUnit, SOUND_UNIT);
-        //putRelationship(IMAGE_UNIT, hasUnit, PAGE);
         putRelationship(SOUND_UNIT, containsTrack, TRACK);
     }
 

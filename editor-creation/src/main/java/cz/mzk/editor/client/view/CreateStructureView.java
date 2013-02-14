@@ -675,13 +675,21 @@ public class CreateStructureView
                 @Override
                 public String format(Object value, Record record, DetailViewerField field) {
                     String modelId = record.getAttribute(Constants.ATTR_MODEL_ID);
-
                     StringBuffer sb = new StringBuffer();
-                    sb.append("track".equals(modelId)? lang.track() : lang.scan()).append(": ")
-                            .append(value);
-                    String pageType = record.getAttribute(Constants.ATTR_TYPE);
-                    if (!Constants.PAGE_TYPES.NP.toString().equals(pageType)) {
-                        sb.append("<br/>").append("<div class='pageType'>").append(pageType).append("</div>");
+                    if ("track".equals(modelId)) {
+                        sb.append(value);
+                        String length = record.getAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE);
+                        if (length != null && !"".equals(length)) {
+                            sb.append("<br />").append("length: " + length);
+                        }
+
+                    } else {
+                        sb.append(lang.scan()).append(": ")
+                                .append(value);
+                        String pageType = record.getAttribute(Constants.ATTR_TYPE);
+                        if (!Constants.PAGE_TYPES.NP.toString().equals(pageType)) {
+                            sb.append("<br/>").append("<div class='pageType'>").append(pageType).append("</div>");
+                        }
                     }
                     return sb.toString();
 

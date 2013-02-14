@@ -144,17 +144,6 @@ public class ConvertToJPEG2000Handler
     private boolean convertToAudio(ImageItem item) throws ActionException {
         System.out.println("audio" + item.toString());
 
-//        if (item.getJpgFsPath().toLowerCase().endsWith(Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getExtension())) {
-//            try {
-//                IOUtils.copyFile(item.getJpgFsPath(), item.getJpeg2000FsPath());
-//                LOGGER.info(item.getJpgFsPath() + "  was copied to  " + item.getJpeg2000FsPath());
-//            } catch (IOException e) {
-//                LOGGER.error("Unable to copy record" + item.getJpgFsPath()
-//                        + "  to  " + item.getJpeg2000FsPath(), e);
-//                return false;
-//            }
-//        }
-
         String path = item.getJpgFsPath();
         String pathWithoutExtension =path.substring(0, path.lastIndexOf('.'));
         String pathJpeg2000 = item.getJpeg2000FsPath();
@@ -165,10 +154,8 @@ public class ConvertToJPEG2000Handler
                 .append("convert.").append("sh")
                 .append(" ");
         sb.append(path).append(" ");
-        //String command = new StringBuffer(sb).append(jpeg2000fspathWithoutExtension).append(".ogg").append(" ").append("ogg").toString();
-        String command = new StringBuffer(sb).append(jpeg2000fspathWithoutExtension).toString();
 
-        //String commandMp3 = new StringBuffer(sb).append(pathWithoutExtension).append(".mp3").append(" ").append("mp3").toString();
+        String command = new StringBuffer(sb).append(jpeg2000fspathWithoutExtension).toString();
 
         Process p;
         try {

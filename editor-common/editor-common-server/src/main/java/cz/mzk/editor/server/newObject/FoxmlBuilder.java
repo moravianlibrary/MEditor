@@ -268,12 +268,12 @@ public abstract class FoxmlBuilder {
             case MP3:
                 dataStreamVersion =
                         createDatastreamVersionElement(datastreamEl, null, "audio/mpeg",
-                                "Ogg Vorbis version of this audio track", versionId);
+                                "Mp3 version of this audio track", versionId);
                 break;
             case OGG:
                 dataStreamVersion =
                         createDatastreamVersionElement(datastreamEl, null, "audio/ogg",
-                                "Mp3 version of this audio track", versionId);
+                                "Ogg Vorbis version of this audio track", versionId);
 
         }
         switch (dsCGroup) {

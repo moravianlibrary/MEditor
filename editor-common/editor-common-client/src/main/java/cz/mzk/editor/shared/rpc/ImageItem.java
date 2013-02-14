@@ -44,8 +44,24 @@ public class ImageItem
     /** The jpeg2000FsPath. */
     private String jpeg2000FsPath; //TODO-MR: possible refactor. Audio fspath can be in this value :-(
 
+    /** Two digit length of Audio file */
+    private String length;
+
     /** The jpgFsPath. */
     private String jpgFsPath;
+
+    /** Name of object on filesystem */
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
 
     public String getMimeType() {
         return mimeType;
@@ -53,6 +69,14 @@ public class ImageItem
 
     public void setMimeType(String mimeType) {
         this.mimeType = mimeType;
+    }
+
+    public String getLength() {
+        return length;
+    }
+
+    public void setLength(String length) {
+        this.length = length;
     }
 
     /** Mime Type of File */

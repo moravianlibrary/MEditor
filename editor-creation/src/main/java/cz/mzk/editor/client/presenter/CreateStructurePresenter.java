@@ -695,6 +695,8 @@ public class CreateStructurePresenter
                         if (itemList.get(i).getMimeType() != null) {
                             record.setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR, itemList.get(i).getMimeType());
                             record.setAttribute(Constants.ATTR_MODEL_ID, "track");
+                            record.setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE, itemList.get(i).getLength());
+                            record.setAttribute(Constants.ATTR_NAME, itemList.get(i).getName());
                         }
                         items[i] = record;
                     }

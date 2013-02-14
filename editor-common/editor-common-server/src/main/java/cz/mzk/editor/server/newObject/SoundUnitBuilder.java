@@ -68,6 +68,15 @@ public class SoundUnitBuilder extends FoxmlBuilder {
 
     @Override
     protected void createOtherStreams() {
+        appendDatastream(Constants.DATASTREAM_CONTROLGROUP.R, Constants.DATASTREAM_ID.IMG_FULL, null, "URL", getImageUrl()
+                + "/big.jpg");
+
+        //appendDatastream(Constants.DATASTREAM_CONTROLGROUP.R, Constants.DATASTREAM_ID.IMG_PREVIEW, null, "URL", getImageUrl()
+        //        + "/preview.jpg");
+
+        appendDatastream(Constants.DATASTREAM_CONTROLGROUP.R, Constants.DATASTREAM_ID.IMG_THUMB, null, "URL", getImageUrl()
+                + "/thumb.jpg");
+        // TODO-MR
     }
 
     @Override

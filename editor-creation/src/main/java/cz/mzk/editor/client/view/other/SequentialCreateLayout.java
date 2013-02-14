@@ -153,10 +153,10 @@ public class SequentialCreateLayout
 
         //                                    vol       item        int p       page        int p       mon un      sound unit               track
 
-        //        ATTR_NAME                             part name   title       name        title       part name   title
+        //        ATTR_NAME                             part name   title       name        title       part name   title                  name from filesystem
         //        ATTR_TYPE                             genre       genre       spec type   genre
         //        ATTR_DATE_OR_INT_PART_NAME  date      date        part name               part name   date        part name
-        //        ATTR_NOTE_OR_INT_SUBTITLE   note      note        subtitle                subtitle    note        related part num
+        //        ATTR_NOTE_OR_INT_SUBTITLE   note      note        subtitle                subtitle    note        related part num       length
         //        ATTR_PART_NUMBER_OR_ALTO    part num  part num    part num    alto        part num    part num    part num
         //        ATTR_ADITIONAL_INFO_OR_OCR            item/suppl  art/pic     ocr         pict/chapt  suppl       related part name
         //        ATTR_THUMBNAIL                                                                                    picture uuid
