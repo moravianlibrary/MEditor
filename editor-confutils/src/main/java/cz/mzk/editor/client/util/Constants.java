@@ -63,7 +63,7 @@ public class Constants {
 
     /** The Constant LOGO_HTML. */
     public static final String LOGO_HTML =
-            "<a href='/meditor'><img class='noFx' src='images/logo_bw.png' width='162' height='50' alt='logo'></a>";
+            "<a href='/meditor'><img class='noFx' src='images/logo_bw.png' width='162' height='50' alt='logo' ></a>";
 
     /** The Constant SERVLET_IMAGES_PREFIX. */
     public static final String SERVLET_IMAGES_PREFIX = "images/";

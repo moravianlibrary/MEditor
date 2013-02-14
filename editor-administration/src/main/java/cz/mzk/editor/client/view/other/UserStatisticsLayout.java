@@ -32,6 +32,7 @@ import java.util.Map;
 
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.visualizations.PieChart;
@@ -179,6 +180,7 @@ public abstract class UserStatisticsLayout
         nameFlow.setHeight(40);
         addMember(nameFlow);
         addMember(chartsLayout);
+        setBackgroundColor("white");
 
         htmlPieFlow = new HTMLFlow(html.replace("%s", PIE_CHART_NESTED_DIV_ID + userId));
         htmlPieFlow.setWidth("40%");
@@ -341,10 +343,10 @@ public abstract class UserStatisticsLayout
 
     private void drawUnifyingChartsAndTables(final String[] intervals,
                                              final HashMap<String, Integer[]> userValues,
-                                             boolean showCharts) {
+                                             final boolean showCharts) {
 
-        String[] allNames = new String[userValues.size()];
-        Integer[] allValues = new Integer[userValues.size()];
+        final String[] allNames = new String[userValues.size()];
+        final Integer[] allValues = new Integer[userValues.size()];
 
         int index = 0;
         for (String user : userValues.keySet()) {
@@ -359,25 +361,38 @@ public abstract class UserStatisticsLayout
         }
 
         if (showCharts) {
-            ChartUtils.drawPieChart(JSOHelper.convertToJavaScriptArray(allNames),
-                                    JSOHelper.convertToJavaScriptArray(allValues),
-                                    allNames.length,
-                                    PIE_CHART_NESTED_DIV_ID + userId,
-                                    (int) (UserStatisticsLayout.this.getWidth() * PIE_SIZE_CONVERSION));
-
-            ChartUtils.drawBarChart(JSOHelper.convertToJavaScriptArray(allNames),
-                                    JSOHelper.convertToJavaScriptArray(allValues),
-                                    allNames.length,
-                                    LINE_CHART_NESTED_DIV_ID + userId,
-                                    (int) (UserStatisticsLayout.this.getWidth() * LINE_BAR_SIZE_CONVERSION));
             setHeight(userValues.size() * 30 + 280);
         } else {
             setHeight(userValues.size() * 25 + 30);
             redraw();
         }
-        if (table == null) {
-            table = new TableListGrid(intervals, userValues);
-            addMember(table);
-        }
+
+        Timer timer = new Timer() {
+
+            @Override
+            public void run() {
+                if (showCharts) {
+                    ChartUtils
+                            .drawPieChart(JSOHelper.convertToJavaScriptArray(allNames),
+                                          JSOHelper.convertToJavaScriptArray(allValues),
+                                          allNames.length,
+                                          PIE_CHART_NESTED_DIV_ID + userId,
+                                          (int) (UserStatisticsLayout.this.getWidth() * PIE_SIZE_CONVERSION));
+
+                    ChartUtils
+                            .drawBarChart(JSOHelper.convertToJavaScriptArray(allNames),
+                                          JSOHelper.convertToJavaScriptArray(allValues),
+                                          allNames.length,
+                                          LINE_CHART_NESTED_DIV_ID + userId,
+                                          (int) (UserStatisticsLayout.this.getWidth() * LINE_BAR_SIZE_CONVERSION));
+                }
+                if (table == null) {
+                    table = new TableListGrid(intervals, userValues);
+                    addMember(table);
+                }
+            }
+        };
+        timer.schedule(100);
+
     }
 }

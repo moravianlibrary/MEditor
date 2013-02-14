@@ -94,6 +94,7 @@ public class AdminHomeView
         meditImg.setShowDown(false);
         meditImg.setShowEdges(true);
         meditImg.setEdgeSize(3);
+        meditImg.setEdgeShowCenter(true);
 
         meditLayout.addMember(getInfo(lang.introduction()));
         meditLayout.addMember(meditImg);

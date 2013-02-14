@@ -87,6 +87,7 @@ public class AdminMenuPresenter
                               final LangConstants lang) {
         super(eventBus, view, proxy);
         this.dispatcher = dispatcher;
+        bind();
     }
 
     /**

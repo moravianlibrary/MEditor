@@ -29,13 +29,9 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
-import com.smartgwt.client.types.Alignment;
-import com.smartgwt.client.types.VerticalAlignment;
 import com.smartgwt.client.widgets.HTMLFlow;
-import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
-import com.smartgwt.client.widgets.layout.VLayout;
 import com.smartgwt.client.widgets.layout.VStack;
 
 import cz.mzk.editor.client.LangConstants;
@@ -63,41 +59,22 @@ public class AdminMenuView
     /** The layout. */
     private final VStack mainLayout;
 
-    private static final class MenuButtonLayout
-            extends VLayout {
-
-        private IButton menuButton = null;
+    private static final class MenuButtonFlow
+            extends HTMLFlow {
 
         /**
          * 
          */
-        public MenuButtonLayout(final String buttonType, String title) {
+        public MenuButtonFlow(final String buttonType, final String title) {
             super();
-            final VLayout buttonLayout = new VLayout(1);
-            buttonLayout.setAlign(VerticalAlignment.CENTER);
-            buttonLayout.setLayoutAlign(Alignment.LEFT);
-            buttonLayout.setHeight(40);
-            buttonLayout.setPadding(5);
+            setContents("<p class=\"a-btn\">" + "<span class=\"a-btn-text\">" + title + "</span>"
+                    + "<span class=\"a-btn-icon-right\"><span></span></span>" + "</p>");
 
-            setAlign(VerticalAlignment.CENTER);
-            setLayoutAlign(Alignment.LEFT);
-            setHeight(50);
-            setExtraSpace(20);
+            setTitle(title);
+            setEdgeOffset(5);
+            setExtraSpace(10);
 
-            menuButton = new IButton(title);
-            if (title.length() > 12) menuButton.setWidth(title.length() * 8);
-
-            buttonLayout.addMember(menuButton);
-
-            HTMLFlow hr = new HTMLFlow();
-            int vSize = 1;
-            hr.setContents("<HR WIDTH=\"98%\" SIZE=\"" + vSize + "\">");
-            hr.setHeight(vSize + "px");
-
-            addMember(buttonLayout);
-            addMember(hr);
-
-            menuButton.addClickHandler(new ClickHandler() {
+            addClickHandler(new ClickHandler() {
 
                 @Override
                 public void onClick(ClickEvent event) {
@@ -110,13 +87,14 @@ public class AdminMenuView
                 @Override
                 public void onMenuButtonClicked(MenuButtonClickedEvent event) {
                     if (event.getMenuButtonType() != buttonType) {
-                        buttonLayout.setBackgroundColor("#ffffff");
-                        menuButton.setDisabled(false);
+                        setContents("<p class=\"a-btn\">" + "<span class=\"a-btn-text\">" + title + "</span>"
+                                + "<span class=\"a-btn-icon-right\"><span></span></span>" + "</p>");
                     } else {
-                        buttonLayout.setBackgroundColor("#c7c7c7");
-                        menuButton.setDisabled(true);
+                        setContents("<p class=\"a-btn-selected\">" + "<span class=\"a-btn-text-selected\">"
+                                + title + "</span>"
+                                + "<span class=\"a-btn-icon-right-selected\"><span></span></span>" + "</p>");
                     }
-                    MenuButtonLayout.this.redraw();
+                    MenuButtonFlow.this.redraw();
                 }
             });
         }
@@ -148,14 +126,14 @@ public class AdminMenuView
     @Override
     public void setButtons(boolean showStat, boolean showUsers) {
 
-        mainLayout.addMember(new MenuButtonLayout(NameTokens.ADMIN_HOME, lang.home()));
-        mainLayout.addMember(new MenuButtonLayout(ADMIN_MENU_BUTTONS.MY_ACOUNT, lang.myAcountMenu()));
-        mainLayout.addMember(new MenuButtonLayout(ADMIN_MENU_BUTTONS.HISTORY, lang.historyMenu()));
-        mainLayout.addMember(new MenuButtonLayout(ADMIN_MENU_BUTTONS.STORED_AND_LOCKS, lang.storedMenu()
-                + " " + (lang.and() + " " + lang.locks()).toLowerCase()));
+        mainLayout.addMember(new MenuButtonFlow(NameTokens.ADMIN_HOME, lang.home()));
+        mainLayout.addMember(new MenuButtonFlow(ADMIN_MENU_BUTTONS.MY_ACOUNT, lang.myAcountMenu()));
+        mainLayout.addMember(new MenuButtonFlow(ADMIN_MENU_BUTTONS.HISTORY, lang.historyMenu()));
+        mainLayout.addMember(new MenuButtonFlow(ADMIN_MENU_BUTTONS.STORED_AND_LOCKS, lang.storedMenu() + "<br>"
+                + (lang.and() + " " + lang.locks()).toLowerCase()));
         if (showStat)
-            mainLayout.addMember(new MenuButtonLayout(ADMIN_MENU_BUTTONS.STATISTICS, lang.statisticsMenu()));
-        if (showUsers) mainLayout.addMember(new MenuButtonLayout(ADMIN_MENU_BUTTONS.USERS, lang.users()));
+            mainLayout.addMember(new MenuButtonFlow(ADMIN_MENU_BUTTONS.STATISTICS, lang.statisticsMenu()));
+        if (showUsers) mainLayout.addMember(new MenuButtonFlow(ADMIN_MENU_BUTTONS.USERS, lang.users()));
 
         mw.hide();
     }

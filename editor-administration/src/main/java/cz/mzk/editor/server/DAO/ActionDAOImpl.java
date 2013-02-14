@@ -928,10 +928,11 @@ public class ActionDAOImpl
         calMax.setTime(formater.parse(EditorDateUtils.getStringTimestamp(dateTo)));
 
         Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, dateFrom.getYear());
 
         if (segmentation == STATISTICS_SEGMENTATION.DAYS) {
-            int minDay = calMin.get(Calendar.DAY_OF_YEAR) - 1;
-            int maxDay = calMax.get(Calendar.DAY_OF_YEAR) - 1;
+            int minDay = calMin.get(Calendar.DAY_OF_YEAR);
+            int maxDay = calMax.get(Calendar.DAY_OF_YEAR);
 
             for (int i = minDay; i <= maxDay; i++) {
                 cal.set(Calendar.DAY_OF_YEAR, i);

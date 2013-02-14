@@ -1,13 +1,16 @@
+#mvn
 target
 
+#eclipse
 .settings
 .classpath
 .project
-.gwt
-.project
 *.launch
 
+#idea
 .idea
-*iml
+*.iml
 
 META-INF
+.gwt
+*.swp

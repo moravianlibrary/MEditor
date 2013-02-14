@@ -24,6 +24,10 @@
 
 package cz.mzk.editor.client.presenter;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import com.google.web.bindery.event.shared.EventBus;
@@ -35,12 +39,20 @@ import com.gwtplatform.mvp.client.annotations.NameToken;
 import com.gwtplatform.mvp.client.annotations.ProxyCodeSplit;
 import com.gwtplatform.mvp.client.proxy.ProxyPlace;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
+import com.smartgwt.client.util.SC;
+import com.smartgwt.client.widgets.form.fields.SelectItem;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.NameTokens;
 import cz.mzk.editor.client.NameTokens.ADMIN_MENU_BUTTONS;
+import cz.mzk.editor.client.config.EditorClientConfiguration;
+import cz.mzk.editor.client.other.LabelAndModelConverter;
 import cz.mzk.editor.client.uihandlers.StatisticsUiHandlers;
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.shared.domain.DigitalObjectModel;
+import cz.mzk.editor.shared.domain.NamedGraphModel;
+import cz.mzk.editor.shared.event.ConfigReceivedEvent;
+import cz.mzk.editor.shared.event.ConfigReceivedEvent.ConfigReceivedHandler;
 import cz.mzk.editor.shared.event.MenuButtonClickedEvent;
 
 // TODO: Auto-generated Javadoc
@@ -57,12 +69,17 @@ public class StatisticsPresenter
     /** The left presenter. */
     private final AdminMenuPresenter leftPresenter;
 
+    private final EditorClientConfiguration config;
+
+    private final LangConstants lang;
+
     /**
      * The Interface MyView.
      */
     public interface MyView
             extends View, HasUiHandlers<StatisticsUiHandlers> {
 
+        SelectItem getSelObject();
     }
 
     /**
@@ -97,10 +114,13 @@ public class StatisticsPresenter
                                MyProxy proxy,
                                final LangConstants lang,
                                final DispatchAsync dispatcher,
+                               final EditorClientConfiguration config,
                                final AdminMenuPresenter leftPresenter) {
         super(eventBus, view, proxy);
         this.leftPresenter = leftPresenter;
-
+        this.config = config;
+        this.lang = lang;
+        bind();
     }
 
     /**
@@ -109,7 +129,58 @@ public class StatisticsPresenter
     @Override
     protected void onBind() {
         super.onBind();
+        if (config != null && config.getConfiguration() != null) {
+            setSelDocument(config.getDocumentTypes());
+        }
 
+        addRegisteredHandler(ConfigReceivedEvent.getType(), new ConfigReceivedHandler() {
+
+            @Override
+            public void onConfigReceived(ConfigReceivedEvent event) {
+                String[] documentTypes;
+                if (event.isStatusOK()) {
+                    documentTypes = config.getDocumentTypes();
+                } else {
+                    documentTypes = EditorClientConfiguration.Constants.DOCUMENT_DEFAULT_TYPES;
+                }
+                setSelDocument(documentTypes);
+            }
+        });
+    }
+
+    private void setSelDocument(String[] documentTypes) {
+        LinkedHashMap<String, String> models = new LinkedHashMap<String, String>();
+        boolean isPage = false;
+
+        for (String docType : documentTypes) {
+
+            try {
+                ArrayList<DigitalObjectModel> modelList = new ArrayList<DigitalObjectModel>();
+                modelList.add(DigitalObjectModel.parseString(docType));
+                LabelAndModelConverter.setLabelAndModelConverter(lang);
+
+                while (!modelList.isEmpty()) {
+                    DigitalObjectModel lastObj = modelList.remove(modelList.size() - 1);
+                    if (!isPage && lastObj == DigitalObjectModel.PAGE) isPage = true;
+                    String labelModel = LabelAndModelConverter.getLabelFromModel().get(lastObj.getValue());
+
+                    if (!models.containsKey(labelModel)) {
+                        models.put(lastObj.getValue(), labelModel);
+                    }
+
+                    List<DigitalObjectModel> children = NamedGraphModel.getChildren(lastObj);
+                    if (children != null) {
+                        modelList.addAll(children);
+                    }
+
+                }
+
+            } catch (RuntimeException e) {
+                SC.warn(lang.operationFailed() + ": " + e);
+            }
+        }
+        getView().getSelObject().setValueMap(models);
+        if (isPage) getView().getSelObject().setDefaultValue(DigitalObjectModel.PAGE.getValue());
     }
 
     /**

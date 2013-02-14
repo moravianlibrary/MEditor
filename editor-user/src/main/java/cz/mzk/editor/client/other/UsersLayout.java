@@ -134,6 +134,7 @@ public class UsersLayout
         userGrid.setCanExpandRecords(true);
         userGrid.setMargin(5);
         userGrid.setDataSource(userDataSource);
+        userGrid.setCanDragResize(true);
 
         ListGridField nameField = new ListGridField(Constants.ATTR_NAME);
         ListGridField surnameField = new ListGridField(Constants.ATTR_SURNAME);

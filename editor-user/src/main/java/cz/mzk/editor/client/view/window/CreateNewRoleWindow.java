@@ -83,8 +83,6 @@ public abstract class CreateNewRoleWindow
 
         rightsGrid = new UniversalListGrid();
         rightsGrid.setMargin(10);
-        //        rightsGrid.setHeight(350);
-        //        rightsGrid.setWidth100();
 
         ListGridField nameField =
                 new ListGridField(Constants.ATTR_NAME, lang.name() + " " + lang.role().toLowerCase());

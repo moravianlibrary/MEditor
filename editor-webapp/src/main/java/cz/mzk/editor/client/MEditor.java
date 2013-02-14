@@ -29,13 +29,16 @@ package cz.mzk.editor.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.DelayedBindRegistry;
+import com.gwtplatform.mvp.client.proxy.PlaceRequest;
 import com.smartgwt.client.util.SC;
 
 import cz.mzk.editor.client.gin.EditorGinjector;
+import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.shared.rpc.action.CheckAndUpdateDBSchemaAction;
 import cz.mzk.editor.shared.rpc.action.CheckAndUpdateDBSchemaResult;
 
@@ -56,7 +59,17 @@ public class MEditor
     @Override
     public void onModuleLoad() {
         DelayedBindRegistry.bind(injector);
-        injector.getPlaceManager().revealCurrentPlace();
+
+        if (Location.getQueryString().startsWith("?pids=uuid:")
+                && (Location.getPath() == null || "/meditor/".equals(Location.getPath()))) {
+
+            injector.getPlaceManager()
+                    .revealPlace(new PlaceRequest(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID, Location
+                            .getQueryString().substring(Location.getQueryString().indexOf("uuid:"))));
+        } else {
+            injector.getPlaceManager().revealCurrentPlace();
+        }
+
         initializeDatabaseIfNeeded(injector.getDispatcher());
     }
 

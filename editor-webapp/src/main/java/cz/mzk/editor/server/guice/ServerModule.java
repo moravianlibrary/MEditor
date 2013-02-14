@@ -38,6 +38,7 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import cz.mzk.editor.server.OAIPMHClient;
 import cz.mzk.editor.server.OAIPMHClientImpl;
+import cz.mzk.editor.server.RequestForAddingServiceImpl;
 import cz.mzk.editor.server.SessionListener;
 import cz.mzk.editor.server.URLS;
 import cz.mzk.editor.server.Z3950Client;
@@ -112,6 +113,7 @@ import cz.mzk.editor.server.handler.GetHistoryItemInfoHandler;
 import cz.mzk.editor.server.handler.GetIngestInfoHandler;
 import cz.mzk.editor.server.handler.GetLockInformationHandler;
 import cz.mzk.editor.server.handler.GetLoggedUserHandler;
+import cz.mzk.editor.server.handler.GetObjectsToSortHandler;
 import cz.mzk.editor.server.handler.GetOcrFromPdfHandler;
 import cz.mzk.editor.server.handler.GetRecentlyModifiedHandler;
 import cz.mzk.editor.server.handler.GetRelationshipsHandler;
@@ -182,6 +184,7 @@ import cz.mzk.editor.shared.rpc.action.GetHistoryItemInfoAction;
 import cz.mzk.editor.shared.rpc.action.GetIngestInfoAction;
 import cz.mzk.editor.shared.rpc.action.GetLockInformationAction;
 import cz.mzk.editor.shared.rpc.action.GetLoggedUserAction;
+import cz.mzk.editor.shared.rpc.action.GetObjectsToSortAction;
 import cz.mzk.editor.shared.rpc.action.GetOcrFromPdfAction;
 import cz.mzk.editor.shared.rpc.action.GetRecentlyModifiedAction;
 import cz.mzk.editor.shared.rpc.action.GetRelationshipsAction;
@@ -249,6 +252,7 @@ public class ServerModule
         bindHandler(GetLockInformationAction.class, GetLockInformationHandler.class);
         bindHandler(InsertNewDigitalObjectAction.class, InsertNewDigitalObjectHandler.class);
         bindHandler(GetRelationshipsAction.class, GetRelationshipsHandler.class);
+        bindHandler(GetObjectsToSortAction.class, GetObjectsToSortHandler.class);
         bindHandler(RemoveDigitalObjectAction.class, RemoveDigitalObjectHandler.class);
         bindHandler(GetIngestInfoAction.class, GetIngestInfoHandler.class);
         bindHandler(CheckAndUpdateDBSchemaAction.class, CheckAndUpdateDBSchemaHandler.class);
@@ -346,5 +350,6 @@ public class ServerModule
         requestStaticInjection(ShibbolethClient.class);
         requestStaticInjection(LDAPAuthenticationProvider.class);
         requestStaticInjection(LDAPAuthenticationFilter.class);
+        requestStaticInjection(RequestForAddingServiceImpl.class);
     }
 }

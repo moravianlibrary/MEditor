@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.inject.Inject;
 
@@ -51,6 +52,7 @@ import com.reveregroup.gwt.imagepreloader.ImageLoadEvent;
 import com.reveregroup.gwt.imagepreloader.ImageLoadHandler;
 import com.reveregroup.gwt.imagepreloader.ImagePreloader;
 import com.smartgwt.client.data.Record;
+import com.smartgwt.client.data.RecordList;
 import com.smartgwt.client.types.DragAppearance;
 import com.smartgwt.client.types.Overflow;
 import com.smartgwt.client.types.Side;
@@ -95,6 +97,7 @@ import com.smartgwt.client.widgets.viewer.DetailViewerField;
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.config.EditorClientConfiguration;
 import cz.mzk.editor.client.mods.ModsCollectionClient;
+import cz.mzk.editor.client.other.AlphanumComparator;
 import cz.mzk.editor.client.presenter.ModifyPresenter.MyView;
 import cz.mzk.editor.client.uihandlers.ModifyUiHandlers;
 import cz.mzk.editor.client.util.ClientCreateUtils;
@@ -197,6 +200,9 @@ public class ModifyView
 
         /** The value of unlock-item. */
         UNLOCK,
+
+        /** The SORT. */
+        SORT,
 
         /** The value of refresh-item. */
         REFRESH;
@@ -754,7 +760,7 @@ public class ModifyView
         });
 
         // MENU
-        final Menu menu = getMenu(topTabSet, model, dc, mods);
+        final Menu menu = getMenu(topTabSet, dc, mods);
         IMenuButton menuButton = new IMenuButton("Menu", menu);
         menuButton.setWidth(60);
         menuButton.setHeight(16);
@@ -884,6 +890,39 @@ public class ModifyView
         getUiHandlers().onAddDigitalObject(uuid, closeButton);
     }
 
+    private void sortTab(boolean descending) {
+        EditorTabSet selectedTabSet = null;
+        if (!isSecondFocused || topTabSet2 == null) {
+            selectedTabSet = topTabSet1;
+        } else {
+            selectedTabSet = topTabSet2;
+        }
+        Tab selectedTab = selectedTabSet.getSelectedTab();
+        String modelString = selectedTab.getAttribute(ID_MODEL);
+
+        if (modelString != null) {
+            DigitalObjectModel model = DigitalObjectModel.parseString(modelString);
+            TileGrid grid = selectedTabSet.getItemGrid().get(model);
+            RecordList data = grid.getRecordList();
+
+            if (data != null && data.getLength() > 1) {
+                TreeMap<String, Record> sorted = new TreeMap<String, Record>(new AlphanumComparator());
+
+                for (int i = 0; i < data.getLength(); i++) {
+                    sorted.put(data.get(i).getAttributeAsString(Constants.ATTR_NAME), data.get(i));
+                }
+
+                int index = 0;
+                Object[] keys = sorted.keySet().toArray();
+                for (int i = (descending ? sorted.size() - 1 : 0); descending ? (i >= 0) : i < sorted.size(); i +=
+                        (descending ? -1 : 1)) {
+                    data.remove(sorted.get(keys[i]));
+                    data.addAt(sorted.get(keys[i]), index++);
+                }
+            }
+        }
+    }
+
     private void addAllStreams(List<DigitalObjectDetail> itemList, String uuid) {
         Record[] items = null;
         if (itemList.size() > 0) {
@@ -957,6 +996,7 @@ public class ModifyView
         tileGrid.setCanDrag(true);
         tileGrid.setCanAcceptDrop(true);
         tileGrid.setShowAllRecords(true);
+
         Menu menu = new Menu();
         menu.setShowShadow(true);
         menu.setShadowDepth(10);
@@ -1023,6 +1063,23 @@ public class ModifyView
                 return tileGrid.getSelection().length > 0;
             }
         });
+        MenuItem ascSortItem = new MenuItem(lang.ascending(), "icons/16/sort_ascending.png");
+        ascSortItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                sortTab(false);
+            }
+        });
+        MenuItem descSortItem = new MenuItem(lang.descending(), "icons/16/sort_descending.png");
+        descSortItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(MenuItemClickEvent event) {
+                sortTab(true);
+            }
+        });
+        menu.setItems(ascSortItem);
 
         menu.setItems(editItem,
                       separator,
@@ -1033,7 +1090,9 @@ public class ModifyView
                       copyItem,
                       pasteItem,
                       removeSelectedItem,
-                      completelyRemove);
+                      completelyRemove,
+                      descSortItem,
+                      ascSortItem);
         tileGrid.setContextMenu(menu);
         tileGrid.setDropTypes(model);
         tileGrid.setDragType(model);
@@ -1255,10 +1314,7 @@ public class ModifyView
         openedObjectsTabsets.remove(u);
     }
 
-    private Menu getMenu(final EditorTabSet topTabSet,
-                         final DigitalObjectModel model,
-                         final DublinCore dc,
-                         final ModsCollectionClient mods) {
+    private Menu getMenu(final EditorTabSet topTabSet, final DublinCore dc, final ModsCollectionClient mods) {
         Menu menu = new Menu();
         menu.setShowShadow(true);
         menu.setShadowDepth(10);
@@ -1272,6 +1328,7 @@ public class ModifyView
         MenuItem publishItem = new MenuItem(lang.publishItem(), "icons/16/add.png", "Ctrl+Alt+P");
         MenuItem persistentUrlItem = new MenuItem(lang.persistentUrl(), "icons/16/url.png", "Ctrl+Alt+W");
         MenuItem changeRightsItem = new MenuItem(lang.changeRight(), "icons/16/door.png", "Ctrl+Alt+A");
+        MenuItem sortItem = new MenuItem(lang.sort(), "icons/16/sort_ascending.png", "");
 
         removeItem.setAttribute(ID_MENU_ITEM, ATTR_MENU_ITEM.REMOVE);
         removeItem.setAttribute(ID_UUID, topTabSet.getUuid());
@@ -1363,6 +1420,18 @@ public class ModifyView
             }
         });
 
+        sortItem.setAttribute(ID_TABSET, topTabSet);
+        sortItem.setAttribute(ID_MENU_ITEM, ATTR_MENU_ITEM.SORT);
+        sortItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+            @Override
+            public void onClick(final MenuItemClickEvent event) {
+                getUiHandlers().sortWithChildren(((EditorTabSet) event.getItem()
+                        .getAttributeAsObject(ID_TABSET)).getUuid());
+            }
+
+        });
+
         menu.setItems(lockItem,
                       unlockItem,
                       saveItem,
@@ -1371,7 +1440,8 @@ public class ModifyView
                       removeItem,
                       publishItem,
                       persistentUrlItem,
-                      changeRightsItem);
+                      changeRightsItem,
+                      sortItem);
         return menu;
     }
 

@@ -22,30 +22,31 @@
  * 
  */
 
-package cz.mzk.editor.client.other;
+package cz.mzk.editor.shared.rpc.action;
 
-import com.smartgwt.client.types.SortArrow;
-import com.smartgwt.client.widgets.grid.ListGrid;
+import com.gwtplatform.dispatch.annotation.GenDispatch;
+import com.gwtplatform.dispatch.annotation.In;
+import com.gwtplatform.dispatch.annotation.Out;
 
+import cz.mzk.editor.shared.rpc.DigitalObjectRelationships;
+
+// TODO: Auto-generated Javadoc
 /**
+ * The Class GetObjectsToSort.
+ * 
  * @author Matous Jobanek
- * @version Nov 27, 2012
+ * @version Jan 30, 2013
  */
-public class UniversalListGrid
-        extends ListGrid {
+@SuppressWarnings("unused")
+@GenDispatch(isSecure = false)
+public class GetObjectsToSort {
 
-    public UniversalListGrid() {
-        super();
-        setShowSortArrow(SortArrow.CORNER);
-        setShowAllRecords(true);
-        setCanSort(true);
-        setCanHover(true);
-        setHoverOpacity(75);
-        setHoverWidth(400);
-        setHoverStyle("interactImageHover");
-        setShowHeader(false);
-        setCanSelectText(true);
-        setWidth100();
-        setHeight100();
-    }
+    /** The uuid. */
+    @In(1)
+    private String uuid;
+
+    /** The dig obj rel. */
+    @Out(1)
+    private DigitalObjectRelationships digObjRel;
+
 }

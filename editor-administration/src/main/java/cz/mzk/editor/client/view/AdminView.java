@@ -101,8 +101,10 @@ public class AdminView
         this.lang = lang;
         this.eventBus = eventBus;
         widget = new VLayout();
+        widget.setStyleName("stuccoBkgnd");
+
         leftContainer = new VLayout();
-        leftContainer.setWidth("20%");
+        leftContainer.setWidth("18%");
         leftContainer.setShowResizeBar(true);
         mainContainer = new VLayout();
         mainContainer.setWidth("*");
@@ -239,11 +241,7 @@ public class AdminView
         if (content != null) {
             if (leftWidget != null) {
                 if (leftWidget != content) {
-                    if (getUiHandlers().getLeftPresenter().getView().asWidget() == content) {
-                        //                        getUiHandlers().getLeftPresenter().onShowInputQueue();
-                    }
                     leftContainer.removeMember(leftContainer.getMember(0));
-
                 }
             }
             leftContainer.addMember(content);

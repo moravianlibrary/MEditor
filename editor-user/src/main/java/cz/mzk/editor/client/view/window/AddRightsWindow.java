@@ -83,7 +83,7 @@ public abstract class AddRightsWindow
                            final LangConstants lang,
                            final DispatchAsync dispatcher,
                            List<EDITOR_RIGHTS> currentRights) {
-        super(500, 600, lang.roles(), eventBus, 20);
+        super(500, 600, lang.dcRights(), eventBus, 20);
         this.lang = lang;
 
         grid = new UniversalListGrid();

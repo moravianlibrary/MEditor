@@ -21,7 +21,7 @@
 	<http pattern="/favicon.ico" security="none" />
 	
 		
-	<http auto-config="true" use-expressions="true">
+	<http auto-config="true" use-expressions="true" disable-url-rewriting="true">
 		<intercept-url pattern="/*/**" access="isAuthenticated()" />
 		<intercept-url pattern="/gwt/**" access="isAuthenticated()" />
 		<intercept-url pattern="/**/*.html" access="isAuthenticated()" />

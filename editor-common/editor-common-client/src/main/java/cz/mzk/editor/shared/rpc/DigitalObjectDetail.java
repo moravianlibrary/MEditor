@@ -107,6 +107,14 @@ public class DigitalObjectDetail
     }
 
     /**
+     * @param uuid
+     */
+    public DigitalObjectDetail(String uuid) {
+        super();
+        this.uuid = uuid;
+    }
+
+    /**
      * Instantiates a new abstract digital object detail.
      * 
      * @param related

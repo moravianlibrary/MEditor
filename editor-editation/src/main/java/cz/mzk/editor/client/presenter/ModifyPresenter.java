@@ -79,6 +79,7 @@ import cz.mzk.editor.client.view.window.EditorSC;
 import cz.mzk.editor.client.view.window.LockDigitalObjectWindow;
 import cz.mzk.editor.client.view.window.ModalWindow;
 import cz.mzk.editor.client.view.window.RemoveDigitalObjectWindow;
+import cz.mzk.editor.client.view.window.SortingWindow;
 import cz.mzk.editor.client.view.window.StoreWorkingCopyWindow;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.event.ChangeFocusedTabSetEvent;
@@ -90,6 +91,7 @@ import cz.mzk.editor.shared.event.KeyPressedEvent;
 import cz.mzk.editor.shared.event.OpenDigitalObjectEvent;
 import cz.mzk.editor.shared.event.RefreshTreeEvent;
 import cz.mzk.editor.shared.rpc.DigitalObjectDetail;
+import cz.mzk.editor.shared.rpc.DigitalObjectRelationships;
 import cz.mzk.editor.shared.rpc.DublinCore;
 import cz.mzk.editor.shared.rpc.LockInfo;
 import cz.mzk.editor.shared.rpc.RecentlyModifiedItem;
@@ -102,6 +104,8 @@ import cz.mzk.editor.shared.rpc.action.GetDigitalObjectDetailAction;
 import cz.mzk.editor.shared.rpc.action.GetDigitalObjectDetailResult;
 import cz.mzk.editor.shared.rpc.action.GetLockInformationAction;
 import cz.mzk.editor.shared.rpc.action.GetLockInformationResult;
+import cz.mzk.editor.shared.rpc.action.GetObjectsToSortAction;
+import cz.mzk.editor.shared.rpc.action.GetObjectsToSortResult;
 import cz.mzk.editor.shared.rpc.action.PutDescriptionAction;
 import cz.mzk.editor.shared.rpc.action.PutDescriptionResult;
 import cz.mzk.editor.shared.rpc.action.PutDigitalObjectDetailAction;
@@ -630,16 +634,7 @@ public class ModifyPresenter
                                    if (!result.isSaved()) {
                                        SC.say(lang.mesCanNotPublish());
                                    } else {
-                                       SC.ask(lang.operationSuccessful() + "<br>" + lang.refreshQuestion(),
-                                              new BooleanCallback() {
-
-                                                  @Override
-                                                  public void execute(Boolean value) {
-                                                      if (value) {
-                                                          onRefresh(digitalObject.getUuid());
-                                                      }
-                                                  }
-                                              });
+                                       askToRefresh(digitalObject.getUuid());
                                    }
                                }
 
@@ -648,6 +643,18 @@ public class ModifyPresenter
                                    super.callbackError(t);
                                }
                            });
+    }
+
+    private void askToRefresh(final String uuid) {
+        SC.ask(lang.operationSuccessful() + "<br>" + lang.refreshQuestion(), new BooleanCallback() {
+
+            @Override
+            public void execute(Boolean value) {
+                if (value) {
+                    onRefresh(uuid);
+                }
+            }
+        });
     }
 
     /*
@@ -911,5 +918,30 @@ public class ModifyPresenter
     @Override
     public void changeRights(String uuid, String oldRight) {
         new ChangeRightsWindow(uuid, getEventBus(), oldRight, lang, dispatcher);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void sortWithChildren(final String uuid) {
+        final SortingWindow sortingWindow = new SortingWindow(lang, dispatcher, getEventBus()) {
+
+            @Override
+            protected void afterPublishAction() {
+                askToRefresh(uuid);
+            }
+        };
+
+        GetObjectsToSortAction toSortAction = new GetObjectsToSortAction(uuid);
+        dispatcher.execute(toSortAction, new DispatchCallback<GetObjectsToSortResult>() {
+
+            @Override
+            public void callback(GetObjectsToSortResult result) {
+                DigitalObjectRelationships digObjRel = result.getDigObjRel();
+                sortingWindow.setObjects(digObjRel);
+            }
+        });
+
     }
 }
