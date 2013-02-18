@@ -45,6 +45,8 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.mzk.editor.server.ScanFolder;
+import cz.mzk.editor.server.ScanFolderImpl;
 import cz.mzk.editor.server.util.AudioUtils;
 import cz.mzk.editor.shared.rpc.ImageItem;
 import org.apache.commons.io.FilenameUtils;
@@ -92,6 +94,9 @@ public class ScanFolderHandler
     @Inject
     private ConversionDAO conversionDAO;
 
+    @Inject
+    private ScanFolderImpl.ScanFolderFactory scanFolderFactory;
+
     /**
      * Instantiates a new scan input queue handler.
      * 
@@ -117,6 +122,8 @@ public class ScanFolderHandler
         LOGGER.debug("Processing action: ScanFolderAction " + action.getModel() + " - " + action.getCode());
         ServerUtils.checkExpiredSession();
 
+        scanFolderFactory.create(action.getModel(), action.getCode());
+
         if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.SCAN_FOLDER_TO_CONVERT)) {
             LOGGER.warn("Bad authorization in " + this.getClass().toString());
             throw new ActionException("Bad authorization in " + this.getClass().toString());
@@ -128,33 +135,12 @@ public class ScanFolderHandler
         if (model == null || code == null) {
             return null;
         }
-        final String base = configuration.getScanInputQueuePath();
-        LOGGER.debug("Scanning folder: (model = " + model + ", code = " + code + ")");
 
-        try {
-            String name = action.getName();
-            if (name != null && !"".equals(name)) {
-                String path =
-                        File.separator + model + File.separator
-                                + ((code.contains("/")) ? code.substring(0, code.indexOf("/")) : code);
-                inputQueueDAO.updateName(path, name);
-            }
-        } catch (DatabaseException e) {
-            throw new ActionException(e);
-        }
-
-        if (base == null || "".equals(base)) {
-            LOGGER.error("Scanning folder: Action failed because attribut "
-                    + EditorConfiguration.ServerConstants.INPUT_QUEUE + " is not set.");
-            throw new ActionException("Scanning input queue: Action failed because attribut "
-                    + EditorConfiguration.ServerConstants.INPUT_QUEUE + " is not set.");
-        }
-        String[] imageTypes = configuration.getImageExtensions();
-        String prefix = base + File.separator + model + File.separator + code + File.separator;
-        List<String> wrongNames = new ArrayList<String>();
-        List<String> imgFileNames = scanDirectoryStructure(prefix, imageTypes, wrongNames);
-        if (imgFileNames == null) {
-            throw new ActionException("No images found in " + prefix);
+        ScanFolder scanFolder = scanFolderFactory.create(model, code);
+        List<String> wrongNames = scanFolder.getWrongNames();
+        List<String> imgFileNames = scanFolder.getFileNames();
+        if (imgFileNames == null || imgFileNames.isEmpty()) {
+            throw new ActionException("No images found in " + scanFolder.getPath());
         }
 
         if (imgFileNames.size() == 1 && imgFileNames.get(0).endsWith(Constants.PDF_EXTENSION)) {
@@ -173,7 +159,7 @@ public class ScanFolderHandler
             for (int i = 0; i < resolvedIdentifiers.size(); i++) {
                 if (imgFileNames.get(i).endsWith(Constants.PDF_EXTENSION)) {
                     throw new ActionException("There is more than one pdf file or one pdf file and some other file with enable extension in "
-                            + prefix);
+                            + scanFolder.getPath());
                 }
 
                 //get mimetype from extension (for audio)
@@ -318,54 +304,6 @@ public class ScanFolderHandler
         }
     }
 
-    /**
-     * Scan directory structure.
-     * 
-     * @param wrongNames
-     * @param pathPrefix
-     *        the path prefix
-     * @param relativePath
-     *        the relative path
-     * @param list
-     *        the list
-     * @param level
-     *        the level
-     * @return the list
-     */
-    private List<String> scanDirectoryStructure(String path,
-                                                final String[] imageTypes,
-                                                List<String> wrongNames) {
-        File dir = new File(path);
-        FileFilter filter = new FileFilter() {
-
-            @Override
-            public boolean accept(File pathname) {
-                for (String suffix : imageTypes) {
-                    if (pathname.getName().toLowerCase().endsWith("." + suffix.toLowerCase())) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-        };
-        File[] imgs = dir.listFiles(filter);
-        if (imgs == null || imgs.length == 0) {
-            return null;
-        }
-        ArrayList<String> list = new ArrayList<String>(imgs != null ? imgs.length : 0);
-        for (int i = 0; i < imgs.length; i++) {
-
-            String name = imgs[i].getName();
-            if (!IOUtils.containsIllegalCharacter(name)) {
-                list.add(path + name);
-            } else {
-                wrongNames.add(name);
-                LOGGER.error("This image contains some illegal character(s): " + path + name);
-            }
-        }
-        return list;
-    }
 
     /*
      * (non-Javadoc)
