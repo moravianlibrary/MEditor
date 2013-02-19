@@ -30,6 +30,7 @@ package cz.mzk.editor.server.guice;
 import javax.xml.namespace.NamespaceContext;
 
 import com.google.inject.Scopes;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.name.Names;
 import com.gwtplatform.dispatch.server.guice.HandlerModule;
 
@@ -159,6 +160,8 @@ import cz.mzk.editor.server.quartz.Quartz;
 import cz.mzk.editor.server.shibboleth.ShibbolethAuthenticationFilter;
 import cz.mzk.editor.server.shibboleth.ShibbolethClient;
 import cz.mzk.editor.server.util.ServerUtils;
+import cz.mzk.editor.server.ScanFolder;
+import cz.mzk.editor.server.ScanFolderImpl;
 import cz.mzk.editor.shared.rpc.action.ChangeRightsAction;
 import cz.mzk.editor.shared.rpc.action.CheckAndUpdateDBSchemaAction;
 import cz.mzk.editor.shared.rpc.action.CheckAvailabilityAction;
@@ -336,6 +339,10 @@ public class ServerModule
         bind(SchedulerFactory.class).to(StdSchedulerFactory.class).in(Scopes.SINGLETON);
         bind(GuiceJobFactory.class).in(Scopes.SINGLETON);
         bind(Quartz.class).in(Scopes.SINGLETON);
+
+        install(new FactoryModuleBuilder()
+                .implement(ScanFolder.class, ScanFolderImpl.class)
+                .build(ScanFolderImpl.ScanFolderFactory.class));
 
         // static injection
         requestStaticInjection(FedoraUtils.class);
