@@ -944,4 +944,9 @@ public class ModifyPresenter
         });
 
     }
+
+    @Override
+    public void addOcr(final String uuid) {
+        //TODO-MR ocr window
+    }
 }

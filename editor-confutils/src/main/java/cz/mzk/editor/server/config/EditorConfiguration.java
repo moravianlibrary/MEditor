@@ -68,14 +68,13 @@ public abstract class EditorConfiguration {
         /** The Constant IMAGE_SERVER_UNKNOWN. */
         public static final String IMAGE_SERVER_UNKNOWN = "imageServer.unknown";
 
-        /** The Constant IMAGE_SERVER_URL. */
         public static final String RECORDING_SERVER_URL = "recordingServer.url";
 
-        /** The Constant IMAGE_SERVER_KNOWN. */
         public static final String RECORDING_SERVER_KNOWN = "recordingServer.known";
 
-        /** The Constant IMAGE_SERVER_UNKNOWN. */
         public static final String RECORDING_SERVER_UNKNOWN = "recordingServer.unknown";
+
+        public static final String OCR_ABBY_SOAP_URL = "ocr.abbySoapUrl";
 
         /** The Constant DJATOKA_HOME. */
         public static final String DJATOKA_HOME = "djatoka.home";
@@ -359,12 +358,6 @@ public abstract class EditorConfiguration {
         return getConfiguration().getString(ServerConstants.IMAGE_SERVER_KNOWN);
     }
 
-    /**
-     * Gets the path to image server directory where data with unknown sysno is
-     * stored.
-     * 
-     * @return the path to image directory (unknown)
-     */
     public String getImageServerUnknown() {
         return getConfiguration().getString(ServerConstants.IMAGE_SERVER_UNKNOWN);
     }
@@ -381,7 +374,18 @@ public abstract class EditorConfiguration {
         return getConfiguration().getString(ServerConstants.RECORDING_SERVER_URL);
     }
 
+    public String getOcrAbbySoapUrl() {
+        return getConfiguration().getString(ServerConstants.OCR_ABBY_SOAP_URL);
+    }
 
+    public String getOcrEnabled() {
+        String soap = getConfiguration().getString(ServerConstants.OCR_ABBY_SOAP_URL);
+        if (soap != null && !"".equals(soap)) {
+            return "on";
+        } else {
+            return "off";
+        }
+    }
 
     /**
      * Gets the scan Djatoka home path.

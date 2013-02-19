@@ -78,9 +78,10 @@ public abstract class EditorClientConfiguration {
 
         public static final String HOSTNAME = "hostname";
 
-        public static final String SOUND_SERVER_HOSTNAME = "soundRecordingServer.url";
-
         public static final String OAI_RECORD_IDENTIFIER_LENGTH_DEFAULT = "9";
+
+        public static final String OCR_ENABLED = "ocrEnabled";
+
     }
 
     /**
@@ -150,8 +151,9 @@ public abstract class EditorClientConfiguration {
         return getConfiguration().getString(Constants.HOSTNAME, null);
     }
 
-    public String getSoundServerHostname() {
-        return getConfiguration().getString(Constants.SOUND_SERVER_HOSTNAME, null);
+    public boolean getOcrEnabled() {
+        /** Installation without Abby is default */
+        return getConfiguration().getBoolean(Constants.OCR_ENABLED, false);
     }
 
     /**

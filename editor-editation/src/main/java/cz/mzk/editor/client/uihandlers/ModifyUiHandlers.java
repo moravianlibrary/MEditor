@@ -77,4 +77,6 @@ public interface ModifyUiHandlers
     void changeRights(String uuid, String oldRight);
 
     void sortWithChildren(String uuid);
+
+    void addOcr(String uuid);
 }

@@ -104,6 +104,7 @@ public class GetClientConfigHandler
         result.put(EditorClientConfiguration.Constants.HOSTNAME, configuration.getHostname());
         result.put(EditorClientConfiguration.Constants.VSUP, configuration.getVsup());
         result.put(EditorClientConfiguration.Constants.DOCUMENT_TYPES, configuration.getDocumentTypes());
+        result.put(EditorClientConfiguration.Constants.OCR_ENABLED, configuration.getOcrEnabled());
         return new GetClientConfigResult(result);
     }
 

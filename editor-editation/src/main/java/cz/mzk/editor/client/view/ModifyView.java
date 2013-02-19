@@ -1442,6 +1442,24 @@ public class ModifyView
                       persistentUrlItem,
                       changeRightsItem,
                       sortItem);
+
+        if (config.getOcrEnabled()) {
+            MenuItem addOcrItem = new MenuItem(lang.addOcr(), "icons/16/ocrAlto.png", "");
+            addOcrItem.setAttribute(ID_TABSET, topTabSet);
+            addOcrItem.setAttribute(ID_MENU_ITEM, ATTR_MENU_ITEM.SORT);
+            addOcrItem.addClickHandler(new com.smartgwt.client.widgets.menu.events.ClickHandler() {
+
+                @Override
+                public void onClick(final MenuItemClickEvent event) {
+                    getUiHandlers().addOcr(((EditorTabSet) event.getItem()
+                            .getAttributeAsObject(ID_TABSET)).getUuid());
+                }
+
+            });
+
+            menu.addItem(addOcrItem);
+        }
+
         return menu;
     }
 
