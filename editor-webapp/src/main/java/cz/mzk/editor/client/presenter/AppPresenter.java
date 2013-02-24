@@ -248,7 +248,7 @@ public class AppPresenter
                     getView().getUsername().setContents(HtmlCode.bold(result.getName()));
                     getView().getEditUsers().setContents(lang.userMgmt());
                     getView().getEditUsers().setCursor(Cursor.HAND);
-                    getView().getEditUsers().setWidth(140);
+                    getView().getEditUsers().setWidth(180);
                     getView().getEditUsers().setHeight(15);
                     getView().getEditUsers().setStyleName("pseudolink");
                     getView().getEditUsers()
