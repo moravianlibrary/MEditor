@@ -1,8 +1,12 @@
 
 package cz.mzk.editor.server.janrain;
 
+import java.sql.SQLException;
+
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,6 +15,7 @@ import org.springframework.security.openid.OpenIDAuthenticationToken;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.server.EditorUserAuthentication;
+import cz.mzk.editor.server.DAO.DatabaseException;
 
 /*
  * Metadata Editor
@@ -48,9 +53,16 @@ public class JanrainAuthenticationProvider
      */
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String openId = (String) authentication.getPrincipal();
-        Long userId = new Long(-1);
+        Long userId = -1L;
 
-        if (openId != null) userId = JanrainClient.getUserId(openId);
+        if (openId != null)
+	    try {
+		userId = JanrainClient.getUserId(openId);
+	    } catch (DatabaseException e) {
+		throw new AuthenticationServiceException(Constants.CANNOT_CONNECT_TO_DB);
+	    } catch (SQLException e) {
+		throw new InternalAuthenticationServiceException(Constants.DB_ERROR, e);
+	    }
 
         if (userId < 0) {
             SecurityContextHolder.clearContext();
@@ -62,7 +74,6 @@ public class JanrainAuthenticationProvider
             customAuthentication.setToAdd(true);
             return customAuthentication;
         } else {
-
             EditorUserAuthentication customAuthentication =
                     new EditorUserAuthentication("ROLE_USER", authentication, USER_IDENTITY_TYPES.OPEN_ID);
             customAuthentication.setAuthenticated(true);

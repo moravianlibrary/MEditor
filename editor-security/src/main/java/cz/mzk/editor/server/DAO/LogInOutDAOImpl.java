@@ -63,9 +63,8 @@ public class LogInOutDAOImpl
             } else {
                 LOGGER.error("DB has not been updated! " + insSt);
             }
-
         } catch (SQLException e) {
-            LOGGER.error("Could not get insert item statement " + insSt, e);
+            LOGGER.error("Unable to insert information about log in or log out: " + insSt, e);
             e.printStackTrace();
         }
     }

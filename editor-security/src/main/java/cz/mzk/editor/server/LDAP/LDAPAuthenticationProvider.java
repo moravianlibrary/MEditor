@@ -3,7 +3,10 @@ package cz.mzk.editor.server.LDAP;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 
 import java.util.Date;
@@ -16,7 +19,9 @@ import javax.inject.Inject;
 import org.apache.log4j.Logger;
 
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -25,6 +30,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.server.EditorUserAuthentication;
+import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.LogInOutDAO;
 import cz.mzk.editor.server.DAO.SecurityUserDAO;
 import cz.mzk.editor.server.config.EditorConfiguration.ServerConstants;
@@ -119,12 +125,19 @@ public class LDAPAuthenticationProvider
         return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
     }
 
-    private void setLdapSearchAndProp() throws Exception {
-        ldapProperties = new Properties();
-        ldapProperties.load(new FileInputStream(new File(System.getProperty("user.home") + File.separator
-                + ".meditor/ldap.properties")));
-
-        ldapSearch = new LDAPSearchImpl(ldapProperties);
+    private void setLdapSearchAndProp() {
+	ldapProperties = new Properties();
+	try {
+	    ldapProperties.load(new FileInputStream(new File(System.getProperty("user.home") + File.separator
+		    + ".meditor/ldap.properties")));
+	} catch (FileNotFoundException e) {
+	    e.printStackTrace();
+	    throw new InternalAuthenticationServiceException("Unable to find the LDAP configuration file.", e);
+	} catch (IOException e) {
+	    e.printStackTrace();
+	    throw new InternalAuthenticationServiceException("Unable to open the LDAP configuration file.", e);
+	}
+	ldapSearch = new LDAPSearchImpl(ldapProperties);
     }
 
     /**
@@ -136,33 +149,39 @@ public class LDAPAuthenticationProvider
      *        the password
      * @return the int
      */
-    public Long verify(String login, String password) {
+    public Long verify(String login, String password) throws AuthenticationException {
+	if (ldapSearch == null || ldapProperties == null) {
+	    setLdapSearchAndProp();
+	}
 
-        try {
+	String loginAttribute = ldapProperties.getProperty("loginAttribute", "sAMAccountName");
+	String query = loginAttribute + "=" + login;
 
-            if (ldapSearch == null || ldapProperties == null) {
-                setLdapSearchAndProp();
-            }
+	boolean isAuth = ldapSearch.auth(password, query);
 
-            String loginAttribute = ldapProperties.getProperty("loginAttribute", "sAMAccountName");
-            String query = loginAttribute + "=" + login;
+	if (isAuth) {
+	    Long userId = -1L;
+	    try {
+		userId = securityUserDAO.getUserId(login, USER_IDENTITY_TYPES.LDAP, true);
+	    } catch (DatabaseException e) {
+		throw new AuthenticationServiceException(Constants.CANNOT_CONNECT_TO_DB);
+	    } catch (SQLException e) {
+		throw new InternalAuthenticationServiceException(Constants.DB_ERROR, e);
+	    }
+	    if (userId > 0) {
+		ACCESS_LOGGER.info("LOG IN: [" + FORMATTER.format(new Date()) + "] LDAP User " + login);
+		try {
+		    logInOutDAO.logInOut(userId, true);
+		} catch (DatabaseException e) {
+		    throw new AuthenticationServiceException(Constants.CANNOT_CONNECT_TO_DB);
+		}
+		return userId;
+	    } else {
+		return 0L;
+	    }
+	}
 
-            boolean isAuth = ldapSearch.auth(password, query);
-
-            if (isAuth) {
-                Long userId = securityUserDAO.getUserId(login, USER_IDENTITY_TYPES.LDAP, true);
-                if (userId > 0) {
-                    ACCESS_LOGGER.info("LOG IN: [" + FORMATTER.format(new Date()) + "] LDAP User " + login);
-                    logInOutDAO.logInOut(userId, true);
-                    return userId;
-                } else {
-                    return new Long(0);
-                }
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return new Long(-1);
+	return -1L;
     }
 
     private String getLdapName(String login) {

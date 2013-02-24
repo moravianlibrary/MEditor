@@ -24,8 +24,8 @@
 
 package cz.mzk.editor.server.janrain;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -33,6 +33,7 @@ import javax.inject.Inject;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
+import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.LogInOutDAO;
 import cz.mzk.editor.server.DAO.SecurityUserDAO;
 import cz.mzk.editor.server.config.EditorConfiguration.ServerConstants;
@@ -57,7 +58,7 @@ public class JanrainClient {
     @Inject
     private static SecurityUserDAO securityUserDAO;
 
-    public static Long getUserId(String openId) {
+    public static Long getUserId(String openId) throws DatabaseException, SQLException {
         try {
             Long userId = securityUserDAO.getUserId(openId, USER_IDENTITY_TYPES.OPEN_ID, true);
             if (userId > 0) {
@@ -67,10 +68,13 @@ public class JanrainClient {
             } else {
                 return new Long(0);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (DatabaseException ex) {
+        	ex.printStackTrace();
+        	throw ex;
+        } catch (SQLException ex) {
+        	ex.printStackTrace();
+        	throw ex;
         }
-        return new Long(-1);
     }
 
 }

@@ -38,6 +38,7 @@ import javax.naming.directory.Attributes;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -64,8 +65,7 @@ public class LDAPSearchImpl
      * @throws Exception
      *         the exception
      */
-    public LDAPSearchImpl(Properties properties)
-            throws Exception {
+    public LDAPSearchImpl(Properties properties) {
         LdapContextSource ldapContext = new LdapContextSource();
         ldapContext.setUrl(properties.getProperty("url"));
         base = properties.getProperty("base");
@@ -77,7 +77,12 @@ public class LDAPSearchImpl
         } else {
             ldapContext.setAnonymousReadOnly(true);
         }
-        ldapContext.afterPropertiesSet();
+	try {
+	    ldapContext.afterPropertiesSet();
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    throw new InternalAuthenticationServiceException("LDAP error", e);
+	}
         ldapContext.setPooled(true);
         this.ldapTemplate = new LdapTemplate(ldapContext);
     }

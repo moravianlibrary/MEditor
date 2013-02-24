@@ -107,9 +107,6 @@ public abstract class AbstractDAO {
     /** The Constant FORMATTER with format: dd.MM.yyyy HH:mm:ss. */
     public static final SimpleDateFormat FORMATTER_TO_SECONDS = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
-    //      /** The Constant FORMATTER with format: yyyy/MM/dd. */
-    //    public static final SimpleDateFormat FORMATTER_TO_DAYS = new SimpleDateFormat("yyyy/MM/dd");
-
     /** The Constant POOLABLE_YES. */
     private static final int POOLABLE_YES = 1;
 
@@ -205,13 +202,10 @@ public abstract class AbstractDAO {
             return;
         }
         try {
-            conn =
-                    DriverManager.getConnection("jdbc:postgresql://" + host + ":" + port + "/" + name,
-                                                login,
-                                                password);
+	    conn = DriverManager.getConnection("jdbc:postgresql://" + host + ":" + port + "/" + name, login, password);
         } catch (SQLException ex) {
-            LOGGER.error("Unable to connect to database at 'jdbc:postgresql://" + host + ":" + port + "/"
-                    + name + "'", ex);
+	    LOGGER.error("Unable to connect to database at 'jdbc:postgresql://" + host + ":" + port + "/" + name + "'",
+		    ex);
             throw new DatabaseException("Unable to connect to database.");
         }
     }
@@ -246,6 +240,9 @@ public abstract class AbstractDAO {
     }
 
     /**
+     * 
+     * TODO: this is so Tomcat specific!! Won't run on any other AS.
+     * 
      * Creates the correct context.
      * 
      * @param login
@@ -312,6 +309,7 @@ public abstract class AbstractDAO {
             NodeList resourceEls = contextEl.getElementsByTagName("Resource");
             Element resourceEl;
             if (resourceEls == null || resourceEls.getLength() == 0 || resourceEls.item(0) == null) {
+        	// TODO: HC, is baaad mmkayy. Externalization of the default config is much better.
                 resourceEl = contextDoc.createElement("Resource");
                 resourceEl.setAttribute("name", "jdbc/editor");
                 resourceEl.setAttribute("auth", "Container");
@@ -411,7 +409,7 @@ public abstract class AbstractDAO {
             selectSt.setString(1, identifier);
 
         } catch (SQLException e) {
-            LOGGER.error("Could not get select statement", e);
+            LOGGER.error("Could not process select statement: " + selectSt, e);
         }
         try {
             ResultSet rs = selectSt.executeQuery();
@@ -477,15 +475,4 @@ public abstract class AbstractDAO {
     protected String formatTimestampToSeconds(Timestamp timestamp) {
         return FORMATTER_TO_SECONDS.format(timestamp);
     }
-
-    // /**
-    // * Format timestamp to days, the format: yyyy/MM/dd.
-    // *
-    // * @param timestamp
-    // * the timestamp
-    // * @return the string
-    // */
-    // protected String formatTimestampToDays(Timestamp timestamp) {
-    // return FORMATTER_TO_DAYS.format(timestamp);
-    // }
 }

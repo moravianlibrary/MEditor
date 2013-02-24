@@ -48,7 +48,7 @@ public class ShibbolethAuthenticationProvider
      */
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String shibbolethIdentifier = (String) authentication.getPrincipal();
-        Long userId = new Long(-1);
+        Long userId = -1L;
 
         if (shibbolethIdentifier != null) userId = ShibbolethClient.getUserId(shibbolethIdentifier);
 
@@ -62,7 +62,6 @@ public class ShibbolethAuthenticationProvider
             customAuthentication.setToAdd(true);
             return customAuthentication;
         } else {
-
             Authentication customAuthentication =
                     new EditorUserAuthentication("ROLE_USER", authentication, USER_IDENTITY_TYPES.SHIBBOLETH);
             customAuthentication.setAuthenticated(true);

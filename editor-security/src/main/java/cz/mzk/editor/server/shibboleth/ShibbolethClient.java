@@ -24,6 +24,7 @@
 
 package cz.mzk.editor.server.shibboleth;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 
 import java.util.Date;
@@ -31,8 +32,12 @@ import java.util.Date;
 import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 
+import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
+import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.LogInOutDAO;
 import cz.mzk.editor.server.DAO.SecurityUserDAO;
 import cz.mzk.editor.server.config.EditorConfiguration.ServerConstants;
@@ -58,20 +63,25 @@ public class ShibbolethClient {
     private static SecurityUserDAO securityUserDAO;
 
     public static Long getUserId(String shibboleth) {
-        try {
-            Long userId = securityUserDAO.getUserId(shibboleth, USER_IDENTITY_TYPES.SHIBBOLETH, true);
-            if (userId > 0) {
-                ACCESS_LOGGER.info("LOG IN: [" + FORMATTER.format(new Date()) + "] Shibboleth User "
-                        + shibboleth);
-                logInOutDAO.logInOut(userId, true);
-                return userId;
-            } else {
-                return new Long(0);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return new Long(-1);
+	Long userId = -1L;
+	try {
+	    userId = securityUserDAO.getUserId(shibboleth, USER_IDENTITY_TYPES.SHIBBOLETH, true);
+	} catch (DatabaseException e) {
+	    throw new AuthenticationServiceException(Constants.CANNOT_CONNECT_TO_DB);
+	} catch (SQLException e) {
+	    throw new InternalAuthenticationServiceException(Constants.DB_ERROR, e);
+	}
+	if (userId > 0) {
+	    ACCESS_LOGGER.info("LOG IN: [" + FORMATTER.format(new Date()) + "] Shibboleth User " + shibboleth);
+	    try {
+		logInOutDAO.logInOut(userId, true);
+	    } catch (DatabaseException e) {
+		throw new AuthenticationServiceException(Constants.CANNOT_CONNECT_TO_DB);
+	    }
+	    return userId;
+	} else {
+	    return 0L;
+	}
     }
 
 }

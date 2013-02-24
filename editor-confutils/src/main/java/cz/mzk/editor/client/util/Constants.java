@@ -60,6 +60,10 @@ public class Constants {
     public static final Type<RevealContentHandler<?>> TYPE_ROOT_CONTENT = new Type<RevealContentHandler<?>>();
 
     public static final String INVALID_LOGIN_OR_PASSWORD = "Invalid login or password";
+    
+    public static final String CANNOT_CONNECT_TO_DB = "Unable to connect to the database";
+    
+    public static final String DB_ERROR = "Internal database error, check the server log for details";
 
     /** The Constant LOGO_HTML. */
     public static final String LOGO_HTML =
