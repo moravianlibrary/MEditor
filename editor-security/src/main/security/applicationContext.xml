@@ -19,6 +19,8 @@
 	<http pattern="/MEditor.css" security="none" />
 	<http pattern="/flags.gif" security="none" />
 	<http pattern="/favicon.ico" security="none" />
+	<http pattern="/bootstrap.min.css" security="none" />
+	<http pattern="/js/*" security="none" />
 	
 		
 	<http auto-config="true" use-expressions="true" disable-url-rewriting="true">
