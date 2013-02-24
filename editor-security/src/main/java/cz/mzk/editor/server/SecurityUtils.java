@@ -34,29 +34,30 @@ import javax.servlet.http.HttpServletResponse;
 public class SecurityUtils {
 
     public static void redirectToRegisterPage(HttpServletRequest request, HttpServletResponse response) {
-
-        String root =
-                (URLS.LOCALHOST() ? "http://" : "https://")
-                        + request.getServerName()
-                        + (URLS.LOCALHOST() ? (request.getServerPort() == 80
-                                || request.getServerPort() == 443 ? "" : (":" + request.getServerPort()))
-                                : "") + URLS.ROOT() + (URLS.LOCALHOST() ? "?gwt.codesvr=127.0.0.1:9997" : "");
+	String root = getRootURL(request);
         URLS.redirect(response, URLS.LOCALHOST() ? root.substring(0, root.indexOf("?")) + URLS.INFO_PAGE
                 + root.substring(root.indexOf("?")) : root + URLS.INFO_PAGE);
-
     }
 
     public static void redirectToErrorLoginPage(HttpServletRequest request, HttpServletResponse response) {
-
-        String root =
-                (URLS.LOCALHOST() ? "http://" : "https://")
-                        + request.getServerName()
-                        + (URLS.LOCALHOST() ? (request.getServerPort() == 80
-                                || request.getServerPort() == 443 ? "" : (":" + request.getServerPort()))
-                                : "") + URLS.ROOT() + (URLS.LOCALHOST() ? "?gwt.codesvr=127.0.0.1:9997" : "");
+	String root = getRootURL(request);
         URLS.redirect(response, URLS.LOCALHOST() ? root.substring(0, root.indexOf("?"))
                 + URLS.LOGIN_LOCAL_PAGE + root.substring(root.indexOf("?")) + "&" + URLS.ERROR_LOGIN_SUFFIX
                 : root + URLS.LOGIN_PAGE + "?" + URLS.ERROR_LOGIN_SUFFIX);
-
+    }
+    
+    public static void redirectToErrorDBLoginPage(HttpServletRequest request, HttpServletResponse response) {
+        String root = getRootURL(request);
+        URLS.redirect(response, URLS.LOCALHOST() ? root.substring(0, root.indexOf("?"))
+                + URLS.LOGIN_LOCAL_PAGE + root.substring(root.indexOf("?")) + "&" + URLS.ERROR_DB_SUFFIX
+                : root + URLS.LOGIN_PAGE + "?" + URLS.ERROR_DB_SUFFIX);
+    }
+    
+    private static String getRootURL(HttpServletRequest request) {
+	return (URLS.LOCALHOST() ? "http://" : "https://")
+                + request.getServerName()
+                + (URLS.LOCALHOST() ? (request.getServerPort() == 80
+                        || request.getServerPort() == 443 ? "" : (":" + request.getServerPort()))
+                        : "") + URLS.ROOT() + (URLS.LOCALHOST() ? "?gwt.codesvr=127.0.0.1:9997" : "");
     }
 }

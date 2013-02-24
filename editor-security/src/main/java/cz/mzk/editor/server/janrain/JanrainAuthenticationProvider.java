@@ -54,7 +54,6 @@ public class JanrainAuthenticationProvider
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String openId = (String) authentication.getPrincipal();
         Long userId = -1L;
-
         if (openId != null)
 	    try {
 		userId = JanrainClient.getUserId(openId);

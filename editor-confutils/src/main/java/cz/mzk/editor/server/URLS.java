@@ -74,6 +74,9 @@ public class URLS {
 
     /** The Constant ERROR_LOGIN_SUFFIX. */
     public static final String ERROR_LOGIN_SUFFIX = "login_error=1";
+    
+    /** The Constant ERROR_DB_SUFFIX. */
+    public static final String ERROR_DB_SUFFIX = "login_error=2";
 
     /** The Constant VERSION_PAGE. */
     public static final String VERSION_PAGE = "/version.html";

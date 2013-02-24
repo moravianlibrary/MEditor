@@ -36,6 +36,8 @@ import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -95,17 +97,22 @@ public class LDAPAuthenticationFilter
      * {@inheritDoc}
      */
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request,
-                                              HttpServletResponse response,
-                                              AuthenticationException failed) throws IOException,
-            ServletException {
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+	    AuthenticationException failed) throws IOException, ServletException {
+        
+        // handle the failure and redirect user to the right page
+        if (failed instanceof BadCredentialsException) {
+            SecurityUtils.redirectToErrorLoginPage(request, response);
+            return;
+        } else if (failed instanceof AuthenticationServiceException) {
+            SecurityUtils.redirectToErrorDBLoginPage(request, response);
+            return;
+        }
+        
         HttpSession session = request.getSession(true);
         Object ldapId = session.getAttribute(HttpCookies.UNKNOWN_ID_KEY);
-
-        if (ldapId != null && !Constants.INVALID_LOGIN_OR_PASSWORD.equals(failed.getMessage())) {
+        if (ldapId != null && failed instanceof UsernameNotFoundException) {
             SecurityUtils.redirectToRegisterPage(request, response);
-        } else {
-            SecurityUtils.redirectToErrorLoginPage(request, response);
         }
     }
 
