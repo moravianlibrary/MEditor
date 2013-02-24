@@ -154,19 +154,18 @@ public class HomeView
         hLayout.addMember(form);
         hLayout.addMember(open);
 
-        HTMLFlow html3 = new HTMLFlow();
-        // html3.setAlign(Alignment.RIGHT);
-        html3.setHeight("*");
-        html3.setLayoutAlign(VerticalAlignment.BOTTOM);
-        html3.setContents(lang.credits());
-        html3.setHeight(20);
+//        HTMLFlow html3 = new HTMLFlow();
+//        html3.setHeight("*");
+//        html3.setLayoutAlign(VerticalAlignment.BOTTOM);
+//        html3.setContents(lang.credits());
+//        html3.setHeight(20);
 
         layout.addMember(html1);
         layout.addMember(status);
         layout.addMember(checkButton);
         layout.addMember(html2);
         layout.addMember(hLayout);
-        layout.addMember(html3);
+//        layout.addMember(html3);
     }
 
     public void showSheduler() {
