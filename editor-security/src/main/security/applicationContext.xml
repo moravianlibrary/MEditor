@@ -26,7 +26,7 @@
 		<intercept-url pattern="/gwt/**" access="isAuthenticated()" />
 		<intercept-url pattern="/**/*.html" access="isAuthenticated()" />
 		<intercept-url pattern="/**" access="isAuthenticated()" />
-		<form-login login-page="/login.html"/>
+		<form-login login-page="/login.html" default-target-url="/meditor"/>
 		<custom-filter before="PRE_AUTH_FILTER" ref="janrainAuthenticationFilter" />
 		<custom-filter position="PRE_AUTH_FILTER" ref="shibbolethAuthenticationFilter" />
 		<custom-filter after="PRE_AUTH_FILTER" ref="ldapAuthenticationFilter" />
