@@ -210,7 +210,7 @@ public class ScanFolderHandler
                 }
 
                 if (imgFileNames.get(i).endsWith(".wav")) {
-                    item.setLength(AudioUtils.getTwoDigitLength(imgFileNames.get(i)));
+                    item.setLength(AudioUtils.getLengthDigit(imgFileNames.get(i)));
                     item.setMimeType(Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getMimeType());
                 }
                 result.add(item);
@@ -219,6 +219,8 @@ public class ScanFolderHandler
                 imageResolverDAO.insertItems(toAdd);
             }
         } catch (DatabaseException e) {
+            throw new ActionException(e);
+        } catch (IOException e) {
             throw new ActionException(e);
         }
 

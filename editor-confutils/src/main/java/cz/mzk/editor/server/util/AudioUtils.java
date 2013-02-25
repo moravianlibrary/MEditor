@@ -9,56 +9,54 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 
 /**
  * @author: Martin Rumanek
  * @version: 24.1.13
- * <p/>
- * See {@linktourl http://stackoverflow.com/questions/2709508/how-to-learn-wav-duration-in-java-media-frame-work}
+ *
+ * Java sound api require soundcard. External utility is used. (package sox)
  */
 public class AudioUtils {
-    public static Integer getLength(String path) {
+    public static Double getLength(String path) throws IOException {
         File inputFile = new File(path);
-        AudioInputStream stream;
+        Double length = null;
+        if (inputFile.isFile()) {
 
-        try {
-            stream = AudioSystem.getAudioInputStream(inputFile);
+            try {
+                Process proces = Runtime.getRuntime().exec("soxi -D " + inputFile.getAbsoluteFile());
+                char[] buf = new char[10];
+                Reader r = new InputStreamReader(proces.getInputStream(), "UTF-8");
+                r.read(buf);
+                length = Double.parseDouble(new String(buf));
 
-            AudioFormat format = stream.getFormat();
-            if (format.getEncoding() != AudioFormat.Encoding.PCM_SIGNED) {
-                format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, format
-                        .getSampleRate(), format.getSampleSizeInBits() * 2, format
-                        .getChannels(), format.getFrameSize() * 2, format
-                        .getFrameRate(), true); // big endian
-                stream = AudioSystem.getAudioInputStream(format, stream);
+            } catch (UnsupportedEncodingException e) {
+                throw new IOException(e);
+            } catch (NumberFormatException e) {
+                throw new IOException(e);
             }
-            DataLine.Info info = new DataLine.Info(Clip.class, stream.getFormat(),
-                    ((int) stream.getFrameLength() * format.getFrameSize()));
-            Clip clip = null;
-            clip = (Clip) AudioSystem.getLine(info);
-            clip.close();
-            return (int) (clip.getBufferSize()
-                    / (clip.getFormat().getFrameSize() * clip.getFormat()
-                    .getFrameRate()));
 
-
-        } catch (UnsupportedAudioFileException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (LineUnavailableException e) {
-            e.printStackTrace();
+            return length;
         }
+
 
         return null;
 
     }
 
-    public static String getTwoDigitLength(String path) {
-        int seconds = getLength(path);
-        int minutes = seconds / 3600;
-        seconds = seconds % 60;
-
-        return new String(minutes + ":" + seconds);
+    public static String getLengthDigit(String path) throws IOException {
+        int seconds = (int) Math.round(getLength(path));
+        if (seconds >= 3600) {
+            int hours = seconds / 3600;
+            int minutes = seconds % 3600;
+            seconds = minutes % 60;
+            return new String(minutes + ":" + seconds);
+        } else {
+            int minutes = seconds / 60;
+            seconds = seconds % 60;
+            return new String(minutes + ":" + seconds);
+        }
     }
 }
