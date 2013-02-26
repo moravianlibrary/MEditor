@@ -108,8 +108,6 @@ public class GetObjectsToSortHandler
      * 
      * @param digObjRel
      *        the dig obj rel
-     * @param uuidToOmit
-     *        the uuid to omit
      * @return the children
      * @throws ActionException
      */
@@ -214,7 +212,7 @@ public class GetObjectsToSortHandler
     @Override
     public void undo(GetObjectsToSortAction action, GetObjectsToSortResult result, ExecutionContext context)
             throws ActionException {
-        // TODO Auto-generated method stub
+        throw new ActionException("Undo is not supported on " + this.getClass().getSimpleName());
 
     }
 

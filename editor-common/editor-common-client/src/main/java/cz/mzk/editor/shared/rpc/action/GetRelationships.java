@@ -28,7 +28,9 @@ import java.util.List;
 
 import com.gwtplatform.dispatch.annotation.GenDispatch;
 import com.gwtplatform.dispatch.annotation.In;
+import com.gwtplatform.dispatch.annotation.Optional;
 import com.gwtplatform.dispatch.annotation.Out;
+
 
 import cz.mzk.editor.shared.rpc.DigitalObjectRelationships;
 
@@ -43,6 +45,10 @@ public class GetRelationships {
     /** The uuid of the root object */
     @In(1)
     private String uuid;
+
+    @In(2)
+    @Optional
+    private boolean withTitle;
 
     /** The main digital object relationships */
     @Out(1)

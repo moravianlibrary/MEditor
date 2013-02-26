@@ -73,6 +73,7 @@ import cz.mzk.editor.client.util.Constants.NAME_OF_TREE;
 import cz.mzk.editor.client.view.ModifyView;
 import cz.mzk.editor.client.view.other.ContainerRecord;
 import cz.mzk.editor.client.view.other.EditorTabSet;
+import cz.mzk.editor.client.view.window.AddOcrWindow;
 import cz.mzk.editor.client.view.window.ChangeRightsWindow;
 import cz.mzk.editor.client.view.window.DownloadFoxmlWindow;
 import cz.mzk.editor.client.view.window.EditorSC;
@@ -106,6 +107,8 @@ import cz.mzk.editor.shared.rpc.action.GetLockInformationAction;
 import cz.mzk.editor.shared.rpc.action.GetLockInformationResult;
 import cz.mzk.editor.shared.rpc.action.GetObjectsToSortAction;
 import cz.mzk.editor.shared.rpc.action.GetObjectsToSortResult;
+import cz.mzk.editor.shared.rpc.action.GetRelationshipsAction;
+import cz.mzk.editor.shared.rpc.action.GetRelationshipsResult;
 import cz.mzk.editor.shared.rpc.action.PutDescriptionAction;
 import cz.mzk.editor.shared.rpc.action.PutDescriptionResult;
 import cz.mzk.editor.shared.rpc.action.PutDigitalObjectDetailAction;
@@ -203,7 +206,7 @@ public class ModifyPresenter
 
     /**
      * Instantiates a new modify presenter.
-     * 
+     *
      * @param eventBus
      *        the event bus
      * @param view
@@ -501,7 +504,7 @@ public class ModifyPresenter
 
     /**
      * Gets the object.
-     * 
+     *
      * @param refresh
      *        the refresh
      * @return the object
@@ -760,7 +763,7 @@ public class ModifyPresenter
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @param storedItem
      */
 
@@ -947,6 +950,17 @@ public class ModifyPresenter
 
     @Override
     public void addOcr(final String uuid) {
-        //TODO-MR ocr window
+        final AddOcrWindow addOcrWindow = new AddOcrWindow(lang, dispatcher, getEventBus(), uuid);
+
+        GetRelationshipsAction.Builder builder = new GetRelationshipsAction.Builder(uuid);
+        builder.withTitle(true);
+        dispatcher.execute(builder.build(), new DispatchCallback<GetRelationshipsResult>() {
+            @Override
+            public void callback(GetRelationshipsResult result) {
+                DigitalObjectRelationships digObjRel = result.getDigObjRel();
+                addOcrWindow.setObjects(digObjRel);
+            }
+        });
+
+        }
     }
-}

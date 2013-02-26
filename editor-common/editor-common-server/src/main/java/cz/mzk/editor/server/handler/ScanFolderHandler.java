@@ -28,7 +28,6 @@
 package cz.mzk.editor.server.handler;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 
 import java.util.ArrayList;
@@ -45,8 +44,8 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
-import cz.mzk.editor.server.ScanFolder;
-import cz.mzk.editor.server.ScanFolderImpl;
+import cz.mzk.editor.server.utils.ScanFolder;
+import cz.mzk.editor.server.utils.ScanFolderImpl;
 import cz.mzk.editor.server.util.AudioUtils;
 import cz.mzk.editor.shared.rpc.ImageItem;
 import org.apache.commons.io.FilenameUtils;
@@ -62,7 +61,6 @@ import cz.mzk.editor.server.DAO.InputQueueItemDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.util.IOUtils;
 import cz.mzk.editor.server.util.ServerUtils;
-import cz.mzk.editor.shared.rpc.ImageItem;
 import cz.mzk.editor.shared.rpc.ServerActionResult;
 import cz.mzk.editor.shared.rpc.action.ScanFolderAction;
 import cz.mzk.editor.shared.rpc.action.ScanFolderResult;

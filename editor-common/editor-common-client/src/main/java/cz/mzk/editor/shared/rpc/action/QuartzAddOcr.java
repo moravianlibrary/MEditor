@@ -24,14 +24,13 @@
 
 package cz.mzk.editor.shared.rpc.action;
 
-import java.util.List;
-
 import com.gwtplatform.dispatch.annotation.GenDispatch;
 import com.gwtplatform.dispatch.annotation.In;
 import com.gwtplatform.dispatch.annotation.Optional;
 import com.gwtplatform.dispatch.annotation.Out;
-
 import cz.mzk.editor.shared.rpc.ProcessItem;
+
+import java.util.List;
 
 /**
  * @author Martin Rumanek
@@ -39,12 +38,11 @@ import cz.mzk.editor.shared.rpc.ProcessItem;
  */
 @GenDispatch(isSecure = false)
 @SuppressWarnings("unused")
-public class QuartzScheduleJobs {
+public class QuartzAddOcr {
 
     @In(1)
-    private ProcessItem killItem;
+    private String uuid;
 
     @Out(1)
-    private List<ProcessItem> jobs;
-
+    private boolean ok;
 }

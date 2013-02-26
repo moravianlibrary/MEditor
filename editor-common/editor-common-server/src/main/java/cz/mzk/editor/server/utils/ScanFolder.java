@@ -1,4 +1,4 @@
-package cz.mzk.editor.server;
+package cz.mzk.editor.server.utils;
 
 import java.util.List;
 

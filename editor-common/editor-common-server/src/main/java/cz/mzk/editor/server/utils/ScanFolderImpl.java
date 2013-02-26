@@ -1,4 +1,4 @@
-package cz.mzk.editor.server;
+package cz.mzk.editor.server.utils;
 
 import com.google.inject.assistedinject.Assisted;
 import com.gwtplatform.dispatch.shared.ActionException;

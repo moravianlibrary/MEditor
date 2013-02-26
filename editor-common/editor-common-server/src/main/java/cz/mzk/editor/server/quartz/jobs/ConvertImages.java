@@ -22,15 +22,15 @@
  * 
  */
 
-package cz.mzk.editor.server.quartz;
+package cz.mzk.editor.server.quartz.jobs;
 
 import com.google.inject.Injector;
 import com.gwtplatform.dispatch.shared.ActionException;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.ImageResolverDAO;
-import cz.mzk.editor.server.ScanFolder;
-import cz.mzk.editor.server.ScanFolderImpl;
+import cz.mzk.editor.server.utils.ScanFolder;
+import cz.mzk.editor.server.utils.ScanFolderImpl;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.handler.ConvertToJPEG2000Handler;
 import cz.mzk.editor.shared.rpc.ImageItem;

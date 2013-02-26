@@ -78,6 +78,8 @@ import cz.mzk.editor.server.DAO.TreeStructureDAO;
 import cz.mzk.editor.server.DAO.TreeStructureDAOImpl;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.DAO.UserDAOImpl;
+import cz.mzk.editor.server.DAO.OcrDao;
+import cz.mzk.editor.server.DAO.OcrDaoImpl;
 import cz.mzk.editor.server.LDAP.LDAPAuthenticationFilter;
 import cz.mzk.editor.server.LDAP.LDAPAuthenticationProvider;
 import cz.mzk.editor.server.config.EditorConfiguration;
@@ -153,6 +155,7 @@ import cz.mzk.editor.server.modelHandler.FedoraDigitalObjectHandler;
 import cz.mzk.editor.server.modelHandler.FedoraDigitalObjectHandlerImpl;
 import cz.mzk.editor.server.modelHandler.StoredDigitalObjectHandler;
 import cz.mzk.editor.server.modelHandler.StoredDigitalObjectHandlerImpl;
+import cz.mzk.editor.server.handler.QuartzAddOcrHandler;
 import cz.mzk.editor.server.newObject.FOXMLBuilderMapping;
 import cz.mzk.editor.server.newObject.IngestUtils;
 import cz.mzk.editor.server.quartz.GuiceJobFactory;
@@ -160,8 +163,8 @@ import cz.mzk.editor.server.quartz.Quartz;
 import cz.mzk.editor.server.shibboleth.ShibbolethAuthenticationFilter;
 import cz.mzk.editor.server.shibboleth.ShibbolethClient;
 import cz.mzk.editor.server.util.ServerUtils;
-import cz.mzk.editor.server.ScanFolder;
-import cz.mzk.editor.server.ScanFolderImpl;
+import cz.mzk.editor.server.utils.ScanFolder;
+import cz.mzk.editor.server.utils.ScanFolderImpl;
 import cz.mzk.editor.shared.rpc.action.ChangeRightsAction;
 import cz.mzk.editor.shared.rpc.action.CheckAndUpdateDBSchemaAction;
 import cz.mzk.editor.shared.rpc.action.CheckAvailabilityAction;
@@ -220,6 +223,7 @@ import cz.mzk.editor.shared.rpc.action.ScanInputQueueAction;
 import cz.mzk.editor.shared.rpc.action.StoreTreeStructureAction;
 import cz.mzk.editor.shared.rpc.action.StoredItemsAction;
 import cz.mzk.editor.shared.rpc.action.UnlockDigitalObjectAction;
+import cz.mzk.editor.shared.rpc.action.QuartzAddOcrAction;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -268,6 +272,7 @@ public class ServerModule
         bindHandler(InitializeConversionAction.class, InitializeConversionHandler.class);
         bindHandler(GetOcrFromPdfAction.class, GetOcrFromPdfHandler.class);
         bindHandler(QuartzConvertImagesAction.class, QuartzConvertImagesHandler.class);
+        bindHandler(QuartzAddOcrAction.class, QuartzAddOcrHandler.class);
         bindHandler(QuartzScheduleJobsAction.class, QuartzScheduleJobsHandler.class);
         bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).asEagerSingleton();
 
@@ -320,6 +325,7 @@ public class ServerModule
         //        bind(DAOUtils.class).to(DAOUtilsImpl.class);
         bind(ActionDAO.class).to(ActionDAOImpl.class);
         bind(StoredAndLocksDAO.class).to(StoredAndLocksDAOImpl.class);
+        bind(OcrDao.class).to(OcrDaoImpl.class);
 
         // Fedora
         bind(FedoraAccess.class).annotatedWith(Names.named("rawFedoraAccess")).to(FedoraAccessImpl.class)

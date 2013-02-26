@@ -607,6 +607,8 @@ public class Constants {
     /** The Constant TABLE_VERSION. */
     public static final String TABLE_VERSION = "version";
 
+    public static final String TABLE_OCR = "ocr";
+
     //new tables
 
     /** The Constant SEQUENCE_EDITOR_USER. */

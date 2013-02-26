@@ -37,7 +37,7 @@ import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 
-import cz.mzk.editor.server.quartz.ConvertImages;
+import cz.mzk.editor.server.quartz.jobs.ConvertImages;
 import cz.mzk.editor.server.quartz.Quartz;
 import cz.mzk.editor.shared.rpc.action.QuartzConvertImagesAction;
 import cz.mzk.editor.shared.rpc.action.QuartzConvertImagesResult;

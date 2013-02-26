@@ -31,10 +31,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.inject.name.Named;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.mzk.editor.server.fedora.FedoraAccess;
+import cz.mzk.editor.server.fedora.utils.DCUtils;
+import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
@@ -44,6 +48,9 @@ import cz.mzk.editor.shared.domain.FedoraNamespaces;
 import cz.mzk.editor.shared.rpc.DigitalObjectRelationships;
 import cz.mzk.editor.shared.rpc.action.GetRelationshipsAction;
 import cz.mzk.editor.shared.rpc.action.GetRelationshipsResult;
+import org.w3c.dom.Document;
+
+import javax.inject.Inject;
 
 /**
  * @author Matous Jobanek
@@ -59,7 +66,14 @@ public class GetRelationshipsHandler
     private List<String> uuidList;
     private List<String> sharedPages;
     private List<String> uuidNotToRemove;
-    private int test;
+    private GetRelationshipsAction action;
+
+    private static FedoraAccess fedoraAccess;
+
+    @Inject
+    public GetRelationshipsHandler(@Named("securedFedoraAccess") FedoraAccess fedoraAccess) {
+        this.fedoraAccess = fedoraAccess;
+    }
 
     /**
      * {@inheritDoc}
@@ -68,11 +82,10 @@ public class GetRelationshipsHandler
     @Override
     public GetRelationshipsResult execute(GetRelationshipsAction action, ExecutionContext context)
             throws ActionException {
-
+        this.action = action;
         LOGGER.debug("Processing action: GetRelationshipsAction " + action.getUuid());
         ServerUtils.checkExpiredSession();
 
-        test = 0;
         uuidList = new ArrayList<String>();
         sharedPages = new ArrayList<String>();
         uuidNotToRemove = new ArrayList<String>();
@@ -85,15 +98,31 @@ public class GetRelationshipsHandler
     }
 
     /**
+     *
+     * @param digObjRel
      * @param uuidToOmit
-     * @param uuid
      * @throws IOException
      */
 
-    private DigitalObjectRelationships getChildren(DigitalObjectRelationships digObjRel, String uuidToOmit) {
+    private DigitalObjectRelationships getChildren(DigitalObjectRelationships digObjRel, String uuidToOmit) throws ActionException {
+
+        if (action.isWithTitle()) {
+            DigitalObjectModel model;
+            try {
+                model = FedoraUtils.getModel(digObjRel.getUuid());
+                digObjRel.setModel(model);
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+                throw new ActionException(e);
+            }
+
+            if (!model.equals(DigitalObjectModel.PAGE)) {
+                digObjRel.setTitle(getDCTitle(digObjRel.getUuid()));
+            }
+        }
 
         uuidList.add(digObjRel.getUuid());
-        //        System.err.println(digObjRel.getUuid());
 
         ArrayList<ArrayList<String>> children = FedoraUtils.getAllChildren(digObjRel.getUuid());
 
@@ -122,7 +151,7 @@ public class GetRelationshipsHandler
         return digObjRel;
     }
 
-    private void getParents(final DigitalObjectRelationships digObjRel) {
+    private void getParents(final DigitalObjectRelationships digObjRel) throws ActionException {
         Map<String, List<DigitalObjectRelationships>> parentsMap =
                 new HashMap<String, List<DigitalObjectRelationships>>();
         List<String> parentsUuid = new ArrayList<String>();
@@ -147,11 +176,7 @@ public class GetRelationshipsHandler
 
     }
 
-    /**
-      * 
-      */
-
-    private void detectParentsConflicts(final DigitalObjectRelationships digObjRel, List<String> parentsUuid) {
+    private void detectParentsConflicts(final DigitalObjectRelationships digObjRel, List<String> parentsUuid) throws ActionException {
         for (String parentUuid : parentsUuid) {
             ArrayList<ArrayList<String>> grandParents = FedoraUtils.getRelated(parentUuid);
 
@@ -219,7 +244,6 @@ public class GetRelationshipsHandler
             if (!isRoot) {
                 ArrayList<ArrayList<String>> related = FedoraUtils.getRelated(digObjRel.getUuid());
 
-                test++;
                 for (ArrayList<String> subject : related) {
                     if (!uuidList.contains(subject.get(0))) {
                         uuidNotToRemove.add(digObjRel.getUuid());
@@ -244,6 +268,19 @@ public class GetRelationshipsHandler
         return predicate;
     }
 
+    private String getDCTitle(String uuid) {
+        Document dcDocument = null;
+        try {
+            dcDocument = fedoraAccess.getDC(uuid);
+        } catch (IOException e) {
+            LOGGER.error("Unable to get DC metadata for " + uuid + "[" + e.getMessage() + "]", e);
+        }
+        if (dcDocument != null) {
+            return DCUtils.titleFromDC(dcDocument.getDocumentElement());
+        }
+        return "";
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -256,10 +293,10 @@ public class GetRelationshipsHandler
     /**
      * {@inheritDoc}
      */
-
     @Override
     public void undo(GetRelationshipsAction arg0, GetRelationshipsResult arg1, ExecutionContext arg2)
             throws ActionException {
-        // TODO Auto-generated method stub
+        throw new ActionException("Undo is not supported on " + this.getClass().getSimpleName());
     }
+
 }

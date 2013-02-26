@@ -760,7 +760,7 @@ public class ModifyView
         });
 
         // MENU
-        final Menu menu = getMenu(topTabSet, dc, mods);
+        final Menu menu = getMenu(topTabSet, dc, mods, model);
         IMenuButton menuButton = new IMenuButton("Menu", menu);
         menuButton.setWidth(60);
         menuButton.setHeight(16);
@@ -1218,7 +1218,7 @@ public class ModifyView
     }
 
     /**
-     * Returns this widget as the {@link WidgetDisplay#asWidget()} value.
+     * Returns this widget as the {@link Widget#asWidget()} value.
      * 
      * @return the widget
      */
@@ -1314,11 +1314,11 @@ public class ModifyView
         openedObjectsTabsets.remove(u);
     }
 
-    private Menu getMenu(final EditorTabSet topTabSet, final DublinCore dc, final ModsCollectionClient mods) {
+    private Menu getMenu(final EditorTabSet topTabSet, final DublinCore dc, final ModsCollectionClient mods,
+                         DigitalObjectModel model) {
         Menu menu = new Menu();
         menu.setShowShadow(true);
         menu.setShadowDepth(10);
-
         MenuItem lockItem = new MenuItem(lang.lockItem(), "icons/16/lock_lock_all.png", "Ctrl+Alt+Z");
         MenuItem unlockItem = new MenuItem(lang.unlockItem(), "icons/16/lock_unlock_all.png", "Ctrl+Alt+O");
         MenuItem saveItem = new MenuItem(lang.saveItem(), "icons/16/disk_blue.png", "Ctrl+Alt+S");
@@ -1440,8 +1440,14 @@ public class ModifyView
                       removeItem,
                       publishItem,
                       persistentUrlItem,
-                      changeRightsItem,
-                      sortItem);
+                      changeRightsItem);
+
+        if (model.equals(DigitalObjectModel.PERIODICAL)
+                || (model.equals(DigitalObjectModel.PERIODICALVOLUME))) {
+            menu.addItem(sortItem);
+        }
+
+
 
         if (config.getOcrEnabled()) {
             MenuItem addOcrItem = new MenuItem(lang.addOcr(), "icons/16/ocrAlto.png", "");
