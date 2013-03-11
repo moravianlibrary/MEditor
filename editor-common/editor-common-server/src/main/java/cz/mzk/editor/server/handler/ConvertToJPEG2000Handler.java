@@ -99,7 +99,9 @@ public class ConvertToJPEG2000Handler
             ServerUtils.checkExpiredSession();
         }
 
-        if (item != null && item.getMimeType() != null && item.getMimeType().equals(Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getMimeType())) {
+        if (item != null && item.getMimeType() != null &&
+                (item.getMimeType().equals(Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getMimeType()) ||
+                        (item.getMimeType().equals(Constants.AUDIO_MIMETYPES.MP3_MIMETYPE.getMimeType())))) {
             convertToAudio(item);
         } else {
             if (configuration.getAkkaOn()) {
@@ -142,7 +144,10 @@ public class ConvertToJPEG2000Handler
     }
 
     private boolean convertToAudio(ImageItem item) throws ActionException {
-        System.out.println("audio" + item.toString());
+        File f = new File(item.getJpeg2000FsPath());
+        if (f.exists() && f.length() > 0) {
+            return true;
+        }
 
         String path = item.getJpgFsPath();
         String pathWithoutExtension =path.substring(0, path.lastIndexOf('.'));

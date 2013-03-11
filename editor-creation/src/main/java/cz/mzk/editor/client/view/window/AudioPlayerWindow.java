@@ -27,7 +27,6 @@ public class AudioPlayerWindow extends UniversalWindow {
         audioPane.setContents("<audio controls>"
                 + sourceBuilder(uuid, Constants.AUDIO_MIMETYPES.OGG_MIMETYPE)
                 + sourceBuilder(uuid, Constants.AUDIO_MIMETYPES.MP3_MIMETYPE)
-                + sourceBuilder(uuid, Constants.AUDIO_MIMETYPES.WAV_MIMETYPE)
                 + "</audio>"
         );
         this.addItem(audioPane);

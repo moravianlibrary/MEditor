@@ -412,6 +412,22 @@ public class CreateObject {
                                     + node.getUuid();
 
             }
+
+            //No lossless audio on the input queue
+            String soundPath = null;
+            try {
+                soundPath = imageResolverDAO.getNewImageFilePath(node.getPath());
+            } catch (DatabaseException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+                throw new CreateObjectException(e.getMessage(), e);
+            }
+            if (builder instanceof TrackBuilder) {
+                if (new File(soundPath + Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getExtension()).exists()) {
+                    ((TrackBuilder) builder).wavProvided(true);
+                }
+            }
+
             builder.setImageUrl(soundUrl);
 
         }
@@ -476,8 +492,12 @@ public class CreateObject {
             try {
                 soundPath = imageResolverDAO.getNewImageFilePath(node.getPath());
                 soundPath = soundPath.substring(0, soundPath.length()-4);
+
+                if (new File(soundPath + Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getExtension()).exists()) {
                 copySuccessWav = IOUtils.copyFile(soundPath + Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getExtension(),
                         newFilePath + Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getExtension());
+                }
+
                 copySuccessMp3 = IOUtils.copyFile(soundPath + Constants.AUDIO_MIMETYPES.MP3_MIMETYPE.getExtension(),
                         newFilePath + Constants.AUDIO_MIMETYPES.MP3_MIMETYPE.getExtension());
                 copySuccessOgg = IOUtils.copyFile(soundPath + Constants.AUDIO_MIMETYPES.OGG_MIMETYPE.getExtension(),

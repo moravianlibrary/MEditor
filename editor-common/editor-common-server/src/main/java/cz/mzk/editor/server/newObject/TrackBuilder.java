@@ -25,6 +25,7 @@ import java.util.List;
 public class TrackBuilder extends FoxmlBuilder {
 
     private final DigitalObjectModel model;
+    private boolean wavProvided = false;
 
     public TrackBuilder(NewDigitalObject object) {
         super(object);
@@ -99,9 +100,10 @@ public class TrackBuilder extends FoxmlBuilder {
                 null, "URL", getImageUrl() + ".mp3");
         appendDatastream(Constants.DATASTREAM_CONTROLGROUP.E, Constants.DATASTREAM_ID.OGG,
                 null, "URL", getImageUrl() + ".ogg");
+    }
 
-
-
+    public void wavProvided(boolean wavProvided) {
+        this.wavProvided = wavProvided;
     }
 
     @Override

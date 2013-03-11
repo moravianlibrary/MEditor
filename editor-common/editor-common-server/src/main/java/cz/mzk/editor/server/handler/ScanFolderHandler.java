@@ -197,17 +197,19 @@ public class ScanFolderHandler
                 ImageItem item = new ImageItem(uuid, resolvedIdentifier, imgFileNames.get(i));
 
                 String name = FilenameUtils.getBaseName(imgFileNames.get(i));
-                String[] splits = name.split("-");
 
-                /** audio files - special name convection */
-                if (splits.length == 4 && "DS".equals(splits[0])) {
-                    item.setName(splits[2] + "-" + splits[3]);
-                }
-                if (splits.length == 5 && "MC".equals(splits[0])) {
-                    item.setName(splits[2] + "-" + splits[3] + "-" + splits[4]);
-                }
+                if (imgFileNames.get(i).endsWith(".wav") || imgFileNames.get(i).endsWith(".mp3")) {
+                    String[] splits = name.split("-");
+                    /** audio files - special name convection */
+                    if (splits.length == 4 && "DS".equals(splits[0])) {
+                        item.setName(splits[2] + "-" + splits[3]);
+                    }
+                    else if (splits.length == 5 && "MC".equals(splits[0])) {
+                        item.setName(splits[2] + "-" + splits[3] + "-" + splits[4]);
+                    } else {
+                        item.setName(name);
+                    }
 
-                if (imgFileNames.get(i).endsWith(".wav")) {
                     item.setLength(AudioUtils.getLengthDigit(imgFileNames.get(i)));
                     item.setMimeType(Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getMimeType());
                 }
