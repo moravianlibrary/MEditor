@@ -61,6 +61,7 @@ import javax.inject.Inject;
 import com.google.inject.name.Named;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 
 import org.w3c.dom.Document;
@@ -348,8 +349,6 @@ public class FedoraUtils {
      *        the parent
      * @param doc
      *        the doc
-     * @param expr
-     *        the expr
      * @throws XPathExpressionException
      */
     public static List<Element> removeElements(Element parent, Document doc, String xPath)
@@ -483,6 +482,7 @@ public class FedoraUtils {
     private static void appendDCElement(StringBuilder contentBuilder, List<String> values, String elementName) {
         if (values != null && values.size() > 0) {
             for (String value : values) {
+                value = StringEscapeUtils.escapeXml(value);
                 contentBuilder.append(DC_PART_1).append(elementName).append(TERMINATOR2).append(value)
                         .append(DC_PART_2).append(elementName).append(TERMINATOR1);
             }
@@ -667,10 +667,9 @@ public class FedoraUtils {
     }
 
     /**
+     * @param foxmlDocument
      * @param oldContent
-     * @param document
      */
-
     private static void addOldOcr(Document foxmlDocument, String oldContent) {
         try {
             String lastContLocXPath =
@@ -699,10 +698,10 @@ public class FedoraUtils {
     }
 
     /**
-     * @param detail
      * @param foxmlDocument
+     * @param streamToModify
+     * @param newContent
      */
-
     private static void modifyStream(Document foxmlDocument, String streamToModify, String newContent) {
 
         if (newContent != null) {
