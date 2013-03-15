@@ -161,7 +161,7 @@ public class PutDigitalObjectDetailHandler
                 e.printStackTrace();
             }
 
-            if (shouldReindex) {
+            if (shouldReindex && action.isReindex()) {
                 ServerUtils.reindex(detail.getUuid());
             }
         }

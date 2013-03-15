@@ -46,6 +46,9 @@ public class InsertNewDigitalObject {
     @In(2)
     private String inputPath;
 
+    @In(3)
+    private boolean reindex;
+
     @Out(1)
     private boolean ingestSuccess;
 

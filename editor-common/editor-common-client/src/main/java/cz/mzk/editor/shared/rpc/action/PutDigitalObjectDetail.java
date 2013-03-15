@@ -48,6 +48,9 @@ public class PutDigitalObjectDetail {
     @In(2)
     private boolean versioning;
 
+    @In(3)
+    private boolean reindex;
+
     /** The saved. */
     @Out(1)
     private boolean saved;

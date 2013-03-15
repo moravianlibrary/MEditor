@@ -46,7 +46,7 @@ public interface CreateStructureUiHandlers
 
     void onAddImages(final TileGrid tileGrid, final Menu menu);
 
-    void createObjects(DublinCore dc, ModsTypeClient mods, boolean visible, int thumbPageNum);
+    void createObjects(DublinCore dc, ModsTypeClient mods, boolean visible, boolean reindex, int thumbPageNum);
 
     ModsCollectionClient getMods();
 

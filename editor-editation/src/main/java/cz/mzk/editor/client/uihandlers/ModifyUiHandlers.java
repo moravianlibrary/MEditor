@@ -46,7 +46,7 @@ public interface ModifyUiHandlers
 
     void onAddDigitalObject(final String uuid, final ImgButton closeButton);
 
-    void onSaveDigitalObject(final DigitalObjectDetail digitalObject, boolean versionable);
+    void onSaveDigitalObject(final DigitalObjectDetail digitalObject, boolean versionable, boolean reindex);
 
     void onHandleWorkingCopyDigObj(final DigitalObjectDetail digitalObject);
 

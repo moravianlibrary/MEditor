@@ -628,8 +628,8 @@ public class ModifyPresenter
      * (cz.mzk.editor.shared.valueobj.AbstractDigitalObjectDetail)
      */
     @Override
-    public void onSaveDigitalObject(final DigitalObjectDetail digitalObject, boolean versionable) {
-        dispatcher.execute(new PutDigitalObjectDetailAction(digitalObject, versionable),
+    public void onSaveDigitalObject(final DigitalObjectDetail digitalObject, boolean versionable, boolean reindex) {
+        dispatcher.execute(new PutDigitalObjectDetailAction(digitalObject, versionable, true),
                            new DispatchCallback<PutDigitalObjectDetailResult>() {
 
                                @Override

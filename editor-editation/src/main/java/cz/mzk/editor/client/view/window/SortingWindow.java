@@ -56,7 +56,6 @@ import cz.mzk.editor.shared.rpc.DigitalObjectRelationships;
 import cz.mzk.editor.shared.rpc.action.PutDigitalObjectDetailAction;
 import cz.mzk.editor.shared.rpc.action.PutDigitalObjectDetailResult;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class SortingWindow.
  * 
@@ -100,7 +99,8 @@ public abstract class SortingWindow
     }
 
     /**
-     * @param digObjRel
+     *
+     * @param digObjRelations
      */
     public void setObjects(DigitalObjectRelationships digObjRelations) {
         objects = new TreeGrid();
@@ -291,7 +291,7 @@ public abstract class SortingWindow
 
     private void sent(final List<DigitalObjectDetail> digObjects) {
         PutDigitalObjectDetailAction putObjAction =
-                new PutDigitalObjectDetailAction(digObjects.get(0), false);
+                new PutDigitalObjectDetailAction(digObjects.get(0), false, true);
         dispatcher.execute(putObjAction, new DispatchCallback<PutDigitalObjectDetailResult>() {
 
             @Override

@@ -1730,8 +1730,9 @@ public class CreateStructureView
                     protected void createAction(DublinCore dc,
                                                 ModsTypeClient mods,
                                                 Boolean makePublic,
+                                                Boolean reindex,
                                                 int thumbPageNum) {
-                        getUiHandlers().createObjects(dc, mods, makePublic, thumbPageNum);
+                        getUiHandlers().createObjects(dc, mods, makePublic, reindex, thumbPageNum);
                     }
                 };
             }

@@ -167,8 +167,11 @@ public class InsertNewDigitalObjectHandler
                 pid = Constants.FEDORA_UUID_PREFIX + object.getUuid();
             }
 
-            reindexSuccess = ServerUtils.reindex(pid);
-
+            if (action.isReindex()) {
+                reindexSuccess = ServerUtils.reindex(pid);
+            } else {
+                reindexSuccess = true;
+            }
             if (config.getImageServerInternal()) {
                 deepZoomSuccess = ServerUtils.generateDeepZoom(pid);
             }
@@ -195,7 +198,7 @@ public class InsertNewDigitalObjectHandler
     public void undo(InsertNewDigitalObjectAction action,
                      InsertNewDigitalObjectResult result,
                      ExecutionContext context) throws ActionException {
-        // TODO Auto-generated method stub
+        throw new ActionException("Undo is not supported on " + this.getClass().getSimpleName());
     }
 
 }

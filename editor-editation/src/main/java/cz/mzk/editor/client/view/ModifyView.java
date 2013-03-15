@@ -1529,7 +1529,7 @@ public class ModifyView
     @Override
     public void publish(final EditorTabSet ts) {
 
-        universalWindow = new UniversalWindow(160, 350, lang.publishName(), eventBus, 2);
+        universalWindow = new UniversalWindow(190, 350, lang.publishName(), eventBus, 2);
 
         HTMLFlow label = new HTMLFlow(HtmlCode.title(lang.areYouSure(), 3));
         label.setMargin(5);
@@ -1537,10 +1537,12 @@ public class ModifyView
         final DynamicForm form = new DynamicForm();
         form.setMargin(0);
         form.setWidth(100);
-        form.setHeight(20);
+        form.setHeight(40);
         form.setExtraSpace(7);
 
         final CheckboxItem versionable = new CheckboxItem("versionable", lang.versionable());
+        final CheckboxItem reindex = new CheckboxItem("reindex", lang.runReindex());
+        reindex.setValue(true);
         Button publish = new Button();
         publish.setTitle(lang.ok());
         publish.addClickHandler(new ClickHandler() {
@@ -1557,7 +1559,7 @@ public class ModifyView
                     return;
                 } else {
                     getUiHandlers().onSaveDigitalObject(createDigitalObjectDetail,
-                                                        versionable.getValueAsBoolean());
+                                                        versionable.getValueAsBoolean(), reindex.getValueAsBoolean());
                     universalWindow.hide();
                     universalWindow = null;
                 }
@@ -1578,7 +1580,7 @@ public class ModifyView
         hLayout.addMember(publish);
         hLayout.addMember(cancel);
         hLayout.setMargin(5);
-        form.setFields(versionable);
+        form.setFields(versionable, reindex);
         universalWindow.addItem(label);
         universalWindow.addItem(form);
         universalWindow.addItem(hLayout);

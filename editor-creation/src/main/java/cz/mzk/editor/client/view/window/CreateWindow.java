@@ -52,18 +52,16 @@ public abstract class CreateWindow
         extends UniversalWindow {
 
     /**
-     * @param height
-     * @param width
-     * @param title
+     * @param lang
+     * @param topTabSet
      * @param eventBus
      * @param isPdf
-     * @param milisToWait
      */
     public CreateWindow(final LangConstants lang,
                         final EditorTabSet topTabSet,
                         EventBus eventBus,
                         final boolean isPdf) {
-        super(200, 350, lang.publishName(), eventBus, 20);
+        super(250, 350, lang.publishName(), eventBus, 20);
 
         HTMLFlow label = new HTMLFlow(HtmlCode.title(lang.areYouSure(), 3));
         label.setMargin(5);
@@ -74,6 +72,15 @@ public abstract class CreateWindow
         form.setHeight(30);
 
         HTMLFlow setRightsFlow = new HTMLFlow(lang.setRights());
+
+        final CheckboxItem reindex = new CheckboxItem("reindex", lang.runReindex());
+        reindex.setValue(true);
+        final DynamicForm formReindex = new DynamicForm();
+        formReindex.setMargin(0);
+        formReindex.setWidth(100);
+        formReindex.setExtraSpace(7);
+        formReindex.setFields(reindex);
+
 
         final CheckboxItem makePublic = new CheckboxItem("makePublic", "public");
         final CheckboxItem makePrivate = new CheckboxItem("makePrivate", "private");
@@ -128,7 +135,7 @@ public abstract class CreateWindow
                     if (thumbPageNum <= 0) SC.say(lang.notANumber());
                 }
 
-                createAction(dc, mods, makePublic.getValueAsBoolean(), thumbPageNum);
+                createAction(dc, mods, makePublic.getValueAsBoolean(), reindex.getValueAsBoolean(), thumbPageNum);
                 hide();
             }
         });
@@ -146,11 +153,11 @@ public abstract class CreateWindow
         hLayout.addMember(publish);
         hLayout.addMember(cancel);
         hLayout.setMargin(5);
-
         form.setFields(makePublic, makePrivate);
 
         setEdgeOffset(20);
         addItem(label);
+        addItem(formReindex);
         addItem(setRightsFlow);
 
         if (!isPdf) {
@@ -177,5 +184,6 @@ public abstract class CreateWindow
     protected abstract void createAction(DublinCore dc,
                                          ModsTypeClient mods,
                                          Boolean makePublic,
+                                         Boolean reindex,
                                          int thumbPageNum);
 }

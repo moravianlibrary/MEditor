@@ -47,7 +47,6 @@ import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.presenter.HomePresenter;
 import cz.mzk.editor.client.util.HtmlCode;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class HomeView.
  */
@@ -170,11 +169,12 @@ public class HomeView
 
     public void showSheduler() {
         scheduler = new IButton(lang.scheduler());
+        scheduler.setAutoFit(true);
         layout.addMember(scheduler, 3);
     }
 
     /**
-     * Returns this widget as the {@link WidgetDisplay#asWidget()} value.
+     * Returns this widget as the {@link  Widget#asWidget()} value.
      * 
      * @return the widget
      */
