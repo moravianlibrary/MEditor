@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 
-<beans:beans xmlns="http://www.springframework.org/schema/security"
-	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<b:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:b="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
 	                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
-
 
 
 	<http pattern="/info.html" security="none" />
@@ -32,18 +31,19 @@
 		<custom-filter before="PRE_AUTH_FILTER" ref="janrainAuthenticationFilter" />
 		<custom-filter position="PRE_AUTH_FILTER" ref="shibbolethAuthenticationFilter" />
 		<custom-filter after="PRE_AUTH_FILTER" ref="ldapAuthenticationFilter" />
+		<custom-filter position="CHANNEL_FILTER" ref="channelProcessingFilter" />
 	</http>
 
-	<beans:bean id="ldapAuthenticationProvider"
+	<b:bean id="ldapAuthenticationProvider"
 		class="cz.mzk.editor.server.LDAP.LDAPAuthenticationProvider" />
 
-	<beans:bean id="janrainAuthenticationProvider"
+	<b:bean id="janrainAuthenticationProvider"
 		class="cz.mzk.editor.server.janrain.JanrainAuthenticationProvider">
-	</beans:bean>
+	</b:bean>
 
-	<beans:bean id="shibbolethAuthenticationProvider"
+	<b:bean id="shibbolethAuthenticationProvider"
 		class="cz.mzk.editor.server.shibboleth.ShibbolethAuthenticationProvider">
-	</beans:bean>
+	</b:bean>
 
 	<authentication-manager alias="authenticationManager">
 		<authentication-provider ref="ldapAuthenticationProvider" />
@@ -51,19 +51,44 @@
 		<authentication-provider ref="shibbolethAuthenticationProvider" />
 	</authentication-manager>
 
-	<beans:bean id="ldapAuthenticationFilter"
+	<b:bean id="ldapAuthenticationFilter"
 		class="cz.mzk.editor.server.LDAP.LDAPAuthenticationFilter">
-		<beans:property name="authenticationManager" ref="authenticationManager" />
-	</beans:bean>
+		<b:property name="authenticationManager" ref="authenticationManager" />
+	</b:bean>
 
-	<beans:bean id="janrainAuthenticationFilter"
+	<b:bean id="janrainAuthenticationFilter"
 		class="cz.mzk.editor.server.janrain.JanrainAuthenticationFilter">
-		<beans:property name="authenticationManager" ref="authenticationManager" />
-	</beans:bean>
+		<b:property name="authenticationManager" ref="authenticationManager" />
+	</b:bean>
 
-	<beans:bean id="shibbolethAuthenticationFilter"
+	<b:bean id="shibbolethAuthenticationFilter"
 		class="cz.mzk.editor.server.shibboleth.ShibbolethAuthenticationFilter">
-		<beans:property name="authenticationManager" ref="authenticationManager" />
-	</beans:bean>
+		<b:property name="authenticationManager" ref="authenticationManager" />
+	</b:bean>
 
-</beans:beans>
+	<b:bean id="channelProcessingFilter"
+		class="org.springframework.security.web.access.channel.ChannelProcessingFilter">
+		<b:property name="channelDecisionManager" ref="channelDecisionManager" />
+		<b:property name="securityMetadataSource">
+			<filter-security-metadata-source path-type="ant">
+				<intercept-url pattern="/**" access="REQUIRES_SECURE_CHANNEL" />
+			</filter-security-metadata-source>
+		</b:property>
+	</b:bean>
+
+	<b:bean id="channelDecisionManager"
+		class="org.springframework.security.web.access.channel.ChannelDecisionManagerImpl">
+		<b:property name="channelProcessors">
+			<b:list>
+				<b:ref bean="secureChannelProcessor" />
+				<b:ref bean="insecureChannelProcessor" />
+			</b:list>
+		</b:property>
+	</b:bean>
+
+	<b:bean id="secureChannelProcessor"
+		class="org.springframework.security.web.access.channel.SecureChannelProcessor" />
+	<b:bean id="insecureChannelProcessor"
+		class="org.springframework.security.web.access.channel.InsecureChannelProcessor" />
+
+</b:beans>
