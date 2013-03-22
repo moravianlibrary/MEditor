@@ -62,45 +62,22 @@ public class URLS {
     }
 
     // public static final String ROOT = "/skin1";
-
-    /** The Constant MAIN_PAGE. */
-    public static final String MAIN_PAGE = "/MEditor.html";
-
-    /** The Constant LOGIN_PAGE. */
-    public static final String LOGIN_PAGE = "/login.html";
-
-    /** The Constant LOGIN_LOCAL_PAGE. */
-    public static final String LOGIN_LOCAL_PAGE = "/loginLocal.html";
-
-    /** The Constant ERROR_LOGIN_SUFFIX. */
-    public static final String ERROR_LOGIN_SUFFIX = "login_error=1";
     
-    /** The Constant ERROR_DB_SUFFIX. */
+    public static final String HTML_PREFIX = "/html";
+    public static final String MAIN_PAGE = "/MEditor.html";
+    public static final String LOGIN_PAGE = HTML_PREFIX + "/login.html";
+    public static final String LOGIN_LOCAL_PAGE = HTML_PREFIX + "/loginLocal.html";
+    public static final String ERROR_LOGIN_SUFFIX = "login_error=1";
     public static final String ERROR_DB_SUFFIX = "login_error=2";
-
-    /** The Constant VERSION_PAGE. */
-    public static final String VERSION_PAGE = "/version.html";
-
-    /** The Constant INFO_PAGE. */
-    public static final String INFO_PAGE = "/info.html";
-
-    public static final String NOT_FOUND_PAGE = "/404.html";
-
+    public static final String INFO_PAGE = HTML_PREFIX + "/info.html";
+    public static final String NOT_FOUND_PAGE = HTML_PREFIX + "/404.html";
     public static final String NOT_FOUND_IMAGE = "/images/404.jpg";
-
     public static final String ICON = "/favicon.ico";
-
-    public static final String FLAGS = "/flags.gif";
-
-    public static final String CSS = "/MEditor.css";
-
+    public static final String FLAGS = "/images/flags.gif";
+    public static final String CSS = "/css/MEditor.css";
     public static final String REQUEST_PREFIX = "/request";
-
-    /** The Constant AUTH_SERVLET. */
     public static final String AUTH_SERVLET = "/auth";
-
     public static final String DOWNLOAD_SERVLET = "/download";
-
     public static final String DJATOKA_METADATA =
             "/djatoka/resolver?url_ver=Z39.88-2004&svc_id=info:lanl-repo/svc/getMetadata&rft_id=";
 
@@ -115,7 +92,6 @@ public class URLS {
             add(CSS);
             add(ICON);
             add(FLAGS);
-            add(VERSION_PAGE);
             add(DOWNLOAD_SERVLET);
             add(NOT_FOUND_PAGE);
             add(NOT_FOUND_IMAGE);

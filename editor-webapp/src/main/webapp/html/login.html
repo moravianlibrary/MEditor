@@ -16,19 +16,21 @@
       })();
     </script>
     <!-- Bootstrap -->
-    <link href="bootstrap.min.css" rel="stylesheet" media="screen" />
+    <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen" />
     <style type="text/css">
       #logo {margin:5px; margin-bottom:30px;}
       #authn {margin:5px;}
       #ldap  {margin:25px; margin-top:5px;}
       #shib  {margin:5px; margin-left:25px;}
+      .show  {display: block;}
+      .hide  {display: none;}
     </style>
     <title>Login</title>
   </head>
   <body>
-    <script src="js/jquery-1.9.1.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <div id="logo"><a href="http://code.google.com/p/meta-editor/"><img src="http://code.google.com/p/meta-editor/logo?cct=1328135294" alt="editor logo" /> </a> <br /> <a href="http://code.google.com/p/meta-editor/">Project Page</a>
+    <script src="../js/jquery-1.9.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <div id="logo"><a href="http://code.google.com/p/meta-editor/"><img src="../images/editor_logo.png" alt="editor logo" /> </a> <br /> <a href="http://code.google.com/p/meta-editor/">Project Page</a>
     </div>
     <div class="alert alert-info fade in hide" id="notification">
       <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -39,29 +41,29 @@
     
     
     
-      <!-- Menu, comment an item out if you want to disable some authentication method -->
+      <!-- Menu, set the style to show/hide if you want to disable some authentication method -->
       <ul class="nav nav-tabs">
       
         <!-- OpenID -->
         <li class="active"><a href="#tab1" data-toggle="tab">OpenID</a></li>
         
         <!-- LDAP -->
-        <li><a href="#tab2" data-toggle="tab">LDAP</a></li>
+        <li class="${filter.ldap}"><a href="#tab2" data-toggle="tab">LDAP</a></li>
         
         <!-- Shibboleth -->
-        <li><a href="#tab3" data-toggle="tab">Shibboleth</a></li>
+        <li class="${filter.shib}"><a href="#tab3" data-toggle="tab">Shibboleth</a></li>
       </ul>
       
       
       
       <div class="tab-content">
         <div class="tab-pane active" id="tab1">
-          <form name="f" action="/meditor/j_spring_security_check" method="POST">
-            <iframe src="https://metaeditor.rpxnow.com/openid/embed?token_url=http%3A%2F%2F127.0.0.1:8888%2Fjanrain_spring_security_check" scrolling="no" frameBorder="no" allowtransparency="true" style="width: 400px; height: 240px" action="/meditor/janrain_spring_security_check" method="POST"></iframe>
+          <form name="f" action="../meditor/j_spring_security_check" method="POST">
+            <iframe src="https://metaeditor.rpxnow.com/openid/embed?token_url=https%3A%2F%2F${filter.hostname}%2Fmeditor%2Fjanrain_spring_security_check" scrolling="no" frameBorder="no" allowtransparency="true" style="width: 400px; height: 240px" action="../meditor/janrain_spring_security_check" method="POST"></iframe>
           </form>
         </div>
         <div class="tab-pane" id="tab2">
-          <form name="f" action="/meditor/j_spring_security_check" method="POST">
+          <form name="f" action="../meditor/j_spring_security_check" method="POST">
             <table id="ldap">
               <tr>
                 <td>Login:</td>
@@ -78,8 +80,8 @@
           </form>
         </div>
         <div class="tab-pane" id="tab3">
-          <a id="shib" class="login" href="http://127.0.0.1:8888/Shibboleth.sso/Login?target=https%3A%2F%2F127.0.0.1:8888%2shibboleth_spring_security_check">
-          <img border="0" src="./images/mzk_shibboleth.gif" alt="mzk shibboleth logo" width="350px" /> </a>
+          <a id="shib" class="login" href="http://${filter.hostname}/Shibboleth.sso/Login?target=https%3A%2F%2F${filter.hostname}%2Fmeditor%2Fshibboleth_spring_security_check">
+          <img border="0" src="../images/shibboleth.png" alt="shibboleth logo" width="350px"/> </a>
         </div>
       </div>
     </div>
@@ -90,9 +92,9 @@
       	for ( var i = 0; i < vars.length; i++) {
       	  var pair = vars[i].split("=");
       	  if (pair[0] === "login_error") {
-      	    if (pair[1] == 1) {
-      	      return "Unable to login - wrong username or password, please check the credentials and try it again.";
-      	    } else if (pair[1] == 2) {
+            if (pair[1] == 1) {
+              return "Unable to login - wrong username or password, please check the credentials and try it again.";
+            } else if (pair[1] == 2) {
       	      return "Unable to login - please check whether the database is running. There should be more info in the server log.";
       	    }
           }

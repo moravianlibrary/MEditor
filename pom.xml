@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Usage: mvn install [-Denv=editor] for generating war for editor.mzk.cz 
-	mvn install -Denv=editor-devel for generating war for editor-devel.mzk.cz 
-	mvn install -P dev for development purposes (1 locale, 1 browser, shorter 
-	compilation) mvn install -Dfilter.hostname=X for generating war for hostname 
-	X -->
+<!-- Usage: 
+    mvn install [-Denv=mzk] for generating war for editor.mzk.cz 
+	mvn install -Denv=mzk-devel for generating war for editor-devel.mzk.cz 
+	mvn install -P dev for development purposes (1 locale, 1 browser, shorter compilation) 
+	mvn install -Dfilter.hostname=X -Dfilter.viewerCredits=Y for generating war for hostname X
+	
+	predefined environments are: cuni,
+	                             mzk,
+	                             mzk-devel,
+	                             ntk,
+	                             production-editor, 
+	                             production-editor-devel 
+-->
+	
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
@@ -51,6 +60,12 @@
 		<developer>
 			<name>Jobanek, Matous</name>
 			<email>matousjobanek@gmail.com</email>
+			<timezone>+1</timezone>
+		</developer>
+		
+		<developer>
+			<name>Rumanek, Martin</name>
+			<email>martin@rumanek.com</email>
 			<timezone>+1</timezone>
 		</developer>
 	</developers>

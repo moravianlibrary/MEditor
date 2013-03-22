@@ -112,14 +112,13 @@
 	</session-config>
 
 	<welcome-file-list>
-		<welcome-file>MEditor.html</welcome-file>
+		<welcome-file>/MEditor.html</welcome-file>
 	</welcome-file-list>
 
 	<error-page>
 		<error-code>404</error-code>
-		<location>/404.html</location>
+		<location>/html/404.html</location>
 	</error-page>
-
 
 	<resource-ref>
 		<res-ref-name>jdbc/editor</res-ref-name>

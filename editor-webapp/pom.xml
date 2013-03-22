@@ -163,7 +163,7 @@
 						<artifactId>maven-compiler-plugin</artifactId>
 					</plugin>
 
-					<!-- Compile GWT modules -->
+					<!-- Compile GWT modules, all permutations -->
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>gwt-maven-plugin</artifactId>
@@ -229,10 +229,8 @@
 									<directory>${basedir}/../editor-webapp/src/main/webapp</directory>
 									<filtering>true</filtering>
 									<includes>
-										<include>login.html</include>
+										<include>html/login.html</include>
 										<include>viewer/viewer.html</include>
-										<include>MEditor.css</include>
-										<include>MEditor.html</include>
 									</includes>
 								</resource>
 								<resource>
@@ -250,34 +248,83 @@
 			</build>
 		</profile>
 
+        <!-- Deployment profiles -->
 		<profile>
-			<id>prod-editor-devel</id>
+			<id>mzk-devel</id>
 			<activation>
 				<property>
 					<name>env</name>
-					<value>editor-devel</value>
+					<value>mzk-devel</value>
 				</property>
 			</activation>
 			<build>
 				<filters>
 					<filter>
-						${basedir}/../src/main/filters/production-editor-devel.properties
+						${basedir}/../src/main/filters/mzk-devel.properties
 					</filter>
 				</filters>
 			</build>
 		</profile>
 		<profile>
-			<id>prod-editor</id>
+			<id>mzk</id>
 			<activation>
 				<property>
 					<name>env</name>
-					<value>editor</value>
+					<value>mzk</value>
 				</property>
 			</activation>
 			<build>
 				<filters>
 					<filter>
-						${basedir}/../src/main/filters/production-editor.properties
+						${basedir}/../src/main/filters/mzk.properties
+					</filter>
+				</filters>
+			</build>
+		</profile>
+	    <profile>
+			<id>vsup</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>vsup</value>
+				</property>
+			</activation>
+			<build>
+				<filters>
+					<filter>
+						${basedir}/../src/main/filters/vsup.properties
+					</filter>
+				</filters>
+			</build>
+		</profile>
+	    <profile>
+			<id>cuni</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>cuni</value>
+				</property>
+			</activation>
+			<build>
+				<filters>
+					<filter>
+						${basedir}/../src/main/filters/cuni.properties
+					</filter>
+				</filters>
+			</build>
+		</profile>
+	    <profile>
+			<id>ntk</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>ntk</value>
+				</property>
+			</activation>
+			<build>
+				<filters>
+					<filter>
+						${basedir}/../src/main/filters/ntk.properties
 					</filter>
 				</filters>
 			</build>
@@ -325,54 +372,6 @@
 								<configuration>
 									<module>cz.mzk.editor.MEditorDev</module>
 									<module>cz.mzk.editor.RequestForAddingDev</module>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		
-		<profile>
-			<id>medit</id>
-			<build>
-				<plugins>
-					<!-- Compile GWT modules (dev -> 1 locale, 1 browser) -->
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>gwt-maven-plugin</artifactId>
-						<configuration>
-							<noServer>true</noServer>
-							<inplace>false</inplace>
-							<logLevel>INFO</logLevel>
-							<draftCompile>true</draftCompile>
-							<soyc>false</soyc>
-							<buildOutputDirectory>target/gwtclasses</buildOutputDirectory>
-							<hostedWebapp>target/hostedWar</hostedWebapp>
-							<debugSuspend>false</debugSuspend>
-							<!--<style>OBF</style> -->
-							<style>DETAILED</style>
-							<strict>true</strict>
-						</configuration>
-						<executions>
-							<execution>
-								<configuration>
-									<modules>
-										<module>cz.mzk.editor.MEditor</module>
-									</modules>
-								</configuration>
-								<id>gwt-goals</id>
-								<goals>
-									<goal>compile</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>default-cli</id>
-								<goals>
-									<goal>debug</goal>
-								</goals>
-								<configuration>
-									<module>cz.mzk.editor.MEditor</module>
 								</configuration>
 							</execution>
 						</executions>

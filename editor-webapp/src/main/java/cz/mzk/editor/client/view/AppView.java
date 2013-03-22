@@ -113,8 +113,6 @@ public class AppView
         topContainer.setHeight(45);
 
         HTMLFlow logo = new HTMLFlow(Constants.LOGO_HTML);
-        // Img logo = new Img("logo_bw.png", 140, 40);
-        // Img logo = new Img("mzk_logo.gif", 283, 87);
         topContainer.addMember(logo);
 
         HLayout logged = new HLayout();
@@ -174,7 +172,7 @@ public class AppView
                 });
                 HTMLPane helpPane = new HTMLPane();
                 helpPane.setPadding(15);
-                helpPane.setContentsURL("./help_" + (isEn ? "en.html" : "cs.html"));
+                helpPane.setContentsURL("./html/help_" + (isEn ? "en.html" : "cs.html"));
                 helpPane.setContentsType(ContentsType.FRAGMENT);
                 winModal.addItem(helpPane);
                 winModal.show();

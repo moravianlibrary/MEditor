@@ -162,7 +162,7 @@ public class AdminView
                 winModal = new UniversalWindow(800, 600, lang.help(), eventBus, 50);
                 HTMLPane helpPane = new HTMLPane();
                 helpPane.setPadding(15);
-                helpPane.setContentsURL("./help_" + (isEn ? "en.html" : "cs.html"));
+                helpPane.setContentsURL("./html/help_" + (isEn ? "en.html" : "cs.html"));
                 helpPane.setContentsType(ContentsType.FRAGMENT);
                 winModal.addItem(helpPane);
                 winModal.centerInPage();
