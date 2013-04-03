@@ -28,6 +28,7 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Alignment;
+import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.events.ClickEvent;
@@ -40,9 +41,18 @@ import com.smartgwt.client.widgets.grid.ListGridRecord;
 
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
+import cz.mzk.editor.shared.erraiPortable.QuartzJobAction;
 import cz.mzk.editor.shared.rpc.ProcessItem;
 import cz.mzk.editor.shared.rpc.action.QuartzScheduleJobsAction;
 import cz.mzk.editor.shared.rpc.action.QuartzScheduleJobsResult;
+import org.jboss.errai.bus.client.api.Message;
+import org.jboss.errai.bus.client.api.MessageCallback;
+import org.jboss.errai.bus.client.framework.MessageBus;
+
+import javax.inject.Inject;
+import java.io.Console;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Martin Rumanek
@@ -55,16 +65,19 @@ public class SchedulerWindow
     @SuppressWarnings("unused")
     private final LangConstants lang;
 
+
+    private final MessageBus messageBus;
+
     /**
-     * @param height
-     * @param width
-     * @param title
+     *
      * @param eventBus
-     * @param milisToWait
+     * @param lang
+     * @param dispatcher
      */
-    public SchedulerWindow(final EventBus eventBus, final LangConstants lang, final DispatchAsync dispatcher) {
+    public SchedulerWindow(final EventBus eventBus, final LangConstants lang, final DispatchAsync dispatcher, final MessageBus bus) {
         super(630, 600, "Scheduler", eventBus, 50);
         this.lang = lang;
+        this.messageBus = bus;
         jobsGrid = new ListGrid() {
 
             @Override
@@ -110,6 +123,28 @@ public class SchedulerWindow
         getJobs(dispatcher);
         centerInPage();
         addItem(jobsGrid);
+
+        messageBus.subscribe("QuartzBroadcastReceiver", new MessageCallback() {
+
+            @Override
+            public void callback(Message message) {
+                QuartzJobAction jobAction = message.get(QuartzJobAction.class, "jobDetail");
+                Record processRecord = new  Record();
+                processRecord.setAttribute("group", jobAction.getProcessGroup());
+                processRecord.setAttribute("name", jobAction.getProcessName());
+                switch (jobAction.getAction()) {
+                    case TO_BE_EXECUTED:
+                        jobsGrid.addData(processRecord);
+                        break;
+                    case EXECUTION_VETOED:
+                        jobsGrid.removeData(processRecord);
+                        break;
+                    case WAS_EXECUTED:
+                        jobsGrid.removeData(processRecord);
+                }
+            }
+        });
+
         show();
     }
 
@@ -125,8 +160,6 @@ public class SchedulerWindow
                                        Record processRecord = new Record();
                                        processRecord.setAttribute("group", process.getProcessGroup());
                                        processRecord.setAttribute("name", process.getProcessName());
-                                       processRecord.setAttribute("action", "");
-                                       processRecord.setAttribute("test", "test");
                                        jobs[i++] = processRecord;
                                    }
                                    jobsGrid.setData(jobs);

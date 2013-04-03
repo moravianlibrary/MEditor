@@ -27,7 +27,9 @@
 	<!-- other -->
 	<inherits name="com.reveregroup.gwt.imagepreloader.ImagePreloader" />
 	<inherits name='com.google.gwt.visualization.Visualization'/>
-
+    <inherits name="org.jboss.errai.bus.ErraiBus"/>
+    <inherits name="org.jboss.errai.common.ErraiCommon"/>
+    <inherits name="org.jboss.errai.marshalling.ErraiMarshalling" />
 
 	<!-- <inherits name='com.smartclient.theme.fleet.Fleet'/> -->
 	<!-- <inherits name='com.smartclient.theme.silverwave.SilverWave'/> -->

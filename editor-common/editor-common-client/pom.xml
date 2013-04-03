@@ -73,6 +73,20 @@
 			<groupId>com.allen-sauer.gwt.log</groupId>
 			<artifactId>gwt-log</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>org.jboss.errai</groupId>
+            <artifactId>errai-common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.errai</groupId>
+            <artifactId>errai-bus</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.errai</groupId>
+            <artifactId>errai-tools</artifactId>
+        </dependency>
 	</dependencies>
 
 	<build>

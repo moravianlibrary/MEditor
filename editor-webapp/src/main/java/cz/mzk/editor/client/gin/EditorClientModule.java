@@ -76,6 +76,7 @@ import cz.mzk.editor.client.view.StatisticsView;
 import cz.mzk.editor.client.view.StoredAndLocksView;
 import cz.mzk.editor.client.view.UserView;
 import cz.mzk.editor.client.view.other.DCTab;
+import org.jboss.errai.bus.client.framework.MessageBus;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -175,6 +176,7 @@ public class EditorClientModule
         bind(CachingDispatchAsync.class);
         bind(EditorClientConfiguration.class).to(EditorClientConfigurationImpl.class);
 
+        bind(MessageBus.class).toProvider(MessageBusProvider.class);
         requestStaticInjection(DCTab.class);
         requestStaticInjection(DispatchCallback.class);
 

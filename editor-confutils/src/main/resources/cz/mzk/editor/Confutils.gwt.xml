@@ -25,7 +25,8 @@
   <!-- GWT Platform						                          -->
   <inherits name='com.gwtplatform.dispatch.Dispatch' />
   <inherits name='com.gwtplatform.mvp.Mvp' />
-  
+
+  <inherits name="org.jboss.errai.bus.ErraiBus"/>
   <!-- other						                          -->
   <inherits name="com.reveregroup.gwt.imagepreloader.ImagePreloader" />
   

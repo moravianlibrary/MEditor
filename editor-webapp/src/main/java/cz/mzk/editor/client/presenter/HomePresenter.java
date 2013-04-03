@@ -66,6 +66,7 @@ import cz.mzk.editor.shared.rpc.action.CheckAvailabilityAction;
 import cz.mzk.editor.shared.rpc.action.CheckAvailabilityResult;
 import cz.mzk.editor.shared.rpc.action.HasUserRightsAction;
 import cz.mzk.editor.shared.rpc.action.HasUserRightsResult;
+import org.jboss.errai.bus.client.framework.MessageBus;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -177,21 +178,23 @@ public class HomePresenter
 
     private final LangConstants lang;
 
+    private final MessageBus messageBus;
+
     /**
      * Instantiates a new home presenter.
-     * 
+     *
      * @param eventBus
      *        the event bus
      * @param view
      *        the view
      * @param proxy
-     *        the proxy
+ *        the proxy
      * @param leftPresenter
-     *        the left presenter
+*        the left presenter
      * @param dispatcher
-     *        the dispatcher
+*        the dispatcher
      * @param placeManager
-     *        the place manager
+     * @param messageBus
      */
     @Inject
     public HomePresenter(final EventBus eventBus,
@@ -200,12 +203,14 @@ public class HomePresenter
                          final DigitalObjectMenuPresenter leftPresenter,
                          final DispatchAsync dispatcher,
                          final PlaceManager placeManager,
-                         final LangConstants lang) {
+                         final LangConstants lang, MessageBus messageBus) {
         super(eventBus, view, proxy);
         this.leftPresenter = leftPresenter;
         this.dispatcher = dispatcher;
         this.placeManager = placeManager;
         this.lang = lang;
+        this.messageBus = messageBus;
+
         bind();
     }
 
@@ -272,7 +277,7 @@ public class HomePresenter
 
                                            @Override
                                            public void onClick(ClickEvent event) {
-                                               new SchedulerWindow(getEventBus(), lang, dispatcher);
+                                               new SchedulerWindow(getEventBus(), lang, dispatcher, messageBus);
 
                                            }
                                        });
