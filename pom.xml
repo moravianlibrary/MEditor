@@ -179,11 +179,13 @@
 			<id>spring-release</id>
 			<url>http://maven.springframework.org/release</url>
 		</repository>
+<!--
 		<repository>
 			<id>maven-oss-insula</id>
 			<name>Insula Maven OSS Releases Repository</name>
 			<url>http://maven-oss.insula.com.br/releases</url>
 		</repository>
+-->
 	</repositories>
 
 	<dependencyManagement>
