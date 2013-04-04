@@ -17,6 +17,11 @@
 	<!-- <repositories> <repository> <id>Apache</id> <name>Apache</name> <url>https://repository.apache.org/content/repositories/snapshots/</url> 
 		</repository> </repositories> -->
 
+  <properties>
+    <gwt.server>:ssl</gwt.server>
+    <gwt.runTarget>'https://localhost:8888/html/loginLocal.html'</gwt.runTarget>
+  </properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -168,14 +173,12 @@
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>gwt-maven-plugin</artifactId>
 						<configuration>
+              <buildOutputDirectory>${buildOutputDirectory}</buildOutputDirectory>
 							<noServer>true</noServer>
 							<inplace>false</inplace>
 							<logLevel>INFO</logLevel>
-							<runTarget>${coreGuiRunTarget}</runTarget>
 							<draftCompile>false</draftCompile>
 							<soyc>true</soyc>
-							<buildOutputDirectory>target/gwtclasses</buildOutputDirectory>
-							<hostedWebapp>target/hostedWar</hostedWebapp>
 							<debugSuspend>false</debugSuspend>
 							<style>OBF</style>
 							<strict>true</strict>
@@ -339,13 +342,14 @@
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>gwt-maven-plugin</artifactId>
 						<configuration>
-							<noServer>true</noServer>
+              <runTarget>${gwt.runTarget}</runTarget>
+              <hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp>
+              <buildOutputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</buildOutputDirectory>
+							<noServer>false</noServer>
 							<inplace>false</inplace>
 							<logLevel>INFO</logLevel>
 							<draftCompile>true</draftCompile>
 							<soyc>false</soyc>
-							<buildOutputDirectory>target/gwtclasses</buildOutputDirectory>
-							<hostedWebapp>target/hostedWar</hostedWebapp>
 							<debugSuspend>false</debugSuspend>
 							<!--<style>OBF</style> -->
 							<style>DETAILED</style>
