@@ -182,7 +182,6 @@
 							<debugSuspend>false</debugSuspend>
 							<style>OBF</style>
 							<strict>true</strict>
-							<draftCompile>true</draftCompile>
 						</configuration>
 						<executions>
 							<execution>
@@ -354,6 +353,7 @@
 							<!--<style>OBF</style> -->
 							<style>DETAILED</style>
 							<strict>true</strict>
+              <bindAddress>0.0.0.0</bindAddress>
 						</configuration>
 						<executions>
 							<execution>
@@ -375,7 +375,7 @@
 								</goals>
 								<configuration>
 									<module>cz.mzk.editor.MEditorDev</module>
-									<module>cz.mzk.editor.RequestForAddingDev</module>
+									<!--<module>cz.mzk.editor.RequestForAddingDev</module>-->
 								</configuration>
 							</execution>
 						</executions>
