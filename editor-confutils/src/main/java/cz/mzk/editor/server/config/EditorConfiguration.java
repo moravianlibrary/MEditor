@@ -289,6 +289,11 @@ public abstract class EditorConfiguration {
 
         /** The Constant IDENTITIES. */
         public static final String IDENTITIES = "identities";
+        
+        /** If the base is not specified this is a fallback option. */
+        public static final String DEFAULT_BASE = "defaultBase";
+        
+        public static final String DEFAULT_BASE_DEFAULT = "";
 
     }
 
@@ -618,6 +623,15 @@ public abstract class EditorConfiguration {
 
             return idents;
         }
+    }
+    
+    /**
+     * Gets the default base. It is used for image server path.
+     * 
+     * @return the default base
+     */
+    public String getDefaultBase() {
+        return getConfiguration().getString(ServerConstants.DEFAULT_BASE, ServerConstants.DEFAULT_BASE_DEFAULT);
     }
 
     /**

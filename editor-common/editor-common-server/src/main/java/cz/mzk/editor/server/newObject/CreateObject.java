@@ -167,6 +167,7 @@ public class CreateObject {
 
         sysno = node.getSysno();
         base = node.getBase();
+        base = base == null ? config.getDefaultBase() : base;
         model = node.getModel();
 
         if (node.getExist() && node.getUuid() != null) {
