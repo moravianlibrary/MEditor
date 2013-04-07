@@ -232,6 +232,7 @@
 									<filtering>true</filtering>
 									<includes>
 										<include>html/login.html</include>
+                    <include>html/loginLocal.html</include>
 										<include>viewer/viewer.html</include>
 									</includes>
 								</resource>
