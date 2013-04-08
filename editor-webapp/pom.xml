@@ -5,14 +5,14 @@
 	<name>Editor web application</name>
 	<groupId>cz.mzk</groupId>
 	<artifactId>editor-webapp</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>2.0.0-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 
 	<parent>
 		<groupId>cz.mzk</groupId>
 		<artifactId>MEditor</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>2.0.0-SNAPSHOT</version>
 	</parent>
 	<!-- <repositories> <repository> <id>Apache</id> <name>Apache</name> <url>https://repository.apache.org/content/repositories/snapshots/</url> 
 		</repository> </repositories> -->
@@ -183,7 +183,6 @@
 							<debugSuspend>false</debugSuspend>
 							<style>OBF</style>
 							<strict>true</strict>
-							<draftCompile>true</draftCompile>
 						</configuration>
 						<executions>
 							<execution>
@@ -234,6 +233,7 @@
 									<filtering>true</filtering>
 									<includes>
 										<include>html/login.html</include>
+                    <include>html/loginLocal.html</include>
 										<include>viewer/viewer.html</include>
 									</includes>
 								</resource>
@@ -355,6 +355,7 @@
 							<!--<style>OBF</style> -->
 							<style>DETAILED</style>
 							<strict>true</strict>
+              <bindAddress>0.0.0.0</bindAddress>
 						</configuration>
 						<executions>
 							<execution>
@@ -376,7 +377,7 @@
 								</goals>
 								<configuration>
 									<module>cz.mzk.editor.MEditorDev</module>
-									<module>cz.mzk.editor.RequestForAddingDev</module>
+									<!--<module>cz.mzk.editor.RequestForAddingDev</module>-->
 								</configuration>
 							</execution>
 						</executions>

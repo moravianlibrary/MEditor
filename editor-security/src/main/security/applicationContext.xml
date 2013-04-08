@@ -14,6 +14,7 @@
 	<http pattern="/request4Adding/**" security="none" /> 
 	<http pattern="/Shibboleth.sso/Login" security="none" />
 	<http pattern="/viewer/**" security="none" />
+  <http pattern="/meditor/hosted.html" security="none" />
 		
 	<!-- filters chain -->
 	<http auto-config="true" use-expressions="true" disable-url-rewriting="true">

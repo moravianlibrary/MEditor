@@ -19,7 +19,7 @@
 	<groupId>cz.mzk</groupId>
 	<artifactId>MEditor</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>2.0.0-SNAPSHOT</version>
 	<name>Metadata Editor</name>
 	<description>RIA web application developed for purposes of digitization
 		of old cultural assets.</description>
@@ -44,9 +44,9 @@
 	</issueManagement>
 
 	<scm>
-		<connection>scm:git:git://github.com/moravianlibrary/fcrepo.git</connection>
-		<developerConnection>scm:git:git@github.com:fcrepo/fcrepo.git</developerConnection>
-		<url>https://github.com/fcrepo/fcrepo</url>
+		<connection>scm:git:git://github.com/moravianlibrary/MEditor.git</connection>
+		<developerConnection>scm:git:git@github.com:moravianlibrary/MEditor.git</developerConnection>
+		<url>https://github.com/moravianlibrary/MEditor</url>
 	</scm>
 
 	<developers>
