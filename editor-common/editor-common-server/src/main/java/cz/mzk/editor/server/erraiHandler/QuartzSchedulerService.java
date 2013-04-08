@@ -1,8 +1,11 @@
 package cz.mzk.editor.server.erraiHandler;
 
 import cz.mzk.editor.server.quartz.Quartz;
+import cz.mzk.editor.server.quartz.jobs.ConvertImages;
 import cz.mzk.editor.shared.erraiPortable.QuartzJobAction;
+import cz.mzk.editor.shared.rpc.ProcessItem;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
+import org.jboss.errai.bus.client.framework.MessageBus;
 import org.jboss.errai.bus.client.framework.RequestDispatcher;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.quartz.JobExecutionContext;
@@ -18,6 +21,8 @@ public class QuartzSchedulerService {
 
     @Inject
     public QuartzSchedulerService(final RequestDispatcher dispatcher, final Quartz quartz) {
+
+        ConvertImages.setErraiDispatcher(dispatcher);
 
         try {
             quartz.getScheduler().getListenerManager().addJobListener(new JobListener() {
@@ -61,7 +66,7 @@ public class QuartzSchedulerService {
 
             });
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            //TODO-MR log
         }
 
     }

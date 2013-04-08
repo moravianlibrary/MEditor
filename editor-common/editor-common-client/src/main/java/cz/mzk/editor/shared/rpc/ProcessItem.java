@@ -41,6 +41,8 @@ public class ProcessItem
 
     private String processName;
 
+    private int percentDone;
+
     @SuppressWarnings("unused")
     private ProcessItem() {
     }
@@ -77,4 +79,31 @@ public class ProcessItem
         return processName;
     }
 
+    public int getPercentDone() {
+        return percentDone;
+    }
+
+    public void setPercentDone(int percentDone) {
+        this.percentDone = percentDone;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ProcessItem that = (ProcessItem) o;
+
+        if (processGroup != null ? !processGroup.equals(that.processGroup) : that.processGroup != null) return false;
+        if (processName != null ? !processName.equals(that.processName) : that.processName != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = processGroup != null ? processGroup.hashCode() : 0;
+        result = 31 * result + (processName != null ? processName.hashCode() : 0);
+        return result;
+    }
 }

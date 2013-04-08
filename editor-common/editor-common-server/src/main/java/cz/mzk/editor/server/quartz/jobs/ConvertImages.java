@@ -33,14 +33,18 @@ import cz.mzk.editor.server.utils.ScanFolder;
 import cz.mzk.editor.server.utils.ScanFolderImpl;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.handler.ConvertToJPEG2000Handler;
+import cz.mzk.editor.shared.erraiPortable.QuartzJobAction;
 import cz.mzk.editor.shared.rpc.ImageItem;
 import cz.mzk.editor.shared.rpc.action.ConvertToJPEG2000Action;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
+import org.jboss.errai.bus.client.api.base.MessageBuilder;
+import org.jboss.errai.bus.client.framework.RequestDispatcher;
 import org.quartz.InterruptableJob;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.quartz.JobKey;
 import org.quartz.UnableToInterruptJobException;
 
 import java.util.ArrayList;
@@ -61,12 +65,15 @@ public class ConvertImages
     private static final Logger LOGGER = Logger.getLogger(ConvertImages.class.getPackage().toString());
     private Injector guice = null;
     private boolean continueWithNext = true;
-
+    private int percentDone = 0;
+    private static RequestDispatcher erraiDispatcher;
+    private JobExecutionContext context;
     /**
      * {@inheritDoc}
      */
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
+        this.context = context;
         JobDataMap dataMap = context.getJobDetail().getJobDataMap();
         guice = (Injector) dataMap.get("Injector");
         EditorConfiguration configuration = guice.getInstance(EditorConfiguration.class);
@@ -151,26 +158,43 @@ public class ConvertImages
         }
     }
 
+    public static void setErraiDispatcher(RequestDispatcher erraiDispatcher) {
+        ConvertImages.erraiDispatcher = erraiDispatcher;
+    }
 
     private void convert(List<ImageItem> toAdd) {
         LOGGER.debug("Converting start (from Quartz)");
-
+        int converted = 0;
         if (toAdd != null && !toAdd.isEmpty()) {
             for (ImageItem item : toAdd) {
                 if (!continueWithNext) break;
                 convertItem(item);
+                converted++;
+                percentDone = (int) (((float)converted / toAdd.size()) * 100);
+
+                if (erraiDispatcher != null) {
+
+                    JobKey jobDetail = context.getJobDetail().getKey();
+                    MessageBuilder.createMessage()
+                            .toSubject("QuartzBroadcastReceiver")
+                            .with("jobDetail", new QuartzJobAction(jobDetail.getGroup(),
+                                    jobDetail.getName(), QuartzJobAction.Action.PROGRESS, getPercentDone()))
+                            .noErrorHandling().sendNowWith(erraiDispatcher);
+                }
+
             }
+
         }
     }
 
     private void convertItem(ImageItem item) {
-        //        try {
-        //            Thread.sleep(500);
-        //        } catch (InterruptedException e) {
-        //            // TODO Auto-generated catch block
-        //            LOGGER.error(e.getMessage());
-        //            e.printStackTrace();
-        //        }
+//                try {
+//                    Thread.sleep(500);
+//                } catch (InterruptedException e) {
+//                    // TODO Auto-generated catch block
+//                    LOGGER.error(e.getMessage());
+//                    e.printStackTrace();
+//                }
         ConvertToJPEG2000Action action = new ConvertToJPEG2000Action(item);
         ConvertToJPEG2000Handler handler = guice.getInstance(ConvertToJPEG2000Handler.class);
         try {
@@ -179,6 +203,11 @@ public class ConvertImages
             LOGGER.error(e.getMessage());
         }
 
+    }
+
+
+    public int getPercentDone() {
+        return percentDone;
     }
 
     /**

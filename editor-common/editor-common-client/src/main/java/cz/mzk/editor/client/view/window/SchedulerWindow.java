@@ -28,9 +28,9 @@ import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Alignment;
-import com.smartgwt.client.util.SC;
 import com.smartgwt.client.widgets.Canvas;
 import com.smartgwt.client.widgets.ImgButton;
+import com.smartgwt.client.widgets.Progressbar;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
 import com.smartgwt.client.widgets.events.HoverEvent;
@@ -38,7 +38,6 @@ import com.smartgwt.client.widgets.events.HoverHandler;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import com.smartgwt.client.widgets.grid.ListGridField;
 import com.smartgwt.client.widgets.grid.ListGridRecord;
-
 import cz.mzk.editor.client.LangConstants;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.shared.erraiPortable.QuartzJobAction;
@@ -49,10 +48,9 @@ import org.jboss.errai.bus.client.api.Message;
 import org.jboss.errai.bus.client.api.MessageCallback;
 import org.jboss.errai.bus.client.framework.MessageBus;
 
-import javax.inject.Inject;
-import java.io.Console;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * @author Martin Rumanek
@@ -64,12 +62,9 @@ public class SchedulerWindow
     private final ListGrid jobsGrid;
     @SuppressWarnings("unused")
     private final LangConstants lang;
-
-
     private final MessageBus messageBus;
 
     /**
-     *
      * @param eventBus
      * @param lang
      * @param dispatcher
@@ -78,6 +73,8 @@ public class SchedulerWindow
         super(630, 600, "Scheduler", eventBus, 50);
         this.lang = lang;
         this.messageBus = bus;
+        final Map<ProcessItem, Progressbar> progressbars = new HashMap<ProcessItem, Progressbar>();
+
         jobsGrid = new ListGrid() {
 
             @Override
@@ -107,6 +104,16 @@ public class SchedulerWindow
                         }
                     });
                     return button;
+                } else if (fieldName.equals("progressbar")) {
+                    final Progressbar progressbar = new Progressbar();
+                    progressbar.setBreadth(15);
+                    progressbar.setLength(120);
+                    progressbars.put(new ProcessItem(record.getAttributeAsString("group"), record.getAttributeAsString("name")), progressbar);
+
+                    if (record.getAttributeAsInt("progressbar") != null) {
+                        progressbar.setPercentDone(record.getAttributeAsInt("progressbar"));
+                    }
+                    return progressbar;
                 }
                 return null;
 
@@ -116,9 +123,10 @@ public class SchedulerWindow
         jobsGrid.setShowRecordComponentsByCell(true);
         ListGridField groupField = new ListGridField("group", lang.groupProcess());
         ListGridField nameField = new ListGridField("name", lang.nameProcess());
+        ListGridField progressbar = new ListGridField("progressbar", "Progressbar"); //TODO-MR lang
         ListGridField actionField = new ListGridField("action", lang.actionProcess(), 50);
         actionField.setAlign(Alignment.CENTER);
-        jobsGrid.setFields(groupField, nameField, actionField);
+        jobsGrid.setFields(groupField, nameField, progressbar, actionField);
 
         getJobs(dispatcher);
         centerInPage();
@@ -129,7 +137,7 @@ public class SchedulerWindow
             @Override
             public void callback(Message message) {
                 QuartzJobAction jobAction = message.get(QuartzJobAction.class, "jobDetail");
-                Record processRecord = new  Record();
+                ListGridRecord processRecord = new ListGridRecord();
                 processRecord.setAttribute("group", jobAction.getProcessGroup());
                 processRecord.setAttribute("name", jobAction.getProcessName());
                 switch (jobAction.getAction()) {
@@ -137,10 +145,26 @@ public class SchedulerWindow
                         jobsGrid.addData(processRecord);
                         break;
                     case EXECUTION_VETOED:
-                        jobsGrid.removeData(processRecord);
+                        for (ListGridRecord record : jobsGrid.getRecords()) {
+                            if (record.getAttribute("group").equals(jobAction.getProcessGroup()) &&
+                                    record.getAttribute("name").equals(jobAction.getProcessName())) {
+                                jobsGrid.removeData(record);
+                            }
+                        }
                         break;
                     case WAS_EXECUTED:
-                        jobsGrid.removeData(processRecord);
+                        for (ListGridRecord record : jobsGrid.getRecords()) {
+                            if (record.getAttribute("group").equals(jobAction.getProcessGroup()) &&
+                                    record.getAttribute("name").equals(jobAction.getProcessName())) {
+                                jobsGrid.removeData(record);
+                            }
+                        }
+                        break;
+                    case PROGRESS:
+                        Progressbar bar = progressbars.get(new ProcessItem(jobAction.getProcessGroup(), jobAction.getProcessName()));
+                        if (bar != null) {
+                            bar.setPercentDone(jobAction.getPercentDone());
+                        }
                 }
             }
         });
@@ -150,22 +174,23 @@ public class SchedulerWindow
 
     private void getJobs(final DispatchAsync dispatcher) {
         dispatcher.execute(new QuartzScheduleJobsAction(null),
-                           new DispatchCallback<QuartzScheduleJobsResult>() {
+                new DispatchCallback<QuartzScheduleJobsResult>() {
 
-                               @Override
-                               public void callback(QuartzScheduleJobsResult result) {
-                                   Record[] jobs = new Record[result.getJobs().size()];
-                                   int i = 0;
-                                   for (ProcessItem process : result.getJobs()) {
-                                       Record processRecord = new Record();
-                                       processRecord.setAttribute("group", process.getProcessGroup());
-                                       processRecord.setAttribute("name", process.getProcessName());
-                                       jobs[i++] = processRecord;
-                                   }
-                                   jobsGrid.setData(jobs);
-                               }
+                    @Override
+                    public void callback(QuartzScheduleJobsResult result) {
+                        Record[] jobs = new Record[result.getJobs().size()];
+                        int i = 0;
+                        for (ProcessItem process : result.getJobs()) {
+                            Record processRecord = new Record();
+                            processRecord.setAttribute("group", process.getProcessGroup());
+                            processRecord.setAttribute("name", process.getProcessName());
+                            processRecord.setAttribute("progressbar", process.getPercentDone());
+                            jobs[i++] = processRecord;
+                        }
+                        jobsGrid.setData(jobs);
+                    }
 
-                           });
+                });
 
     }
 
@@ -174,14 +199,14 @@ public class SchedulerWindow
                 new ProcessItem(record.getAttributeAsString("group"), record.getAttributeAsString("name"));
 
         dispatcher.execute(new QuartzScheduleJobsAction(process),
-                           new DispatchCallback<QuartzScheduleJobsResult>() {
+                new DispatchCallback<QuartzScheduleJobsResult>() {
 
-                               @Override
-                               public void callback(QuartzScheduleJobsResult result) {
-                                   jobsGrid.removeData(record);
-                                   jobsGrid.redraw();
-                               }
+                    @Override
+                    public void callback(QuartzScheduleJobsResult result) {
+                        jobsGrid.removeData(record);
+                        jobsGrid.redraw();
+                    }
 
-                           });
+                });
     }
 }

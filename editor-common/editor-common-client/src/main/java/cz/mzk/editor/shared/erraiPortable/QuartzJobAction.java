@@ -1,10 +1,6 @@
 package cz.mzk.editor.shared.erraiPortable;
 
-import cz.mzk.editor.shared.rpc.ProcessItem;
 import org.jboss.errai.common.client.api.annotations.Portable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author: Martin Rumanek
@@ -16,7 +12,7 @@ public class QuartzJobAction {
 
     @Portable
     public static enum Action {
-        TO_BE_EXECUTED,EXECUTION_VETOED, WAS_EXECUTED
+        TO_BE_EXECUTED, EXECUTION_VETOED, WAS_EXECUTED, PROGRESS
     }
 
     private String processGroup;
@@ -25,6 +21,8 @@ public class QuartzJobAction {
 
     private Action action;
 
+    private Integer percentDone = 0;
+
     public QuartzJobAction() {
     }
 
@@ -32,6 +30,13 @@ public class QuartzJobAction {
         this.processGroup = processGroup;
         this.processName = processName;
         this.action = action;
+    }
+
+    public QuartzJobAction(String processGroup, String processName, Action action, int percent) {
+        this.processGroup = processGroup;
+        this.processName = processName;
+        this.action = action;
+        this.percentDone = percent;
     }
 
     public String getProcessGroup() {
@@ -45,6 +50,12 @@ public class QuartzJobAction {
     public Action getAction() {
         return action;
     }
+
+    public Integer getPercentDone() {
+        return percentDone;
+    }
+
+
 }
 
 

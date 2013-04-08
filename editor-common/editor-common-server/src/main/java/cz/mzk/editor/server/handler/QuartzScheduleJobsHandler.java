@@ -32,6 +32,7 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.mzk.editor.server.quartz.jobs.ConvertImages;
 import org.apache.log4j.Logger;
 
 import org.quartz.JobExecutionContext;
@@ -102,7 +103,12 @@ public class QuartzScheduleJobsHandler
 
         for (JobExecutionContext context : quartz.getScheduler().getCurrentlyExecutingJobs()) {
             JobKey key = context.getJobDetail().getKey();
-            jobs.add(new ProcessItem(key.getGroup(), key.getName()));
+            ProcessItem processItem = new ProcessItem(key.getGroup(), key.getName());
+            if (context.getJobInstance() instanceof ConvertImages) {
+                ConvertImages convertImagesJob = (ConvertImages) context.getJobInstance();
+                processItem.setPercentDone(convertImagesJob.getPercentDone());
+            }
+            jobs.add(processItem);
         }
 
         return jobs;
