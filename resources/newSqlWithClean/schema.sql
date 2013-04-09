@@ -323,6 +323,33 @@ CREATE TABLE editor_user (
 	);
 ALTER TABLE meditor.editor_user OWNER TO meditor;
 
+--
+-- PLease do not change these lines - Do not neither delete nor change the order of the lines
+-- This are system default users. It is directly interconnected with the source code.
+-- Every change has to be reflected in the java code in the class Constants enum DEFAULT_SYSTEM_USERS
+-- 
+INSERT INTO meditor.editor_user (name, surname, state) VALUES ('non-existent', 'non-existent', true);
+INSERT INTO meditor.editor_user (name, surname, state) VALUES ('time', 'time', true);
+--
+
+--
+-- Admin right and role
+--
+INSERT INTO meditor.editor_right (name, description) VALUES ('ALL', '');
+INSERT INTO meditor.role (name, description) VALUES ('Administrator', 'Can do everything');
+INSERT INTO meditor.right_in_role (editor_right_name, role_name) VALUES ('ALL', 'Administrator');
+
+--
+-- Default user with admin right
+--
+INSERT INTO meditor.editor_user (name, surname, state) VALUES ('Medit', 'Medit', true);
+INSERT INTO meditor.ldap_identity (editor_user_id, identity) VALUES (3, 'medit');
+INSERT INTO meditor.users_role (editor_user_id, role_name) VALUES (3, 'Administrator');
+
+
+
+
+
 
 CREATE UNIQUE INDEX image_identifier ON image (identifier);
 CREATE UNIQUE INDEX ldap_identity_identity ON ldap_identity (identity);

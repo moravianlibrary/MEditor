@@ -312,10 +312,6 @@ public class DBSchemaDAOImpl
 
         Map<Long, Long> editorUserIdMapping = new HashMap<Long, Long>(oldData.size());
 
-        for (DEFAULT_SYSTEM_USERS defSysUser : DEFAULT_SYSTEM_USERS.values()) {
-            daoUtils.insertEditorUser("", defSysUser.getUserName(), true);
-        }
-
         for (long i = 1; i < oldData.size(); i++) {
             Object[] user = oldData.get(i);
             Long userId = daoUtils.insertEditorUser((String) user[1], (String) user[2], true);
