@@ -91,6 +91,7 @@ import cz.mzk.editor.client.view.window.NewObjectBasicInfoWindow;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.NamedGraphModel;
 import cz.mzk.editor.shared.event.SaveStructureEvent;
+import org.jboss.errai.bus.client.framework.MessageBus;
 
 /**
  * @author Jiri Kremser
@@ -133,6 +134,7 @@ public class CreateObjectMenuView
     private ImgButton addOcrButton;
 
     private final EventBus eventBus;
+    private final MessageBus messageBus;
 
     private SelectItem creationModeItem;
 
@@ -142,9 +144,10 @@ public class CreateObjectMenuView
      * Instantiates a new digital object menu view.
      */
     @Inject
-    public CreateObjectMenuView(final LangConstants lang, final EventBus eventBus) {
+    public CreateObjectMenuView(final LangConstants lang, final EventBus eventBus, final MessageBus messageBus) {
         this.lang = lang;
         this.eventBus = eventBus;
+        this.messageBus = messageBus;
 
         layout = new VLayout();
 
@@ -905,7 +908,7 @@ public class CreateObjectMenuView
     }
 
     /**
-     * Returns this widget as the {@link WidgetDisplay#asWidget()} value.
+     * Returns this widget as the {@link Widget#asWidget()} value.
      * 
      * @return the widget
      */
@@ -958,7 +961,7 @@ public class CreateObjectMenuView
 
     @Override
     public void setInputTree(DispatchAsync dispatcher, final PlaceManager placeManager) {
-        InputQueueTree.setInputTreeToSection(dispatcher, lang, eventBus, sectionStack, placeManager, false);
+        InputQueueTree.setInputTreeToSection(dispatcher, lang, eventBus, sectionStack, placeManager, messageBus, false);
     }
 
     /**

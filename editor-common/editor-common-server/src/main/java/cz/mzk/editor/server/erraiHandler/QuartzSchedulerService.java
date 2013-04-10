@@ -8,6 +8,7 @@ import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.bus.client.framework.MessageBus;
 import org.jboss.errai.bus.client.framework.RequestDispatcher;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jboss.errai.bus.server.api.SessionProvider;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.JobListener;
@@ -21,7 +22,6 @@ public class QuartzSchedulerService {
 
     @Inject
     public QuartzSchedulerService(final RequestDispatcher dispatcher, final Quartz quartz) {
-
         ConvertImages.setErraiDispatcher(dispatcher);
 
         try {

@@ -88,6 +88,9 @@ import cz.mzk.editor.shared.rpc.action.QuartzConvertImagesAction;
 import cz.mzk.editor.shared.rpc.action.QuartzConvertImagesResult;
 import cz.mzk.editor.shared.rpc.action.ScanInputQueueAction;
 import cz.mzk.editor.shared.rpc.action.ScanInputQueueResult;
+import org.jboss.errai.bus.client.api.Message;
+import org.jboss.errai.bus.client.api.MessageCallback;
+import org.jboss.errai.bus.client.framework.MessageBus;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -114,6 +117,7 @@ public class InputQueueTree
                                              final EventBus eventBus,
                                              SectionStack sectionStack,
                                              final PlaceManager placeManager,
+                                             final MessageBus messageBus,
                                              boolean force) {
 
         SectionStackSection section1 = new SectionStackSection();
@@ -147,6 +151,19 @@ public class InputQueueTree
                                         .with(Constants.URL_PARAM_PATH, path));
                             }
                         });
+
+                messageBus.subscribe("InputQueueBroadcastReceiver", new MessageCallback() {
+                    @Override
+                    public void callback(Message message) {
+                        String inputItem = message.get(String.class, "ingested");
+                        for (ListGridRecord record : inputQueueTree.getRecords()) {
+                            if (record.getAttribute(Constants.ATTR_ID).equals(inputItem)) {
+                                record.setAttribute(Constants.ATTR_INGEST_INFO, true);
+                                inputQueueTree.redraw();
+                            }
+                        }
+                    }
+                });
             }
 
             section1.setItems(inputQueueTree);

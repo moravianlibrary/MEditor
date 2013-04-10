@@ -66,6 +66,7 @@ import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.view.other.InputQueueTree;
 import cz.mzk.editor.client.view.window.EditorSC;
 import cz.mzk.editor.shared.rpc.LockInfo;
+import org.jboss.errai.bus.client.framework.MessageBus;
 
 /**
  * @author Jiri Kremser
@@ -113,14 +114,16 @@ public class DigitalObjectMenuView
 
     private final SelectItem selectItem = new SelectItem();
     private final EventBus eventBus;
+    private final MessageBus messageBus;
 
     /**
      * Instantiates a new digital object menu view.
      */
     @Inject
-    public DigitalObjectMenuView(final LangConstants lang, final EventBus eventBus) {
+    public DigitalObjectMenuView(final LangConstants lang, final EventBus eventBus, final MessageBus messageBus) {
         this.lang = lang;
         this.eventBus = eventBus;
+        this.messageBus = messageBus;
 
         layout = new VLayout();
 
@@ -258,7 +261,7 @@ public class DigitalObjectMenuView
     }
 
     /**
-     * Returns this widget as the {@link WidgetDisplay#asWidget()} value.
+     * Returns this widget as the {@link Widget#asWidget()} value.
      * 
      * @return the widget
      */
@@ -321,7 +324,7 @@ public class DigitalObjectMenuView
      */
     @Override
     public void showInputQueue(DispatchAsync dispatcher, final PlaceManager placeManager, boolean force) {
-        InputQueueTree.setInputTreeToSection(dispatcher, lang, eventBus, sectionStack, placeManager, force);
+        InputQueueTree.setInputTreeToSection(dispatcher, lang, eventBus, sectionStack, placeManager, messageBus, force);
     }
 
     /*

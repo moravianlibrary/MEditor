@@ -37,7 +37,7 @@ import java.util.List;
  * @author: Martin Rumanek
  * @version: 19.2.13
  */
-public class AddOcrToObjects implements InterruptableJob {
+public class AddOcrToObjects extends ProgressJob implements InterruptableJob {
 
     private Injector guice = null;
     private FedoraAccess fedoraAccess;

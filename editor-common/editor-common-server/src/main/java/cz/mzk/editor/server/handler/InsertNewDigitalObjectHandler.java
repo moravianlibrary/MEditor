@@ -49,6 +49,8 @@ import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.NewDigitalObject;
 import cz.mzk.editor.shared.rpc.action.InsertNewDigitalObjectAction;
 import cz.mzk.editor.shared.rpc.action.InsertNewDigitalObjectResult;
+import org.jboss.errai.bus.client.api.base.MessageBuilder;
+import org.jboss.errai.bus.client.framework.RequestDispatcher;
 
 /**
  * @author Jiri Kremser
@@ -79,6 +81,8 @@ public class InsertNewDigitalObjectHandler
     /** The image resolver dao. */
     @Inject
     private ImageResolverDAO imageResolverDAO;
+
+    private static RequestDispatcher erraiDispatcher;
 
     public InsertNewDigitalObjectHandler() {
         super();
@@ -111,7 +115,7 @@ public class InsertNewDigitalObjectHandler
         String pid = null;
 
         try {
-            daoUtils.checkInputQueue(action.getInputPath(), object.getName(), true);
+            daoUtils.checkInputQueue(action.getInputPath(), object.getName(), true); //TODO-MR pridani nazvu, push?
         } catch (DatabaseException e1) {
             LOGGER.error(e1.getMessage());
             e1.printStackTrace();
@@ -152,7 +156,14 @@ public class InsertNewDigitalObjectHandler
             } else {
                 try {
 
-                    digitalObjectDAO.updateState(createObject.getIngestedObjects(), true);
+                    digitalObjectDAO.updateState(createObject.getIngestedObjects(), true); //TODO-MR push state
+
+                    if (erraiDispatcher != null) {
+                        MessageBuilder.createMessage()
+                                .toSubject("InputQueueBroadcastReceiver")
+                                .with("ingested", action.getInputPath())
+                                .noErrorHandling().sendNowWith(erraiDispatcher);
+                    }
 
                 } catch (DatabaseException e) {
                     LOGGER.error("DB ERROR!!!: " + e.getMessage() + ": " + e);
@@ -201,4 +212,7 @@ public class InsertNewDigitalObjectHandler
         throw new ActionException("Undo is not supported on " + this.getClass().getSimpleName());
     }
 
+    public static void setErraiDispatcher(RequestDispatcher erraiDispatcher) {
+        InsertNewDigitalObjectHandler.erraiDispatcher = erraiDispatcher;
+    }
 }

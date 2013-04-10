@@ -56,7 +56,7 @@ import java.util.UUID;
  * @author Martin Rumanek
  * @version Aug 27, 2012
  */
-public class ConvertImages
+public class ConvertImages extends ProgressJob
         implements InterruptableJob {
 
     /**
@@ -67,13 +67,13 @@ public class ConvertImages
     private boolean continueWithNext = true;
     private int percentDone = 0;
     private static RequestDispatcher erraiDispatcher;
-    private JobExecutionContext context;
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public void execute(JobExecutionContext context) throws JobExecutionException {
-        this.context = context;
+    public void execute(JobExecutionContext context) throws JobExecutionException {;
+        this.setJobKey(context.getJobDetail().getKey());
         JobDataMap dataMap = context.getJobDetail().getJobDataMap();
         guice = (Injector) dataMap.get("Injector");
         EditorConfiguration configuration = guice.getInstance(EditorConfiguration.class);
@@ -158,10 +158,6 @@ public class ConvertImages
         }
     }
 
-    public static void setErraiDispatcher(RequestDispatcher erraiDispatcher) {
-        ConvertImages.erraiDispatcher = erraiDispatcher;
-    }
-
     private void convert(List<ImageItem> toAdd) {
         LOGGER.debug("Converting start (from Quartz)");
         int converted = 0;
@@ -170,21 +166,11 @@ public class ConvertImages
                 if (!continueWithNext) break;
                 convertItem(item);
                 converted++;
-                percentDone = (int) (((float)converted / toAdd.size()) * 100);
-
-                if (erraiDispatcher != null) {
-
-                    JobKey jobDetail = context.getJobDetail().getKey();
-                    MessageBuilder.createMessage()
-                            .toSubject("QuartzBroadcastReceiver")
-                            .with("jobDetail", new QuartzJobAction(jobDetail.getGroup(),
-                                    jobDetail.getName(), QuartzJobAction.Action.PROGRESS, getPercentDone()))
-                            .noErrorHandling().sendNowWith(erraiDispatcher);
-                }
-
+                this.setPercentDone((int)(((float)converted / toAdd.size()) * 100));
             }
 
         }
+
     }
 
     private void convertItem(ImageItem item) {
@@ -203,11 +189,6 @@ public class ConvertImages
             LOGGER.error(e.getMessage());
         }
 
-    }
-
-
-    public int getPercentDone() {
-        return percentDone;
     }
 
     /**
