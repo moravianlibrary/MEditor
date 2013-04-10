@@ -60,9 +60,9 @@ public class Constants {
     public static final Type<RevealContentHandler<?>> TYPE_ROOT_CONTENT = new Type<RevealContentHandler<?>>();
 
     public static final String INVALID_LOGIN_OR_PASSWORD = "Invalid login or password";
-    
+
     public static final String CANNOT_CONNECT_TO_DB = "Unable to connect to the database";
-    
+
     public static final String DB_ERROR = "Internal database error, check the server log for details";
 
     /** The Constant LOGO_HTML. */
@@ -224,7 +224,7 @@ public class Constants {
     /** Path to directory of audio converter */
     public static final String CONVERT_AUDIO_DIR = "convertAudio";
 
-   /** A name of the script for running a process via ssh on a remote machine. */
+    /** A name of the script for running a process via ssh on a remote machine. */
     public static final String SCRIPT_FOR_REMOTE_PROCESS = "runRemoteProcess.sh";
 
     /** Path to a file with current DB schema version number. */
@@ -453,7 +453,9 @@ public class Constants {
     // tables
 
     /**
-     * The Enum DEFAULT_SYSTEM_USERS.
+     * The Enum DEFAULT_SYSTEM_USERS. This are system default users and it is
+     * directly interconnected with the SQL schema of DB. Every change has to be
+     * reflected in the schema!!!
      */
     public static enum DEFAULT_SYSTEM_USERS {
 
@@ -819,19 +821,16 @@ public class Constants {
     /** The Constant PDF_MIMETYPE. */
     public static final String PDF_MIMETYPE = "application/pdf";
 
-
     /** Audio mimetypes for sound recording */
     public static enum AUDIO_MIMETYPES {
-        WAV_MIMETYPE("audio/wav", ".wav"),
-        MP3_MIMETYPE("audio/mpeg", ".mp3"),
-        OGG_MIMETYPE("audio/ogg ", ".ogg"),
-        UNKOWN_MIMETYPE(null, null);
+        WAV_MIMETYPE("audio/wav", ".wav"), MP3_MIMETYPE("audio/mpeg", ".mp3"), OGG_MIMETYPE("audio/ogg ",
+                ".ogg"), UNKOWN_MIMETYPE(null, null);
 
-        private String mimetype;
-        private String extension;
+        private final String mimetype;
+        private final String extension;
 
         private AUDIO_MIMETYPES(String mimetype, String extension) {
-            this.mimetype  =  mimetype;
+            this.mimetype = mimetype;
             this.extension = extension;
         }
 
@@ -1125,20 +1124,16 @@ public class Constants {
         /** The TEI. */
         TEI("TEI"),
         /** The TEX t_ ocr. */
-        TEXT_OCR("TEXT_OCR"),
-        WAV("WAV"),
-        OGG("OGG"),
-        MP3("MP3"),
+        TEXT_OCR("TEXT_OCR"), WAV("WAV"), OGG("OGG"), MP3("MP3"),
         /** The ALTO. */
         ALTO("ALTO");
-
 
         /** The value. */
         private final String value;
 
         /**
          * Instantiates a new dATASTREA m_ id.
-         *
+         * 
          * @param value
          *        the value
          */
@@ -1148,7 +1143,7 @@ public class Constants {
 
         /**
          * Gets the value.
-         *
+         * 
          * @return the value
          */
         public String getValue() {
