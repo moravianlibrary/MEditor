@@ -36,7 +36,7 @@ public class QuartzSchedulerService {
                     try {
                         JobKey jobDetail = jobExecutionContext.getJobDetail().getKey();
                         MessageBuilder.createMessage()
-                                .toSubject("QuartzBroadcastReceiver")
+                                .toSubject("QuartzBroadcastReceiver").signalling()
                                 .with("jobDetail", new QuartzJobAction(jobDetail.getGroup(),
                                         jobDetail.getName(), QuartzJobAction.Action.TO_BE_EXECUTED))
                                 .noErrorHandling().sendNowWith(dispatcher);
@@ -55,7 +55,7 @@ public class QuartzSchedulerService {
                     try {
                         JobKey jobDetail = jobExecutionContext.getJobDetail().getKey();
                         MessageBuilder.createMessage()
-                                .toSubject("QuartzBroadcastReceiver")
+                                .toSubject("QuartzBroadcastReceiver").signalling()
                                 .with("jobDetail", new QuartzJobAction(jobDetail.getGroup(),
                                         jobDetail.getName(), QuartzJobAction.Action.WAS_EXECUTED))
                                 .noErrorHandling().sendNowWith(dispatcher);
@@ -70,6 +70,5 @@ public class QuartzSchedulerService {
         }
 
     }
-
 
 }

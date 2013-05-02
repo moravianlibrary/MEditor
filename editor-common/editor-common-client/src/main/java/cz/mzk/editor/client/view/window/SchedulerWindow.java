@@ -33,6 +33,8 @@ import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Progressbar;
 import com.smartgwt.client.widgets.events.ClickEvent;
 import com.smartgwt.client.widgets.events.ClickHandler;
+import com.smartgwt.client.widgets.events.CloseClickEvent;
+import com.smartgwt.client.widgets.events.CloseClickHandler;
 import com.smartgwt.client.widgets.events.HoverEvent;
 import com.smartgwt.client.widgets.events.HoverHandler;
 import com.smartgwt.client.widgets.grid.ListGrid;
@@ -47,6 +49,7 @@ import cz.mzk.editor.shared.rpc.action.QuartzScheduleJobsResult;
 import org.jboss.errai.bus.client.api.Message;
 import org.jboss.errai.bus.client.api.MessageCallback;
 import org.jboss.errai.bus.client.framework.MessageBus;
+import org.jboss.errai.bus.client.framework.Subscription;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -131,8 +134,7 @@ public class SchedulerWindow
         getJobs(dispatcher);
         centerInPage();
         addItem(jobsGrid);
-
-        messageBus.subscribe("QuartzBroadcastReceiver", new MessageCallback() {
+        final Subscription subscription = messageBus.subscribe("QuartzBroadcastReceiver", new MessageCallback() {
 
             @Override
             public void callback(Message message) {
@@ -166,6 +168,13 @@ public class SchedulerWindow
                             bar.setPercentDone(jobAction.getPercentDone());
                         }
                 }
+            }
+        });
+
+        this.addCloseClickHandler(new CloseClickHandler() {
+            @Override
+            public void onCloseClick(CloseClickEvent closeClickEvent) {
+                subscription.remove();
             }
         });
 

@@ -31,7 +31,7 @@ public abstract class ProgressJob {
         if (erraiDispatcher != null && jobKey != null) {
             if (percentDone != this.percentDone) {
                 MessageBuilder.createMessage()
-                        .toSubject("QuartzBroadcastReceiver")
+                        .toSubject("QuartzBroadcastReceiver").signalling()
                         .with("jobDetail", new QuartzJobAction(jobKey.getGroup(),
                                 jobKey.getName(), QuartzJobAction.Action.PROGRESS, percentDone))
                         .noErrorHandling().sendNowWith(erraiDispatcher);
