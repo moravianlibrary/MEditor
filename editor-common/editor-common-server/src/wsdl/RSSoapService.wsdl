@@ -1,0 +1,1003 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://www.abbyy.com/RecognitionServer3_xml/RecognitionServer3.xml" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://www.abbyy.com/RecognitionServer3_xml/RecognitionServer3.xml" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.abbyy.com/RecognitionServer3_xml/RecognitionServer3.xml">
+      <s:element name="DoNothingMethod">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="stub" type="tns:StubFormatsCollection"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="StubFormatsCollection">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Html" type="tns:HTMLExportSettings"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Internal" type="tns:InternalFormatSettings"/>
+          <s:element minOccurs="0" maxOccurs="1" name="NoConv" type="tns:NoConversionExportSettings"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Pdfa" type="tns:PDFAExportSettings"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Pdf" type="tns:PDFExportSettings"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Text" type="tns:TextExportSettings"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Word" type="tns:MSWordExportSettings"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Xl" type="tns:XLExportSettings"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Rtf" type="tns:RTFExportSettings"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Xml" type="tns:XMLExportSettings"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Csv" type="tns:CSVExportSettings"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Tiff" type="tns:TiffExportSettings"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Jpeg" type="tns:JpegExportSettings"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Jpeg2k" type="tns:Jpeg2kExportSettings"/>
+          <s:element minOccurs="0" maxOccurs="1" name="JBig2" type="tns:JBig2ExportSettings"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Docx" type="tns:DOCXExportSettings"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Xlsx" type="tns:XLSXExportSettings"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Alto" type="tns:AltoExportSettings"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Epub" type="tns:EpubExportSettings"/>
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="HTMLExportSettings">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:OutputFormatSettings">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="CodePage" type="tns:CodePageEnum"/>
+              <s:element minOccurs="1" maxOccurs="1" name="HTMLSynthesisMode" type="tns:HTMLSynthesisModeEnum"/>
+              <s:element minOccurs="1" maxOccurs="1" name="AllowCss" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="WritePictures" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="EncodingType" type="tns:TextEncodingTypeEnum"/>
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="OutputFormatSettings" abstract="true">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="FileFormat" type="tns:OutputFileFormatEnum"/>
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="OutputFileFormatEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="OFF_MSWord"/>
+          <s:enumeration value="OFF_MSExcel"/>
+          <s:enumeration value="OFF_RTF"/>
+          <s:enumeration value="OFF_XML"/>
+          <s:enumeration value="OFF_PDF"/>
+          <s:enumeration value="OFF_PDFA"/>
+          <s:enumeration value="OFF_Text"/>
+          <s:enumeration value="OFF_CSV"/>
+          <s:enumeration value="OFF_HTML"/>
+          <s:enumeration value="OFF_NoConversion"/>
+          <s:enumeration value="OFF_TIFF"/>
+          <s:enumeration value="OFF_JPG"/>
+          <s:enumeration value="OFF_J2K"/>
+          <s:enumeration value="OFF_InternalFormat"/>
+          <s:enumeration value="OFF_DOCX"/>
+          <s:enumeration value="OFF_XLSX"/>
+          <s:enumeration value="OFF_JBIG2"/>
+          <s:enumeration value="OFF_ALTO"/>
+          <s:enumeration value="OFF_EPUB"/>
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="EpubExportSettings">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:OutputFormatSettings">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="ThreatFirstPageAsCover" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="FontFormattingMode" type="tns:FontFormattingModeEnum"/>
+              <s:element minOccurs="1" maxOccurs="1" name="KeepPictures" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="PictureFormat" type="tns:ExportPictureFormatEnum"/>
+              <s:element minOccurs="1" maxOccurs="1" name="PictureResolution" type="s:int"/>
+              <s:element minOccurs="1" maxOccurs="1" name="Quality" type="s:int"/>
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:simpleType name="FontFormattingModeEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="FFM_Plain"/>
+          <s:enumeration value="FFM_Restricted"/>
+          <s:enumeration value="FFM_Full"/>
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="ExportPictureFormatEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="EPF_Automatic"/>
+          <s:enumeration value="EPF_Ccitt4"/>
+          <s:enumeration value="EPF_JpegColor"/>
+          <s:enumeration value="EPF_JpegGray"/>
+          <s:enumeration value="EPF_LzwColor"/>
+          <s:enumeration value="EPF_LzwGray"/>
+          <s:enumeration value="EPF_ZipColor"/>
+          <s:enumeration value="EPF_ZipGray"/>
+          <s:enumeration value="EPF_J2KColor"/>
+          <s:enumeration value="EPF_J2KGray"/>
+          <s:enumeration value="EPF_JBIG2"/>
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="AltoExportSettings">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:OutputFormatSettings">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="TextCoordinatesParticularity" type="tns:TextCoordinatesParticularityEnum"/>
+              <s:element minOccurs="1" maxOccurs="1" name="FontFormattingMode" type="tns:FontFormattingModeEnum"/>
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:simpleType name="TextCoordinatesParticularityEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="TCP_Lines"/>
+          <s:enumeration value="TCP_Words"/>
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="XLSXExportSettings">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:OutputFormatSettings">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="ConvertNumericValuesToNumbers" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="IgnoreTextOutsideTables" type="s:boolean"/>
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="DOCXExportSettings">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:OutputFormatSettings">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="RTFSynthesisMode" type="tns:RTFSynthesisModeEnum"/>
+              <s:element minOccurs="1" maxOccurs="1" name="PaperWidth" type="s:int"/>
+              <s:element minOccurs="1" maxOccurs="1" name="PaperHeight" type="s:int"/>
+              <s:element minOccurs="1" maxOccurs="1" name="ForceFixedPageSize" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="WritePictures" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="HighlightErrorsWithBackgroundColor" type="s:boolean"/>
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:simpleType name="RTFSynthesisModeEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="RSM_PlainText"/>
+          <s:enumeration value="RSM_FormattedText"/>
+          <s:enumeration value="RSM_EditableCopy"/>
+          <s:enumeration value="RSM_ExactCopy"/>
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="JBig2ExportSettings">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:OutputFormatSettings">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="Resolution" type="s:int"/>
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="Jpeg2kExportSettings">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:OutputFormatSettings">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="Quality" type="s:int"/>
+              <s:element minOccurs="1" maxOccurs="1" name="Resolution" type="s:int"/>
+              <s:element minOccurs="1" maxOccurs="1" name="ColorMode" type="tns:ImageColorModeEnum"/>
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:simpleType name="ImageColorModeEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="ICM_AsIs"/>
+          <s:enumeration value="ICM_Color"/>
+          <s:enumeration value="ICM_Gray"/>
+          <s:enumeration value="ICM_BlackAndWhite"/>
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="JpegExportSettings">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:OutputFormatSettings">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="Quality" type="s:int"/>
+              <s:element minOccurs="1" maxOccurs="1" name="Resolution" type="s:int"/>
+              <s:element minOccurs="1" maxOccurs="1" name="ColorMode" type="tns:ImageColorModeEnum"/>
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="TiffExportSettings">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:OutputFormatSettings">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="Compression" type="tns:ImageCompressionTypeEnum"/>
+              <s:element minOccurs="1" maxOccurs="1" name="Resolution" type="s:int"/>
+              <s:element minOccurs="1" maxOccurs="1" name="ColorMode" type="tns:ImageColorModeEnum"/>
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:simpleType name="ImageCompressionTypeEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="ICT_Uncompressed"/>
+          <s:enumeration value="ICT_Zip"/>
+          <s:enumeration value="ICT_Group3"/>
+          <s:enumeration value="ICT_Group4"/>
+          <s:enumeration value="ICT_PackBits"/>
+          <s:enumeration value="ICT_Jpeg"/>
+          <s:enumeration value="ICT_Lzw"/>
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="CSVExportSettings">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:OutputFormatSettings">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="CodePage" type="tns:CodePageEnum"/>
+              <s:element minOccurs="1" maxOccurs="1" name="EncodingType" type="tns:TextEncodingTypeEnum"/>
+              <s:element minOccurs="0" maxOccurs="1" name="TabSeparator" type="s:string"/>
+              <s:element minOccurs="1" maxOccurs="1" name="IgnoreTextOutsideTables" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="UsePageBreaks" type="s:boolean"/>
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:simpleType name="CodePageEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="CP_Null"/>
+          <s:enumeration value="CP_Latin"/>
+          <s:enumeration value="CP_Cyrillic"/>
+          <s:enumeration value="CP_EasternEuropean"/>
+          <s:enumeration value="CP_Baltic"/>
+          <s:enumeration value="CP_Turkish"/>
+          <s:enumeration value="CP_US_MSDOS"/>
+          <s:enumeration value="CP_LatinI_MSDOS"/>
+          <s:enumeration value="CP_Russian_MSDOS"/>
+          <s:enumeration value="CP_Baltic_MSDOS"/>
+          <s:enumeration value="CP_Turkish_IBM"/>
+          <s:enumeration value="CP_Slavic_MSDOS"/>
+          <s:enumeration value="CP_Greek"/>
+          <s:enumeration value="CP_Greek_737"/>
+          <s:enumeration value="CP_Greek_869"/>
+          <s:enumeration value="CP_Latin_ISO"/>
+          <s:enumeration value="CP_EasternEuropean_ISO"/>
+          <s:enumeration value="CP_Turkish_ISO"/>
+          <s:enumeration value="CP_Baltic_ISO"/>
+          <s:enumeration value="CP_Cyrillic_ISO"/>
+          <s:enumeration value="CP_Greek_ISO"/>
+          <s:enumeration value="CP_KOI8"/>
+          <s:enumeration value="CP_Tatar"/>
+          <s:enumeration value="CP_Tatar_MSDOS"/>
+          <s:enumeration value="CP_Roman_Macintosh"/>
+          <s:enumeration value="CP_Greek_Macintosh"/>
+          <s:enumeration value="CP_Cyrillic_Macintosh"/>
+          <s:enumeration value="CP_Ukrainian_Macintosh"/>
+          <s:enumeration value="CP_Latin2_Macintosh"/>
+          <s:enumeration value="CP_Icelandic_Macintosh"/>
+          <s:enumeration value="CP_Turkish_Macintosh"/>
+          <s:enumeration value="CP_Croatian_Macintosh"/>
+          <s:enumeration value="CP_Armenian"/>
+          <s:enumeration value="CP_Armenian_MSDOS"/>
+          <s:enumeration value="CP_Armenian_Macintosh"/>
+          <s:enumeration value="CP_Latin5_ISO"/>
+          <s:enumeration value="CP_Cyrillic_MSDOS"/>
+          <s:enumeration value="CP_Bashkir"/>
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="TextEncodingTypeEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="TET_Simple"/>
+          <s:enumeration value="TET_UTF8"/>
+          <s:enumeration value="TET_UTF16"/>
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="XMLExportSettings">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:OutputFormatSettings">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="WriteCharAttributes" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="WriteExtendedCharAttributes" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="WriteCharactersFormatting" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="WriteNonDeskewedCoordinates" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="PagesPerFile" type="s:int"/>
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="RTFExportSettings">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:OutputFormatSettings">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="RTFSynthesisMode" type="tns:RTFSynthesisModeEnum"/>
+              <s:element minOccurs="1" maxOccurs="1" name="PaperWidth" type="s:int"/>
+              <s:element minOccurs="1" maxOccurs="1" name="PaperHeight" type="s:int"/>
+              <s:element minOccurs="1" maxOccurs="1" name="ForceFixedPageSize" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="WritePictures" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="HighlightErrorsWithBackgroundColor" type="s:boolean"/>
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="XLExportSettings">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:OutputFormatSettings">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="ConvertNumericValuesToNumbers" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="IgnoreTextOutsideTables" type="s:boolean"/>
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="MSWordExportSettings">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:OutputFormatSettings">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="RTFSynthesisMode" type="tns:RTFSynthesisModeEnum"/>
+              <s:element minOccurs="1" maxOccurs="1" name="PaperWidth" type="s:int"/>
+              <s:element minOccurs="1" maxOccurs="1" name="PaperHeight" type="s:int"/>
+              <s:element minOccurs="1" maxOccurs="1" name="ForceFixedPageSize" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="WritePictures" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="HighlightErrorsWithBackgroundColor" type="s:boolean"/>
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="TextExportSettings">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:OutputFormatSettings">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="CodePage" type="tns:CodePageEnum"/>
+              <s:element minOccurs="1" maxOccurs="1" name="InsertEmptyLineBetweenParagraphs" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="ExportParagraphsAsOneLine" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="UsePageBreaks" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="EncodingType" type="tns:TextEncodingTypeEnum"/>
+              <s:element minOccurs="1" maxOccurs="1" name="KeepOriginalHeadersFooters" type="s:boolean"/>
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="PDFExportSettings">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:OutputFormatSettings">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="PDFExportMode" type="tns:PDFExportModeEnum"/>
+              <s:element minOccurs="1" maxOccurs="1" name="PictureResolution" type="s:int"/>
+              <s:element minOccurs="1" maxOccurs="1" name="Quality" type="s:int"/>
+              <s:element minOccurs="1" maxOccurs="1" name="WriteTaggedPdf" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="ReplaceUncertainWordsWithImages" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="IsEncryptionRequested" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="UseImprovedCompression" type="s:boolean"/>
+              <s:element minOccurs="0" maxOccurs="1" name="DocumentInfo" type="tns:ArrayOfDocumentInfoItem"/>
+              <s:element minOccurs="0" maxOccurs="1" name="EncryptionInfo" type="tns:PDFEncryptionInfo"/>
+              <s:element minOccurs="0" maxOccurs="1" name="HeaderAndFooter" type="tns:HeaderAndFooterSettings"/>
+              <s:element minOccurs="1" maxOccurs="1" name="PictureFormat" type="tns:ExportPictureFormatEnum"/>
+              <s:element minOccurs="1" maxOccurs="1" name="PaperWidth" type="s:int"/>
+              <s:element minOccurs="1" maxOccurs="1" name="PaperHeight" type="s:int"/>
+              <s:element minOccurs="1" maxOccurs="1" name="UseOriginalPaperSize" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="OverwriteMetadata" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="PdfVersion" type="tns:PDFVersionEnum"/>
+              <s:element minOccurs="1" maxOccurs="1" name="KeepOriginalHeadersFooters" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="WriteAnnotations" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="Scenario" type="tns:PdfExportScenarioEnum"/>
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:simpleType name="PDFExportModeEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="PEM_TextOnly"/>
+          <s:enumeration value="PEM_TextOnImage"/>
+          <s:enumeration value="PEM_ImageOnText"/>
+          <s:enumeration value="PEM_ImageOnly"/>
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="ArrayOfDocumentInfoItem">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="DocumentInfoItem" nillable="true" type="tns:DocumentInfoItem"/>
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="DocumentInfoItem">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Value" type="s:string"/>
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="PDFEncryptionInfo">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="UserPassword" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="OwnerPassword" type="s:string"/>
+          <s:element minOccurs="1" maxOccurs="1" name="EncryptionLevel" type="tns:PDFEncryptionLevelEnum"/>
+          <s:element minOccurs="1" maxOccurs="1" name="AllowPrinting" type="s:boolean"/>
+          <s:element minOccurs="1" maxOccurs="1" name="AllowPrintingExt" type="s:boolean"/>
+          <s:element minOccurs="1" maxOccurs="1" name="AllowModifyingContent" type="s:boolean"/>
+          <s:element minOccurs="1" maxOccurs="1" name="AllowExtractingTextAndGraphics" type="s:boolean"/>
+          <s:element minOccurs="1" maxOccurs="1" name="AllowAddingTextAnnotations" type="s:boolean"/>
+          <s:element minOccurs="1" maxOccurs="1" name="AllowFillingFormFields" type="s:boolean"/>
+          <s:element minOccurs="1" maxOccurs="1" name="AllowExtractingTextAndGraphicsExt" type="s:boolean"/>
+          <s:element minOccurs="1" maxOccurs="1" name="AllowDocumentAssembling" type="s:boolean"/>
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="PDFEncryptionLevelEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="PEL_Low"/>
+          <s:enumeration value="PEL_High"/>
+          <s:enumeration value="PEL_HighAES"/>
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="HeaderAndFooterSettings">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="LeftHeader" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="CentralHeader" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="RightHeader" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="LeftFooter" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="CentralFooter" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="RightFooter" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="FontName" type="s:string"/>
+          <s:element minOccurs="1" maxOccurs="1" name="FontSize" type="s:int"/>
+          <s:element minOccurs="1" maxOccurs="1" name="IsBold" type="s:boolean"/>
+          <s:element minOccurs="1" maxOccurs="1" name="IsItalic" type="s:boolean"/>
+          <s:element minOccurs="1" maxOccurs="1" name="IsUnderlined" type="s:boolean"/>
+          <s:element minOccurs="1" maxOccurs="1" name="TextColor" type="s:int"/>
+          <s:element minOccurs="1" maxOccurs="1" name="TopMargin" type="s:double"/>
+          <s:element minOccurs="1" maxOccurs="1" name="BottomMargin" type="s:double"/>
+          <s:element minOccurs="1" maxOccurs="1" name="LeftMargin" type="s:double"/>
+          <s:element minOccurs="1" maxOccurs="1" name="RightMargin" type="s:double"/>
+          <s:element minOccurs="1" maxOccurs="1" name="IsInInches" type="s:boolean"/>
+          <s:element minOccurs="1" maxOccurs="1" name="StartingNumber" type="s:int"/>
+          <s:element minOccurs="1" maxOccurs="1" name="NumberOfDigits" type="s:int"/>
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="PDFVersionEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="PVN_Auto"/>
+          <s:enumeration value="PVN_Version13"/>
+          <s:enumeration value="PVN_Version14"/>
+          <s:enumeration value="PVN_Version15"/>
+          <s:enumeration value="PVN_Version16"/>
+          <s:enumeration value="PVN_Version17"/>
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="PdfExportScenarioEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="PES_MaxQuality"/>
+          <s:enumeration value="PES_MinSize"/>
+          <s:enumeration value="PES_MaxSpeed"/>
+          <s:enumeration value="PES_Balanced"/>
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="PDFAExportSettings">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:OutputFormatSettings">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="PDFExportMode" type="tns:PDFExportModeEnum"/>
+              <s:element minOccurs="1" maxOccurs="1" name="PictureResolution" type="s:int"/>
+              <s:element minOccurs="1" maxOccurs="1" name="Quality" type="s:int"/>
+              <s:element minOccurs="1" maxOccurs="1" name="Write1ACompliant" type="s:boolean"/>
+              <s:element minOccurs="0" maxOccurs="1" name="DocumentInfo" type="tns:ArrayOfDocumentInfoItem"/>
+              <s:element minOccurs="0" maxOccurs="1" name="HeaderAndFooter" type="tns:HeaderAndFooterSettings"/>
+              <s:element minOccurs="1" maxOccurs="1" name="PictureFormat" type="tns:ExportPictureFormatEnum"/>
+              <s:element minOccurs="1" maxOccurs="1" name="PaperWidth" type="s:int"/>
+              <s:element minOccurs="1" maxOccurs="1" name="PaperHeight" type="s:int"/>
+              <s:element minOccurs="1" maxOccurs="1" name="UseOriginalPaperSize" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="OverwriteMetadata" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="PdfVersion" type="tns:PDFVersionEnum"/>
+              <s:element minOccurs="1" maxOccurs="1" name="KeepOriginalHeadersFooters" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="WriteAnnotations" type="s:boolean"/>
+              <s:element minOccurs="1" maxOccurs="1" name="Scenario" type="tns:PdfExportScenarioEnum"/>
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="NoConversionExportSettings">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:OutputFormatSettings"/>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="InternalFormatSettings">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:OutputFormatSettings"/>
+        </s:complexContent>
+      </s:complexType>
+      <s:simpleType name="HTMLSynthesisModeEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="HSM_PlainText"/>
+          <s:enumeration value="HSM_FormattedStream"/>
+          <s:enumeration value="HSM_PageLayout"/>
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="DoNothingMethodResponse">
+        <s:complexType/>
+      </s:element>
+      <s:element name="DoNothingMethod2">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="stub" type="tns:StubDocumentAttributesCollection"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="StubDocumentAttributesCollection">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Bool" type="tns:BooleanDocumentAttribute"/>
+          <s:element minOccurs="0" maxOccurs="1" name="SingleLine" type="tns:SingleLineDocumentAttribute"/>
+          <s:element minOccurs="0" maxOccurs="1" name="RegularExpression" type="tns:RegularExpressionDocumentAttribute"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Enumeration" type="tns:EnumerationDocumentAttribute"/>
+          <s:element minOccurs="0" maxOccurs="1" name="MultipleLines" type="tns:MultipleLinesDocumentAttribute"/>
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="BooleanDocumentAttribute">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:DocumentAttribute">
+            <s:sequence>
+              <s:element minOccurs="1" maxOccurs="1" name="Value" type="s:boolean"/>
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="DocumentAttribute" abstract="true">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="AttributeType" type="tns:AttributeTypeEnum"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string"/>
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="AttributeTypeEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="AT_Boolean"/>
+          <s:enumeration value="AT_Enumeration"/>
+          <s:enumeration value="AT_SingleLine"/>
+          <s:enumeration value="AT_MultipleLines"/>
+          <s:enumeration value="AT_RegularExpression"/>
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="MultipleLinesDocumentAttribute">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:DocumentAttribute">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="Lines" type="tns:ArrayOfString"/>
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string"/>
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="EnumerationDocumentAttribute">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:DocumentAttribute">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="Value" type="s:string"/>
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="RegularExpressionDocumentAttribute">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:DocumentAttribute">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="Value" type="s:string"/>
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:complexType name="SingleLineDocumentAttribute">
+        <s:complexContent mixed="false">
+          <s:extension base="tns:DocumentAttribute">
+            <s:sequence>
+              <s:element minOccurs="0" maxOccurs="1" name="Value" type="s:string"/>
+            </s:sequence>
+          </s:extension>
+        </s:complexContent>
+      </s:complexType>
+      <s:element name="DoNothingMethod2Response">
+        <s:complexType/>
+      </s:element>
+      <s:element name="GetWorkflows">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="serverLocation" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetWorkflowsResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetWorkflowsResult" type="tns:ArrayOfString"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ProcessFile">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="location" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="workflowName" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="file" type="tns:FileContainer"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="FileContainer">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="FileContents" type="s:base64Binary"/>
+          <s:element minOccurs="0" maxOccurs="1" name="OpenPassword" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="LocationPath" type="s:string"/>
+        </s:sequence>
+      </s:complexType>
+      <s:element name="ProcessFileResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ProcessFileResult" type="tns:XmlResult"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="XmlResult">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string"/>
+          <s:element minOccurs="1" maxOccurs="1" name="Priority" type="tns:PriorityEnum"/>
+          <s:element minOccurs="0" maxOccurs="1" name="InputFiles" type="tns:ArrayOfInputFile"/>
+          <s:element minOccurs="0" maxOccurs="1" name="JobDocuments" type="tns:ArrayOfJobDocument"/>
+          <s:element minOccurs="0" maxOccurs="1" name="PreprocessingParams" type="tns:PreprocessingParams"/>
+          <s:element minOccurs="0" maxOccurs="1" name="RecognitionParams" type="tns:RecognitionParams"/>
+          <s:element minOccurs="0" maxOccurs="1" name="ExportParams" type="tns:ExportParams"/>
+          <s:element minOccurs="0" maxOccurs="1" name="UserProperty" type="s:string"/>
+          <s:element minOccurs="1" maxOccurs="1" name="IsFailed" type="s:boolean"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Errors" type="tns:ArrayOfString"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Warnings" type="tns:ArrayOfString"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Statistics" type="tns:Statistics"/>
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="PriorityEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="P_Low"/>
+          <s:enumeration value="P_BelowNormal"/>
+          <s:enumeration value="P_Normal"/>
+          <s:enumeration value="P_AboveNormal"/>
+          <s:enumeration value="P_High"/>
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="ArrayOfInputFile">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="InputFile" nillable="true" type="tns:InputFile"/>
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="InputFile">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="FileData" type="tns:FileContainer"/>
+          <s:element minOccurs="0" maxOccurs="1" name="OutputDocuments" type="tns:ArrayOfOutputDocument"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Errors" type="tns:ArrayOfString"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Warnings" type="tns:ArrayOfString"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Statistics" type="tns:Statistics"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Attributes" type="tns:DocumentAttributes"/>
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfOutputDocument">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="OutputDocument" nillable="true" type="tns:OutputDocument"/>
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="OutputDocument">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Files" type="tns:ArrayOfFileContainer"/>
+          <s:element minOccurs="0" maxOccurs="1" name="FormatSettings" type="tns:OutputFormatSettings"/>
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfFileContainer">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="FileContainer" nillable="true" type="tns:FileContainer"/>
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Statistics">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="PagesArea" type="s:int"/>
+          <s:element minOccurs="1" maxOccurs="1" name="TotalCharacters" type="s:int"/>
+          <s:element minOccurs="1" maxOccurs="1" name="UncertainCharacters" type="s:int"/>
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="DocumentAttributes">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="SkipManualIndexing" type="s:boolean"/>
+          <s:element minOccurs="0" maxOccurs="1" name="DocumentType" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Items" type="tns:ArrayOfDocumentAttribute"/>
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfDocumentAttribute">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="DocumentAttribute" nillable="true" type="tns:DocumentAttribute"/>
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfJobDocument">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="JobDocument" nillable="true" type="tns:JobDocument"/>
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="JobDocument">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="OutputDocuments" type="tns:ArrayOfOutputDocument"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Errors" type="tns:ArrayOfString"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Warnings" type="tns:ArrayOfString"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Statistics" type="tns:Statistics"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Attributes" type="tns:DocumentAttributes"/>
+          <s:element minOccurs="0" maxOccurs="1" name="CustomText" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="BarcodeText" type="s:string"/>
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="PreprocessingParams">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Deskew" type="s:boolean"/>
+          <s:element minOccurs="1" maxOccurs="1" name="RemoveTexture" type="s:boolean"/>
+          <s:element minOccurs="1" maxOccurs="1" name="CorrectResolution" type="s:boolean"/>
+          <s:element minOccurs="1" maxOccurs="1" name="SplitDualPages" type="s:boolean"/>
+          <s:element minOccurs="1" maxOccurs="1" name="ConvertToBWFormat" type="s:boolean"/>
+          <s:element minOccurs="1" maxOccurs="1" name="RotationType" type="tns:RotationTypeEnum"/>
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="RotationTypeEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="RT_NoRotation"/>
+          <s:enumeration value="RT_Automatic"/>
+          <s:enumeration value="RT_Clockwise"/>
+          <s:enumeration value="RT_Counterclockwise"/>
+          <s:enumeration value="RT_Upsidedown"/>
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="RecognitionParams">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Languages" type="tns:ArrayOfString"/>
+          <s:element minOccurs="1" maxOccurs="1" name="LookForBarcodes" type="s:boolean"/>
+          <s:element minOccurs="1" maxOccurs="1" name="TextTypes" type="s:int"/>
+          <s:element minOccurs="1" maxOccurs="1" name="RecognitionQuality" type="tns:RecognitionQualitySettingEnum"/>
+          <s:element minOccurs="1" maxOccurs="1" name="RecognitionMode" type="tns:RecognitionModeEnum"/>
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="RecognitionQualitySettingEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="RQS_Thorough"/>
+          <s:enumeration value="RQS_Balanced"/>
+          <s:enumeration value="RQS_Fast"/>
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="RecognitionModeEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="RM_FullPage"/>
+          <s:enumeration value="RM_BarcodesOnly"/>
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="ExportParams">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="SeparationMethod" type="tns:DocumentSeparationMethodEnum"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Formats" type="tns:ArrayOfOutputFormatSettings"/>
+          <s:element minOccurs="0" maxOccurs="1" name="ResultLocationPath" type="s:string"/>
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="DocumentSeparationMethodEnum">
+        <s:restriction base="s:string">
+          <s:enumeration value="DSM_OneFilePerImage"/>
+          <s:enumeration value="DSM_ByNumberOfPages"/>
+          <s:enumeration value="DSM_ByBlankPages"/>
+          <s:enumeration value="DSM_ByBarcode"/>
+          <s:enumeration value="DSM_MergeIntoSingleFile"/>
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="ArrayOfOutputFormatSettings">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="OutputFormatSettings" nillable="true" type="tns:OutputFormatSettings"/>
+        </s:sequence>
+      </s:complexType>
+      <s:element name="CreateTicket">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="location" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="workflowName" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CreateTicketResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="CreateTicketResult" type="tns:XmlTicket"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="XmlTicket">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string"/>
+          <s:element minOccurs="1" maxOccurs="1" name="Priority" type="tns:PriorityEnum"/>
+          <s:element minOccurs="0" maxOccurs="1" name="InputFiles" type="tns:ArrayOfInputFile"/>
+          <s:element minOccurs="0" maxOccurs="1" name="ExportParams" type="tns:ExportParams"/>
+          <s:element minOccurs="0" maxOccurs="1" name="PreprocessingParams" type="tns:PreprocessingParams"/>
+          <s:element minOccurs="0" maxOccurs="1" name="RecognitionParams" type="tns:RecognitionParams"/>
+          <s:element minOccurs="0" maxOccurs="1" name="UserProperty" type="s:string"/>
+          <s:element minOccurs="0" maxOccurs="1" name="Attributes" type="tns:DocumentAttributes"/>
+        </s:sequence>
+      </s:complexType>
+      <s:element name="ProcessTicket">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="location" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="workflowName" type="s:string"/>
+            <s:element minOccurs="0" maxOccurs="1" name="ticket" type="tns:XmlTicket"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ProcessTicketResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ProcessTicketResult" type="tns:XmlResult"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="DoNothingMethodSoapIn">
+    <wsdl:part name="parameters" element="tns:DoNothingMethod"/>
+  </wsdl:message>
+  <wsdl:message name="DoNothingMethodSoapOut">
+    <wsdl:part name="parameters" element="tns:DoNothingMethodResponse"/>
+  </wsdl:message>
+  <wsdl:message name="DoNothingMethod2SoapIn">
+    <wsdl:part name="parameters" element="tns:DoNothingMethod2"/>
+  </wsdl:message>
+  <wsdl:message name="DoNothingMethod2SoapOut">
+    <wsdl:part name="parameters" element="tns:DoNothingMethod2Response"/>
+  </wsdl:message>
+  <wsdl:message name="GetWorkflowsSoapIn">
+    <wsdl:part name="parameters" element="tns:GetWorkflows"/>
+  </wsdl:message>
+  <wsdl:message name="GetWorkflowsSoapOut">
+    <wsdl:part name="parameters" element="tns:GetWorkflowsResponse"/>
+  </wsdl:message>
+  <wsdl:message name="ProcessFileSoapIn">
+    <wsdl:part name="parameters" element="tns:ProcessFile"/>
+  </wsdl:message>
+  <wsdl:message name="ProcessFileSoapOut">
+    <wsdl:part name="parameters" element="tns:ProcessFileResponse"/>
+  </wsdl:message>
+  <wsdl:message name="CreateTicketSoapIn">
+    <wsdl:part name="parameters" element="tns:CreateTicket"/>
+  </wsdl:message>
+  <wsdl:message name="CreateTicketSoapOut">
+    <wsdl:part name="parameters" element="tns:CreateTicketResponse"/>
+  </wsdl:message>
+  <wsdl:message name="ProcessTicketSoapIn">
+    <wsdl:part name="parameters" element="tns:ProcessTicket"/>
+  </wsdl:message>
+  <wsdl:message name="ProcessTicketSoapOut">
+    <wsdl:part name="parameters" element="tns:ProcessTicketResponse"/>
+  </wsdl:message>
+  <wsdl:portType name="RSSoapServiceSoap">
+    <wsdl:operation name="DoNothingMethod">
+      <wsdl:input message="tns:DoNothingMethodSoapIn"/>
+      <wsdl:output message="tns:DoNothingMethodSoapOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="DoNothingMethod2">
+      <wsdl:input message="tns:DoNothingMethod2SoapIn"/>
+      <wsdl:output message="tns:DoNothingMethod2SoapOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="GetWorkflows">
+      <wsdl:input message="tns:GetWorkflowsSoapIn"/>
+      <wsdl:output message="tns:GetWorkflowsSoapOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="ProcessFile">
+      <wsdl:input message="tns:ProcessFileSoapIn"/>
+      <wsdl:output message="tns:ProcessFileSoapOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="CreateTicket">
+      <wsdl:input message="tns:CreateTicketSoapIn"/>
+      <wsdl:output message="tns:CreateTicketSoapOut"/>
+    </wsdl:operation>
+    <wsdl:operation name="ProcessTicket">
+      <wsdl:input message="tns:ProcessTicketSoapIn"/>
+      <wsdl:output message="tns:ProcessTicketSoapOut"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="RSSoapServiceSoap" type="tns:RSSoapServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="DoNothingMethod">
+      <soap:operation soapAction="http://www.abbyy.com/RecognitionServer3_xml/RecognitionServer3.xml/DoNothingMethod" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DoNothingMethod2">
+      <soap:operation soapAction="http://www.abbyy.com/RecognitionServer3_xml/RecognitionServer3.xml/DoNothingMethod2" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetWorkflows">
+      <soap:operation soapAction="http://www.abbyy.com/RecognitionServer3_xml/RecognitionServer3.xml/GetWorkflows" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ProcessFile">
+      <soap:operation soapAction="http://www.abbyy.com/RecognitionServer3_xml/RecognitionServer3.xml/ProcessFile" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateTicket">
+      <soap:operation soapAction="http://www.abbyy.com/RecognitionServer3_xml/RecognitionServer3.xml/CreateTicket" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ProcessTicket">
+      <soap:operation soapAction="http://www.abbyy.com/RecognitionServer3_xml/RecognitionServer3.xml/ProcessTicket" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="RSSoapServiceSoap12" type="tns:RSSoapServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="DoNothingMethod">
+      <soap12:operation soapAction="http://www.abbyy.com/RecognitionServer3_xml/RecognitionServer3.xml/DoNothingMethod" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DoNothingMethod2">
+      <soap12:operation soapAction="http://www.abbyy.com/RecognitionServer3_xml/RecognitionServer3.xml/DoNothingMethod2" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetWorkflows">
+      <soap12:operation soapAction="http://www.abbyy.com/RecognitionServer3_xml/RecognitionServer3.xml/GetWorkflows" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ProcessFile">
+      <soap12:operation soapAction="http://www.abbyy.com/RecognitionServer3_xml/RecognitionServer3.xml/ProcessFile" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateTicket">
+      <soap12:operation soapAction="http://www.abbyy.com/RecognitionServer3_xml/RecognitionServer3.xml/CreateTicket" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ProcessTicket">
+      <soap12:operation soapAction="http://www.abbyy.com/RecognitionServer3_xml/RecognitionServer3.xml/ProcessTicket" style="document"/>
+      <wsdl:input>
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="RSSoapService">
+    <wsdl:port name="RSSoapServiceSoap" binding="tns:RSSoapServiceSoap">
+      <soap:address location="http://195.113.155.161/Recognition3WS/RSSoapService.asmx"/>
+    </wsdl:port>
+    <wsdl:port name="RSSoapServiceSoap12" binding="tns:RSSoapServiceSoap12">
+      <soap12:address location="http://195.113.155.161/Recognition3WS/RSSoapService.asmx"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

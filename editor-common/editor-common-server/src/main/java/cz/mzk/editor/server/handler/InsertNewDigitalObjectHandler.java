@@ -133,7 +133,7 @@ public class InsertNewDigitalObjectHandler
                                      fedoraAccess);
             ingestSuccess = createObject.insertAllTheStructureToFOXMLs(object);
 
-            if (createObject.getTopLevelUuid() != object.getUuid()) {
+            if (createObject.getTopLevelUuid().equals(object.getUuid())) {
 
                 try {
                     if (digitalObjectDAO.updateTopObjectUuid(createObject.getTopLevelUuid(),
