@@ -61,11 +61,11 @@ public class DigitalObjectDAOImpl
                     + Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT
                     + " SET timestamp = (CURRENT_TIMESTAMP) WHERE digital_object_uuid = (?) AND top_digital_object_uuid = (?) AND type='c'";
 
-    /** The Constant UPDATE_TOP_DO_UUID_AND_STATE. */
-    public static final String UPDATE_TOP_DO_UUID_AND_STATE =
+    /** The Constant UPDATE_TOP_DO_UUID. */
+    public static final String UPDATE_TOP_DO_UUID =
             "UPDATE "
                     + Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT
-                    + " SET top_digital_object_uuid = (?), state = 'true' WHERE top_digital_object_uuid = (?) AND digital_object_uuid = (?)";
+                    + " SET top_digital_object_uuid = (?) WHERE top_digital_object_uuid = (?) AND digital_object_uuid = (?)";
 
     public static final String UPDATE_STATE = "UPDATE " + Constants.TABLE_DIGITAL_OBJECT
             + " SET state = (?) WHERE uuid = (?)";
@@ -338,7 +338,7 @@ public class DigitalObjectDAOImpl
                 (lowerObjUuid.startsWith(Constants.FEDORA_UUID_PREFIX)) ? lowerObjUuid
                         : Constants.FEDORA_UUID_PREFIX.concat(lowerObjUuid);
 
-        updateSt = getConnection().prepareStatement(UPDATE_TOP_DO_UUID_AND_STATE);
+        updateSt = getConnection().prepareStatement(UPDATE_TOP_DO_UUID);
         updateSt.setString(1, newPid);
         updateSt.setString(2, oldPid);
         updateSt.setString(3, lowerObjPid);

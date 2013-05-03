@@ -100,7 +100,7 @@ public class DAOUtilsImpl
                     changed = true;
                 }
 
-                if (state == rs.getBoolean("state")) {
+                if (state != rs.getBoolean("state")) {
                     changed = true;
                 }
 
@@ -197,7 +197,7 @@ public class DAOUtilsImpl
     /**
      * {@inheritDoc}
      * 
-     * @param closeCon2
+     * @param closeCon
      * @throws SQLException
      */
     @Override

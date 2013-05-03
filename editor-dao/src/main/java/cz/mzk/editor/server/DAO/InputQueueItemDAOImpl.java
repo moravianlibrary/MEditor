@@ -96,6 +96,9 @@ public class InputQueueItemDAOImpl
                     + " WHERE input_queue_directory_path = (?)) o ON a.top_digital_object_uuid = o.uuid) io LEFT JOIN "
                     + Constants.TABLE_EDITOR_USER + " eu ON io.editor_user_id = eu.id";
 
+
+    private static final String UPDATE_INGESTED_TRUE = "UPDATE " + Constants.TABLE_INPUT_QUEUE_ITEM + " SET ingested='true' WHERE path=?";
+
     /** The Constant LOGGER. */
     private static final Logger LOGGER = Logger.getLogger(InputQueueItemDAOImpl.class);
 
@@ -218,6 +221,26 @@ public class InputQueueItemDAOImpl
     public boolean hasBeenIngested(String path) throws DatabaseException {
         List<IngestInfo> ingestInfo = getIngestInfo(path);
         return ingestInfo != null && !ingestInfo.isEmpty();
+    }
+
+    @Override
+    public void setIngested(String path) throws DatabaseException {
+        if (path == null) throw new NullPointerException("path");
+
+        try {
+            getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            LOGGER.warn("Unable to set autocommit off", e);
+        }
+
+        try {
+            PreparedStatement updateIngestedSt = getConnection().prepareStatement(UPDATE_INGESTED_TRUE);
+            updateIngestedSt.setString(1, path);
+            updateIngestedSt.execute();
+            getConnection().commit();
+        } catch (SQLException e) {
+            LOGGER.error(e);
+        }
     }
 
     /**

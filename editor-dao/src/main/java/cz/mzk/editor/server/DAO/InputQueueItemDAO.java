@@ -94,4 +94,6 @@ public interface InputQueueItemDAO {
      *         the database exception
      */
     boolean hasBeenIngested(String path) throws DatabaseException;
+
+    public void setIngested(String path) throws DatabaseException;
 }

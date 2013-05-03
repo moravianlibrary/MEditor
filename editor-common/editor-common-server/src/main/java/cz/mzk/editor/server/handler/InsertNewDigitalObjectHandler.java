@@ -33,6 +33,7 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.mzk.editor.server.DAO.InputQueueItemDAO;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.CreateObjectException;
@@ -78,6 +79,9 @@ public class InsertNewDigitalObjectHandler
     @Inject
     private DAOUtils daoUtils;
 
+    @Inject
+    private InputQueueItemDAO inputQueueItemDAO;
+
     /** The image resolver dao. */
     @Inject
     private ImageResolverDAO imageResolverDAO;
@@ -104,7 +108,6 @@ public class InsertNewDigitalObjectHandler
         }
 
         NewDigitalObject object = action.getObject();
-        if (object == null) throw new NullPointerException("object");
         if (LOGGER.isInfoEnabled()) {
             LOGGER.debug("Inserting digital object: " + object.getName());
         }
@@ -115,7 +118,7 @@ public class InsertNewDigitalObjectHandler
         String pid = null;
 
         try {
-            daoUtils.checkInputQueue(action.getInputPath(), object.getName(), true); //TODO-MR pridani nazvu, push?
+            daoUtils.checkInputQueue(action.getInputPath(), object.getName(), true);
         } catch (DatabaseException e1) {
             LOGGER.error(e1.getMessage());
             e1.printStackTrace();
@@ -133,7 +136,7 @@ public class InsertNewDigitalObjectHandler
                                      fedoraAccess);
             ingestSuccess = createObject.insertAllTheStructureToFOXMLs(object);
 
-            if (createObject.getTopLevelUuid().equals(object.getUuid())) {
+            if (!createObject.getTopLevelUuid().equals(object.getUuid())) {
 
                 try {
                     if (digitalObjectDAO.updateTopObjectUuid(createObject.getTopLevelUuid(),
@@ -156,11 +159,11 @@ public class InsertNewDigitalObjectHandler
             } else {
                 try {
 
-                    digitalObjectDAO.updateState(createObject.getIngestedObjects(), true); //TODO-MR push state
-
+                    digitalObjectDAO.updateState(createObject.getIngestedObjects(), true);
+                    inputQueueItemDAO.setIngested(action.getInputPath());
                     if (erraiDispatcher != null) {
                         MessageBuilder.createMessage()
-                                .toSubject("InputQueueBroadcastReceiver")
+                                .toSubject("InputQueueBroadcastReceiver").signalling()
                                 .with("ingested", action.getInputPath())
                                 .noErrorHandling().sendNowWith(erraiDispatcher);
                     }
