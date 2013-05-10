@@ -252,6 +252,16 @@
 							<webXml>${basedir}/../editor-webapp/src/main/webapp/WEB-INF/web.xml</webXml>
 						</configuration>
 					</plugin>
+
+                    <plugin>
+                        <groupId>com.googlecode.flyway</groupId>
+                        <artifactId>flyway-maven-plugin</artifactId>
+                        <version>2.1.1</version>
+                        <configuration>
+                            ....
+                        </configuration>
+                    </plugin>
+
 				</plugins>
 			</build>
 		</profile>

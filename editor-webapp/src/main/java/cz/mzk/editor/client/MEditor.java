@@ -39,8 +39,6 @@ import com.smartgwt.client.util.SC;
 
 import cz.mzk.editor.client.gin.EditorGinjector;
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.shared.rpc.action.CheckAndUpdateDBSchemaAction;
-import cz.mzk.editor.shared.rpc.action.CheckAndUpdateDBSchemaResult;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -69,32 +67,8 @@ public class MEditor
         } else {
             injector.getPlaceManager().revealCurrentPlace();
         }
-
-        initializeDatabaseIfNeeded(injector.getDispatcher());
+        RootPanel.getBodyElement().removeChild(RootPanel.get("loadingWrapper")
+                .getElement());
     }
 
-    public static void initializeDatabaseIfNeeded(DispatchAsync dispatcher) {
-        dispatcher.execute(new CheckAndUpdateDBSchemaAction(),
-                           new AsyncCallback<CheckAndUpdateDBSchemaResult>() {
-
-                               @Override
-                               public void onSuccess(CheckAndUpdateDBSchemaResult result) {
-                                   if (result.isSuccess()) {
-                                       SC.say("DB has been successfully updated to version "
-                                               + result.getVersion());
-                                   }
-                                   // remove progressbar
-                                   RootPanel.getBodyElement().removeChild(RootPanel.get("loadingWrapper")
-                                           .getElement());
-                               }
-
-                               @Override
-                               public void onFailure(Throwable caught) {
-                                   SC.warn(caught.getMessage());
-                                   // remove progressbar
-                                   RootPanel.getBodyElement().removeChild(RootPanel.get("loadingWrapper")
-                                           .getElement());
-                               }
-                           });
-    }
 }

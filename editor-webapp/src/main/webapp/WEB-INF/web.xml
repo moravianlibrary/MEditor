@@ -31,9 +31,15 @@
 	<listener>
 		<listener-class>cz.mzk.editor.server.SessionListener</listener-class>
 	</listener>
+
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
+
+    <listener>
+        <listener-class>cz.mzk.editor.server.FlywayListener</listener-class>
+    </listener>
+
 
 	<!-- request 4 adding servlet -->
 	<servlet>
