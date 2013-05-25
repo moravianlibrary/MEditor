@@ -1,0 +1,150 @@
+<?xml version="1.0"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>cz.mzk</groupId>
+  <artifactId>meditor-ircbot</artifactId>
+  <version>1.1</version>
+  <packaging>jar</packaging>
+
+  <name>MEdit IRC Bot</name>
+  <description>An IRC bot for doing helpful stuff on the Freenode #meditor channel. This bot is based on RHQ irc bot.</description>
+  <url>http://code.google.com/p/meta-editor/</url>
+
+  <scm>
+    <connection>scm:git:git://github.com/moravianlibrary/MEditor.git</connection>
+    <developerConnection>scm:git:git@github.com:moravianlibrary/MEditor.git</developerConnection>
+    <url>https://github.com/moravianlibrary/MEditor</url>
+  </scm>
+
+  <licenses>
+    <license>
+      <name>GNU General Public License, Version 2.0</name>
+      <url>http://www.gnu.org/licenses/old-licenses/gpl-2.0.html</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>Jiri Kremser</name>
+      <timezone>+1</timezone>
+      <url>https://github.com/Jiri-Kremser</url>
+    </developer>
+  </developers>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.pircbotx</groupId>
+      <artifactId>pircbotx</artifactId>
+      <version>1.9</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.j2bugzilla</groupId>
+      <artifactId>j2bugzilla</artifactId>
+      <version>2.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jsoup</groupId>
+      <artifactId>jsoup</artifactId>
+      <version>1.7.2</version>
+    </dependency>
+  
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.4</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.5</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+          <verbose>true</verbose>
+          <proc>none</proc>
+          <!-- disable annotation processing -->
+          <showWarnings>true</showWarnings>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.3</version>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+          <archive>
+            <manifest>
+              <mainClass>cz.mzk.editor.irc.MeditorIrcBot</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <!-- this is used for inheritance merges -->
+            <phase>package</phase>
+            <!-- bind to the packaging phase -->
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.2.1</version>
+        <configuration>
+          <mainClass>cz.mzk.editor.irc.MeditorIrcBot</mainClass>
+          <arguments>
+            <argument>irc.freenode.net</argument>
+            <argument>#meditor</argument>
+          </arguments>
+        </configuration>
+      </plugin>
+
+    </plugins>
+
+  </build>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>jboss-snapshots-repository</id>
+      <name>JBoss Snapshots Repository</name>
+      <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
+    </snapshotRepository>
+    <repository>
+      <id>jboss-releases-repository</id>
+      <name>JBoss Releases Repository</name>
+      <url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
+
+</project>
+
