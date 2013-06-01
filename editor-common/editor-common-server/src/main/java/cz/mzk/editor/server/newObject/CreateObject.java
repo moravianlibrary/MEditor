@@ -449,7 +449,10 @@ public class CreateObject {
                 String newImagePath = null;
                 try {
                     newImagePath = imageResolverDAO.getNewImageFilePath(node.getPath());
-                    if (!newImagePath.endsWith(Constants.JPEG_2000_EXTENSION)) {
+                    if (newImagePath == null) {
+                        throw new CreateObjectException("Unkown file path for " + node.getPath());
+                    }
+                    else if (!newImagePath.endsWith(Constants.JPEG_2000_EXTENSION)) {
                         newImagePath = newImagePath.concat(Constants.JPEG_2000_EXTENSION);
                     }
 
