@@ -36,7 +36,7 @@ public class AudioPlayerWindow extends UniversalWindow {
 
     private String sourceBuilder(String uuid, Constants.AUDIO_MIMETYPES mimetype) {
         StringBuilder sb = new StringBuilder("<source src=\"");
-        sb.append(hostname).append("/").append("audio").append("/").append(uuid)
+        sb.append("/meditor/").append("audio").append("/").append(uuid)
                 .append(mimetype.getExtension()).append("\" type=\"")
                 .append(mimetype.getMimeType()).append("\"></source>");
         return sb.toString();
