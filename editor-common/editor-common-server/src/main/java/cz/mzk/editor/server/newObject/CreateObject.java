@@ -595,8 +595,11 @@ public class CreateObject {
                                         String uuid,
                                         int pageWidth) throws CreateObjectException {
         try {
+            LOGGER.debug("Create thumbnail - convert -colorspace RGB " + pathWithoutExtension + Constants.PDF_EXTENSION
+                    + "[" + (thumbPageNum - 1) + "] -thumbnail x" + pageWidth + " "
+                    + pathWithoutExtension + ".jpg");
             Process p =
-                    Runtime.getRuntime().exec("convert " + pathWithoutExtension + Constants.PDF_EXTENSION
+                    Runtime.getRuntime().exec("convert -colorspace RGB " + pathWithoutExtension + Constants.PDF_EXTENSION
                             + "[" + (thumbPageNum - 1) + "] -thumbnail x" + pageWidth + " "
                             + pathWithoutExtension + ".jpg");
 
