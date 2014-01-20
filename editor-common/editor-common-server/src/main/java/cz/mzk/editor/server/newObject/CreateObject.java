@@ -66,66 +66,88 @@ import cz.mzk.editor.shared.domain.NamedGraphModel;
 import cz.mzk.editor.shared.rpc.NewDigitalObject;
 
 // TODO: Auto-generated Javadoc
+
 /**
  * The Class CreateObject.
- * 
+ *
  * @author Jiri Kremser
  * @version 29.10.2011
  */
 public class CreateObject {
 
-    /** The LOGGER. */
+    /**
+     * The LOGGER.
+     */
     public final Logger LOGGER = Logger.getLogger(CreateObject.class);
 
-    /** The fedora access. */
+    /**
+     * The fedora access.
+     */
     private final FedoraAccess fedoraAccess;
 
-    /** The config. */
+    /**
+     * The config.
+     */
     private final EditorConfiguration config;
 
-    /** The dao utils. */
+    /**
+     * The dao utils.
+     */
     private final DigitalObjectDAO digitalObjectDAO;
 
-    /** The image resolver dao. */
+    /**
+     * The image resolver dao.
+     */
     private final ImageResolverDAO imageResolverDAO;
 
-    /** The top level uuid. */
+    /**
+     * The top level uuid.
+     */
     private String topLevelUuid = null;
 
-    /** The input dir path. */
+    /**
+     * The input dir path.
+     */
     private final String inputDirPath;
 
-    /** The processed pages. */
+    /**
+     * The processed pages.
+     */
     private final Map<String, String> processedPages;
 
-    /** The processed records */
+    /**
+     * The processed records
+     */
     private final Map<String, String> processedTracks;
 
-    /** The sysno. */
+    /**
+     * The sysno.
+     */
     private String sysno;
 
-    /** The base. */
+    /**
+     * The base.
+     */
     private String base;
 
-    /** The model */
+    /**
+     * The model
+     */
     private DigitalObjectModel model;
 
-    /** The ingested objects. */
+    /**
+     * The ingested objects.
+     */
     private final List<String> ingestedObjects;
 
     /**
      * Instantiates a new creates the object.
-     * 
-     * @param inputDirPath
-     *        the input dir path
-     * @param config
-     *        the config
-     * @param digitalObjectDAO
-     *        the digital object dao
-     * @param imageResolverDAO
-     *        the image resolver dao
-     * @param fedoraAccess
-     *        the fedora access
+     *
+     * @param inputDirPath     the input dir path
+     * @param config           the config
+     * @param digitalObjectDAO the digital object dao
+     * @param imageResolverDAO the image resolver dao
+     * @param fedoraAccess     the fedora access
      */
     @Inject
     public CreateObject(String inputDirPath,
@@ -145,12 +167,10 @@ public class CreateObject {
 
     /**
      * Insert all the structure to foxm ls.
-     * 
-     * @param node
-     *        the node
+     *
+     * @param node the node
      * @return true, if successful
-     * @throws CreateObjectException
-     *         the create object exception
+     * @throws CreateObjectException the create object exception
      */
     public boolean insertAllTheStructureToFOXMLs(NewDigitalObject node) throws CreateObjectException {
         String modsString = FedoraUtils.createNewModsPart(node.getBundle().getMods());
@@ -173,11 +193,11 @@ public class CreateObject {
         if (node.getExist() && node.getUuid() != null) {
             try {
                 digitalObjectDAO.insertNewDigitalObject(node.getUuid(),
-                                                        node.getModel().getValue(),
-                                                        node.getName(),
-                                                        inputDirPath,
-                                                        node.getUuid(),
-                                                        false);
+                        node.getModel().getValue(),
+                        node.getName(),
+                        inputDirPath,
+                        node.getUuid(),
+                        false);
             } catch (DatabaseException e) {
                 LOGGER.error("DB ERROR!!!: " + e.getMessage() + ": " + e);
                 e.printStackTrace();
@@ -191,16 +211,12 @@ public class CreateObject {
 
     /**
      * Insert foxml.
-     * 
-     * @param node
-     *        the node
-     * @param mods
-     *        the mods
-     * @param dc
-     *        the dc
+     *
+     * @param node the node
+     * @param mods the mods
+     * @param dc   the dc
      * @return the string
-     * @throws CreateObjectException
-     *         the create object exception
+     * @throws CreateObjectException the create object exception
      */
     private String insertFOXML(NewDigitalObject node, Document mods, Document dc)
             throws CreateObjectException {
@@ -209,18 +225,13 @@ public class CreateObject {
 
     /**
      * Insert foxml.
-     * 
-     * @param node
-     *        the node
-     * @param mods
-     *        the mods
-     * @param dc
-     *        the dc
-     * @param attempt
-     *        the attempt
+     *
+     * @param node    the node
+     * @param mods    the mods
+     * @param dc      the dc
+     * @param attempt the attempt
      * @return the string
-     * @throws CreateObjectException
-     *         the create object exception
+     * @throws CreateObjectException the create object exception
      */
     private String insertFOXML(NewDigitalObject node, Document mods, Document dc, int attempt)
             throws CreateObjectException {
@@ -304,11 +315,11 @@ public class CreateObject {
                 topLevelUuid = node.getUuid();
                 try {
                     digitalObjectDAO.insertNewDigitalObject(node.getUuid(),
-                                                            node.getModel().getValue(),
-                                                            node.getName(),
-                                                            inputDirPath,
-                                                            node.getUuid(),
-                                                            false);
+                            node.getModel().getValue(),
+                            node.getName(),
+                            inputDirPath,
+                            node.getUuid(),
+                            false);
                 } catch (DatabaseException e) {
                     LOGGER.error("DB ERROR!!!: " + e.getMessage() + ": " + e);
                     e.printStackTrace();
@@ -354,7 +365,6 @@ public class CreateObject {
         String newFilePath = null;
 
 
-
         if (isPage || isSoundUnit) {
             String url = config.getImageServerUrl();
             url = addSlash(url);
@@ -386,6 +396,7 @@ public class CreateObject {
                                     + node.getUuid();
                 }
             }
+
             builder.setImageUrl(imageUrl);
         } else if (isTrack) {
             String url = config.getRecordingServerUrl();
@@ -397,21 +408,23 @@ public class CreateObject {
                 url = "http://" + url;
             }
             String soundUrl;
+
             if (!isSysno(sysno)) {
                 soundUrl =
                         url + "meditor" + getPathFromNonSysno(sysno)
                                 + (node.getUuid());
+                newFilePath =
+                        addSlash(config.getRecordingServerUnknown()) + getPathFromNonSysno(sysno)
+                                + node.getUuid();
             } else {
                 String basePath = "";
                 if (base != null && !"".equals(base)) {
                     basePath = base.toLowerCase() + "/";
                 }
-                soundUrl =  url + basePath + getSysnoPath(sysno) + (node.getUuid());
-
                 newFilePath =
-                            addSlash(config.getRecordingServerKnown()) + basePath + getSysnoPath(sysno)
-                                    + node.getUuid();
-
+                        addSlash(config.getRecordingServerKnown()) + basePath + getSysnoPath(sysno)
+                                + node.getUuid();
+                soundUrl = url + basePath + getSysnoPath(sysno) + (node.getUuid());
             }
 
             //No lossless audio on the input queue
@@ -428,7 +441,6 @@ public class CreateObject {
                     ((TrackBuilder) builder).wavProvided(true);
                 }
             }
-
             builder.setImageUrl(soundUrl);
 
         }
@@ -451,8 +463,7 @@ public class CreateObject {
                     newImagePath = imageResolverDAO.getNewImageFilePath(node.getPath());
                     if (newImagePath == null) {
                         throw new CreateObjectException("Unkown file path for " + node.getPath());
-                    }
-                    else if (!newImagePath.endsWith(Constants.JPEG_2000_EXTENSION)) {
+                    } else if (!newImagePath.endsWith(Constants.JPEG_2000_EXTENSION)) {
                         newImagePath = newImagePath.concat(Constants.JPEG_2000_EXTENSION);
                     }
 
@@ -495,11 +506,11 @@ public class CreateObject {
             String soundPath;
             try {
                 soundPath = imageResolverDAO.getNewImageFilePath(node.getPath());
-                soundPath = soundPath.substring(0, soundPath.length()-4);
+                soundPath = soundPath.substring(0, soundPath.length() - 4);
 
                 if (new File(soundPath + Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getExtension()).exists()) {
-                copySuccessWav = IOUtils.copyFile(soundPath + Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getExtension(),
-                        newFilePath + Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getExtension());
+                    copySuccessWav = IOUtils.copyFile(soundPath + Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getExtension(),
+                            newFilePath + Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getExtension());
                 }
 
                 copySuccessMp3 = IOUtils.copyFile(soundPath + Constants.AUDIO_MIMETYPES.MP3_MIMETYPE.getExtension(),
@@ -520,22 +531,20 @@ public class CreateObject {
 
         if (!success) {
             insertFOXML(node, mods, dc, attempt - 1);
-
         } else if (isPdf) {
             handlePdf(node);
         }
         if (node.getModel() == DigitalObjectModel.PAGE) processedPages.put(node.getPath(), node.getUuid());
         if (node.getModel() == DigitalObjectModel.TRACK) processedTracks.put(node.getPath(), node.getUuid());
+
         return node.getUuid();
     }
 
     /**
      * Handle pdf.
-     * 
-     * @param node
-     *        the node
-     * @throws CreateObjectException
-     *         the create object exception
+     *
+     * @param node the node
+     * @throws CreateObjectException the create object exception
      */
     private void handlePdf(NewDigitalObject node) throws CreateObjectException {
         String uuid = (node.getUuid().contains("uuid:") ? node.getUuid() : "uuid:".concat(node.getUuid()));
@@ -557,15 +566,15 @@ public class CreateObject {
         if (insertManagedDatastream(DATASTREAM_ID.IMG_FULL, uuid, pathWithoutExtension
                 + Constants.PDF_EXTENSION, true, Constants.PDF_MIMETYPE)) {
             createThumbPrewFromPdf(DATASTREAM_ID.IMG_THUMB,
-                                   pathWithoutExtension,
-                                   node.getPageIndex(),
-                                   uuid,
-                                   128);
+                    pathWithoutExtension,
+                    node.getPageIndex(),
+                    uuid,
+                    128);
             createThumbPrewFromPdf(DATASTREAM_ID.IMG_PREVIEW,
-                                   pathWithoutExtension,
-                                   node.getPageIndex(),
-                                   uuid,
-                                   500);
+                    pathWithoutExtension,
+                    node.getPageIndex(),
+                    uuid,
+                    500);
             String ocrPath = node.getAditionalInfoOrOcr();
             if (ocrPath != null && !"".equals(ocrPath)) {
                 insertManagedDatastream(DATASTREAM_ID.TEXT_OCR, node.getUuid(), ocrPath, false, "text/xml");
@@ -575,19 +584,13 @@ public class CreateObject {
 
     /**
      * Creates the thumb prew from pdf.
-     * 
-     * @param dsId
-     *        the ds id
-     * @param pathWithoutExtension
-     *        the path without extension
-     * @param thumbPageNum
-     *        the thumb page num
-     * @param uuid
-     *        the uuid
-     * @param pageWidth
-     *        the page width
-     * @throws CreateObjectException
-     *         the create object exception
+     *
+     * @param dsId                 the ds id
+     * @param pathWithoutExtension the path without extension
+     * @param thumbPageNum         the thumb page num
+     * @param uuid                 the uuid
+     * @param pageWidth            the page width
+     * @throws CreateObjectException the create object exception
      */
     private void createThumbPrewFromPdf(DATASTREAM_ID dsId,
                                         String pathWithoutExtension,
@@ -642,13 +645,10 @@ public class CreateObject {
 
     /**
      * Append.
-     * 
-     * @param parrent
-     *        the parrent
-     * @param child
-     *        the child
-     * @throws CreateObjectException
-     *         the create object exception
+     *
+     * @param parrent the parrent
+     * @param child   the child
+     * @throws CreateObjectException the create object exception
      */
     private void append(NewDigitalObject parrent, NewDigitalObject child) throws CreateObjectException {
         org.w3c.dom.Document doc = null;
@@ -664,28 +664,22 @@ public class CreateObject {
         Document document = domReader.read(doc);
         RelsExtRelation rel =
                 new RelsExtRelation(child.getUuid(),
-                                    NamedGraphModel.getRelationship(parrent.getModel(), child.getModel()),
-                                    child.getName());
+                        NamedGraphModel.getRelationship(parrent.getModel(), child.getModel()),
+                        child.getName());
         FoxmlUtils.addRelationshipToRelsExt(document, rel);
         FedoraUtils.putRelsExt(parrent.getUuid(), document.asXML(), false);
     }
 
     /**
      * Insert managed datastream.
-     * 
-     * @param dsId
-     *        the ds id
-     * @param uuid
-     *        the uuid
-     * @param filePathOrContent
-     *        the file path or content
-     * @param isFile
-     *        the is file
-     * @param mimeType
-     *        the mime type
+     *
+     * @param dsId              the ds id
+     * @param uuid              the uuid
+     * @param filePathOrContent the file path or content
+     * @param isFile            the is file
+     * @param mimeType          the mime type
      * @return true, if successful
-     * @throws CreateObjectException
-     *         the create object exception
+     * @throws CreateObjectException the create object exception
      */
     private boolean insertManagedDatastream(DATASTREAM_ID dsId,
                                             String uuid,
@@ -705,10 +699,10 @@ public class CreateObject {
             if (isFile) {
                 success =
                         RESTHelper.post(url,
-                                        new FileInputStream(new File(filePathOrContent)),
-                                        login,
-                                        password,
-                                        false);
+                                new FileInputStream(new File(filePathOrContent)),
+                                login,
+                                password,
+                                false);
             } else {
                 success = RESTHelper.post(url, filePathOrContent, login, password, false);
             }
@@ -737,9 +731,8 @@ public class CreateObject {
 
     /**
      * Gets the sysno path.
-     * 
-     * @param sysno
-     *        the sysno
+     *
+     * @param sysno the sysno
      * @return the sysno path
      */
     private String getSysnoPath(String sysno) {
@@ -751,9 +744,8 @@ public class CreateObject {
 
     /**
      * Gets the path from non sysno.
-     * 
-     * @param nonSysno
-     *        the non sysno
+     *
+     * @param nonSysno the non sysno
      * @return the path from non sysno
      */
     private String getPathFromNonSysno(String nonSysno) {
@@ -762,9 +754,8 @@ public class CreateObject {
 
     /**
      * Adds the slash.
-     * 
-     * @param string
-     *        the string
+     *
+     * @param string the string
      * @return the string
      */
     private String addSlash(String string) {
@@ -776,13 +767,10 @@ public class CreateObject {
 
     /**
      * Check access rights and create directories.
-     * 
-     * @param sysno
-     *        the sysno
-     * @param base
-     *        the base
-     * @throws CreateObjectException
-     *         the create object exception
+     *
+     * @param sysno the sysno
+     * @param base  the base
+     * @throws CreateObjectException the create object exception
      */
     private void checkAccessRightsAndCreateDirectories(String sysno, String base, DigitalObjectModel model)
             throws CreateObjectException {
@@ -790,6 +778,7 @@ public class CreateObject {
         File imagesDir = null;
 
         if (DigitalObjectModel.SOUNDRECORDING.equals(model)) {
+            File audioDir = null;
 
             String recordingUnknown = config.getRecordingServerKnown();
             String recordingKnown = config.getRecordingServerKnown();
@@ -813,65 +802,70 @@ public class CreateObject {
             if (base != null && !"".equals(base)) {
                 basePath = base.toLowerCase() + "/";
             }
-            imagesDir =
+            audioDir =
                     new File(isSysno(sysno) ? config.getRecordingServerKnown() + '/' + basePath
                             + getSysnoPath(sysno) : config.getRecordingServerUnknown()
                             + getPathFromNonSysno(sysno));
 
-        } else {
-
-            String unknown = config.getImageServerUnknown();
-            String known = config.getImageServerKnown();
-            String url = config.getImageServerUrl();
-            boolean internal = config.getImageServerInternal();
-            if (url == null || "".equals(url)) {
-                String errorMsg = "URL of the imageserver has not been set in the configuration.";
-                LOGGER.error(errorMsg);
-                throw new CreateObjectException(errorMsg);
-            }
-            if (!internal && (unknown == null || "".equals(unknown) || known == null || "".equals(known))) {
-                String errorMsg =
-                        "Error, one of folloving compulsory options have not been set ["
-                                + EditorConfiguration.ServerConstants.IMAGE_SERVER_KNOWN + " ,"
-                                + EditorConfiguration.ServerConstants.IMAGE_SERVER_UNKNOWN + "]";
-                LOGGER.error(errorMsg);
-                throw new CreateObjectException(errorMsg);
-            }
-
-            if (internal) {
-                imagesDir = new File(config.getEditorHome() + '/' + ".images");
-            } else {
-                String basePath = "";
-                if (base != null && !"".equals(base)) {
-                    basePath = base.toLowerCase() + "/";
-                }
-                imagesDir =
-                        new File(isSysno(sysno) ? config.getImageServerKnown() + '/' + basePath
-                                + getSysnoPath(sysno) : config.getImageServerUnknown()
-                                + getPathFromNonSysno(sysno));
-            }
+            mkdirIfPathNotExist(audioDir);
         }
 
-        if (!imagesDir.exists()) {
-            boolean mkdirs = imagesDir.mkdirs();
-            if (!mkdirs) {
-                LOGGER.error("cannot create directory '" + imagesDir.getAbsolutePath() + "'");
-                throw new CreateObjectException("cannot create directory '" + imagesDir.getAbsolutePath()
-                        + "'");
-            } else {
-                if (!imagesDir.canRead() || !imagesDir.canWrite()) {
-                    LOGGER.error("cannot write into '" + imagesDir.getAbsolutePath() + "'");
-                    throw new CreateObjectException("cannot write into '" + imagesDir.getAbsolutePath() + "'");
-                }
+        String unknown = config.getImageServerUnknown();
+        String known = config.getImageServerKnown();
+        String url = config.getImageServerUrl();
+        boolean internal = config.getImageServerInternal();
+        if (url == null || "".equals(url)) {
+            String errorMsg = "URL of the imageserver has not been set in the configuration.";
+            LOGGER.error(errorMsg);
+            throw new CreateObjectException(errorMsg);
+        }
+        if (!internal && (unknown == null || "".equals(unknown) || known == null || "".equals(known))) {
+            String errorMsg =
+                    "Error, one of folloving compulsory options have not been set ["
+                            + EditorConfiguration.ServerConstants.IMAGE_SERVER_KNOWN + " ,"
+                            + EditorConfiguration.ServerConstants.IMAGE_SERVER_UNKNOWN + "]";
+            LOGGER.error(errorMsg);
+            throw new CreateObjectException(errorMsg);
+        }
+
+        if (internal) {
+            imagesDir = new File(config.getEditorHome() + '/' + ".images");
+        } else {
+            String basePath = "";
+            if (base != null && !"".equals(base)) {
+                basePath = base.toLowerCase() + "/";
+            }
+            imagesDir =
+                    new File(isSysno(sysno) ? config.getImageServerKnown() + '/' + basePath
+                            + getSysnoPath(sysno) : config.getImageServerUnknown()
+                            + getPathFromNonSysno(sysno));
+        }
+        mkdirIfPathNotExist(imagesDir);
+
+
+    }
+
+    private void mkdirIfPathNotExist(File file) throws CreateObjectException {
+        if (file.exists()) return;
+
+        boolean mkdirs = file.mkdirs();
+        if (!mkdirs) {
+            LOGGER.error("cannot create directory '" + file.getAbsolutePath() + "'");
+            throw new CreateObjectException("cannot create directory '" + file.getAbsolutePath()
+                    + "'");
+        } else {
+            if (!file.canRead() || !file.canWrite()) {
+                LOGGER.error("cannot write into '" + file.getAbsolutePath() + "'");
+                throw new CreateObjectException("cannot write into '" + file.getAbsolutePath() + "'");
             }
         }
     }
 
+
     /**
      * Checks if is sysno.
-     * 
-     * @param sysno
-     *        the sysno
+     *
+     * @param sysno the sysno
      * @return true, if is sysno
      */
     private boolean isSysno(String sysno) {
@@ -880,7 +874,7 @@ public class CreateObject {
 
     /**
      * Gets the top level uuid.
-     * 
+     *
      * @return the topLevelUuid
      */
     public String getTopLevelUuid() {
@@ -889,7 +883,7 @@ public class CreateObject {
 
     /**
      * Gets the ingested objects.
-     * 
+     *
      * @return the ingestedObjects
      */
     public List<String> getIngestedObjects() {

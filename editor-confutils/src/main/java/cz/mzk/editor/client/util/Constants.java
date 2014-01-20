@@ -821,6 +821,8 @@ public class Constants {
     /** The Constant PDF_MIMETYPE. */
     public static final String PDF_MIMETYPE = "application/pdf";
 
+    public static final String JPG_MIMETYPE = "image/jpeg";
+
     /** Audio mimetypes for sound recording */
     public static enum AUDIO_MIMETYPES {
         WAV_MIMETYPE("audio/wav", ".wav"), MP3_MIMETYPE("audio/mpeg", ".mp3"), OGG_MIMETYPE("audio/ogg ",

@@ -94,6 +94,9 @@ public class TrackBuilder extends FoxmlBuilder {
 
     @Override
     protected void createOtherStreams() {
+        appendDatastream(Constants.DATASTREAM_CONTROLGROUP.E, Constants.DATASTREAM_ID.IMG_FULL, null, "URL", "http://iris.mzk.cz/cache/gramodesky/music_icon.png");
+        appendDatastream(Constants.DATASTREAM_CONTROLGROUP.E, Constants.DATASTREAM_ID.IMG_PREVIEW, null, "URL", "http://iris.mzk.cz/cache/gramodesky/music_icon.png");
+        appendDatastream(Constants.DATASTREAM_CONTROLGROUP.E, Constants.DATASTREAM_ID.IMG_THUMB, null, "URL", "http://iris.mzk.cz/cache/gramodesky/music_icon.png");
         appendDatastream(Constants.DATASTREAM_CONTROLGROUP.E, Constants.DATASTREAM_ID.WAV,
                 null, "URL", getImageUrl() +".wav");
         appendDatastream(Constants.DATASTREAM_CONTROLGROUP.E, Constants.DATASTREAM_ID.MP3,

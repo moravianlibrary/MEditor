@@ -260,6 +260,10 @@ public abstract class FoxmlBuilder {
                 dataStreamVersion =
                         createDatastreamVersionElement(datastreamEl, null, "image/jpeg", "", versionId);
                 break;
+            case IMG_PREVIEW:
+                dataStreamVersion =
+                        createDatastreamVersionElement(datastreamEl, null, "image/jpeg", "", versionId);
+                break;
             case WAV:
                 dataStreamVersion =
                         createDatastreamVersionElement(datastreamEl, null, "audio/wav",
