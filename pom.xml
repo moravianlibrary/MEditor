@@ -102,6 +102,13 @@
 	</properties>
 
 	<repositories>
+            <repository>
+                <id>mzk-mvn-repo</id>
+                <url>https://raw.github.com/moravianlibrary/MEditor/mvn-repo/</url>
+                <snapshots>
+                    <enabled>true</enabled>
+                </snapshots>
+            </repository>
 		<repository>
 			<id>central</id>
 			<name>Central Maven Repository</name>
@@ -156,9 +163,6 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
-		<!-- <repository> <id>jboss</id> <url>http://repository.jboss.com/maven2/</url> 
-			<releases> <enabled>true</enabled> </releases> <snapshots> <enabled>false</enabled> 
-			</snapshots> </repository> -->
 		<repository>
 			<id>duraspace-releases</id>
 			<name>DuraSpace Releases Maven Repository</name>
@@ -345,42 +349,32 @@
 				<artifactId>commons-codec</artifactId>
 				<version>1.6</version>
 			</dependency>
-			<!-- mvn install:install-file -DgroupId=mzk.ki -DartifactId=ki-jzkit-z3950 
-				-Dversion=1.2.3 -Dpackaging=jar -Dfile=path -->
 			<dependency>
 				<groupId>mzk.ki</groupId>
 				<artifactId>ki-jzkit-z3950</artifactId>
 				<version>1.2.3</version>
 			</dependency>
-			<!-- mvn install:install-file -DgroupId=mzk.ki -DartifactId=ki-jzkit-iface 
-				-Dversion=1.2.3 -Dpackaging=jar -Dfile=path -->
 			<dependency>
 				<groupId>mzk.ki</groupId>
 				<artifactId>ki-jzkit-iface</artifactId>
 				<version>1.2.3</version>
 			</dependency>
-			<!-- mvn install:install-file -DgroupId=ki -DartifactId=ki-util -Dversion=1.0 
-				-Dpackaging=jar -Dfile=path -->
 			<dependency>
 				<groupId>ki</groupId>
 				<artifactId>ki-util</artifactId>
 				<version>1.0</version>
 				<scope>runtime</scope>
 			</dependency>
-			<!-- mvn install:install-file -DgroupId=mzk.ki -DartifactId=a2jruntime 
-				-Dversion=1.1.1 -Dpackaging=jar -Dfile=path -->
 			<dependency>
 				<groupId>mzk.ki</groupId>
 				<artifactId>a2jruntime</artifactId>
 				<version>1.1.1</version>
 				<scope>runtime</scope>
 			</dependency>
-			<!-- mvn install:install-file -DgroupId=mzk.marc4j -DartifactId=marc4j 
-				-Dversion=2.3.1 -Dpackaging=jar -Dfile=path -->
 			<dependency>
 				<groupId>mzk.marc4j</groupId>
 				<artifactId>marc4j</artifactId>
-				<version>2.3.1</version>
+				<version>2.6.0</version>
 				<scope>runtime</scope>
 			</dependency>
 			<dependency>
@@ -406,10 +400,6 @@
 			</dependency>
 
 			<dependency>
-				<!-- mvn install:install-file -DgroupId=com.foxtrottechnologies -DartifactId=javadjvu 
-					-Dversion=0.8.09 -Dpackaging=jar -Dfile=path -->
-				<!-- Not present in any Maven repo, please download it from http://sourceforge.net/projects/javadjvu/files/ 
-					and install to local maven repository -->
 				<groupId>com.foxtrottechnologies</groupId>
 				<artifactId>javadjvu</artifactId>
 				<version>0.8.09</version>
@@ -656,3 +646,4 @@
 			</rules> </configuration> </execution> </executions> </plugin> </plugins> -->
 	</build>
 </project>
+
