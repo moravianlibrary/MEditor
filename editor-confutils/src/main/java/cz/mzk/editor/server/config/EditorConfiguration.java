@@ -73,6 +73,10 @@ public abstract class EditorConfiguration {
         public static final String RECORDING_SERVER_KNOWN = "recordingServer.known";
 
         public static final String RECORDING_SERVER_UNKNOWN = "recordingServer.unknown";
+        
+        /** URN:NBN */
+        public static final String RESOLVER_REGISTRAR_CODE = "resolver.registrarCode";
+        public static final String RESOLVER_URL = "resolver.url";
 
         public static final String OCR_ABBY_SOAP_URL = "ocr.abbySoapUrl";
 
@@ -381,6 +385,14 @@ public abstract class EditorConfiguration {
 
     public String getOcrAbbySoapUrl() {
         return getConfiguration().getString(ServerConstants.OCR_ABBY_SOAP_URL);
+    }
+    
+    public String getResolverRegistrarCode() {
+        return getConfiguration().getString(ServerConstants.RESOLVER_REGISTRAR_CODE);
+    }
+    
+    public String getResolverUrl() {
+        return getConfiguration().getString(ServerConstants.RESOLVER_URL);
     }
 
     public String getOcrEnabled() {

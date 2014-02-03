@@ -25,16 +25,18 @@
 package cz.mzk.editor.server.handler;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.inject.Inject;
+
+import org.apache.log4j.Logger;
+import org.jboss.errai.bus.client.api.base.MessageBuilder;
+import org.jboss.errai.bus.client.framework.RequestDispatcher;
 
 import com.google.inject.name.Named;
 import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import cz.mzk.editor.server.DAO.InputQueueItemDAO;
-import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.CreateObjectException;
 import cz.mzk.editor.client.util.Constants;
@@ -43,6 +45,7 @@ import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.DigitalObjectDAO;
 import cz.mzk.editor.server.DAO.ImageResolverDAO;
+import cz.mzk.editor.server.DAO.InputQueueItemDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.newObject.CreateObject;
@@ -50,8 +53,6 @@ import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.NewDigitalObject;
 import cz.mzk.editor.shared.rpc.action.InsertNewDigitalObjectAction;
 import cz.mzk.editor.shared.rpc.action.InsertNewDigitalObjectResult;
-import org.jboss.errai.bus.client.api.base.MessageBuilder;
-import org.jboss.errai.bus.client.framework.RequestDispatcher;
 
 /**
  * @author Jiri Kremser
@@ -137,8 +138,8 @@ public class InsertNewDigitalObjectHandler
             ingestSuccess = createObject.insertAllTheStructureToFOXMLs(object);
 
             if (!createObject.getTopLevelUuid().equals(object.getUuid())) {
-
                 try {
+                    // chro chro
                     if (digitalObjectDAO.updateTopObjectUuid(createObject.getTopLevelUuid(),
                                                              object.getUuid(),
                                                              createObject.getIngestedObjects(),
@@ -155,24 +156,8 @@ public class InsertNewDigitalObjectHandler
                     e.printStackTrace();
                     throw new ActionException(e);
                 }
-
             } else {
-                try {
-
-                    digitalObjectDAO.updateState(createObject.getIngestedObjects(), true);
-                    inputQueueItemDAO.setIngested(action.getInputPath());
-                    if (erraiDispatcher != null) {
-                        MessageBuilder.createMessage()
-                                .toSubject("InputQueueBroadcastReceiver").signalling()
-                                .with("ingested", action.getInputPath())
-                                .noErrorHandling().sendNowWith(erraiDispatcher);
-                    }
-
-                } catch (DatabaseException e) {
-                    LOGGER.error("DB ERROR!!!: " + e.getMessage() + ": " + e);
-                    e.printStackTrace();
-                    throw new ActionException(e);
-                }
+        	doAfterIngest(action.getInputPath(), createObject);
             }
 
             if (object.getUuid() != null && object.getUuid().contains(Constants.FEDORA_UUID_PREFIX)) {
@@ -180,6 +165,12 @@ public class InsertNewDigitalObjectHandler
             } else {
                 pid = Constants.FEDORA_UUID_PREFIX + object.getUuid();
             }
+            
+            // ping urn:nbn resolver
+	    if (config.getResolverRegistrarCode() != null && !config.getResolverRegistrarCode().isEmpty()
+		    && config.getResolverUrl() != null && !config.getResolverUrl().isEmpty()) {
+//		 resolver.resolve(config.getResolverUrl(), config.getResolverRegistrarCode(), object);
+	    }
 
             if (action.isReindex()) {
                 reindexSuccess = ServerUtils.reindex(pid);
@@ -217,5 +208,22 @@ public class InsertNewDigitalObjectHandler
 
     public static void setErraiDispatcher(RequestDispatcher erraiDispatcher) {
         InsertNewDigitalObjectHandler.erraiDispatcher = erraiDispatcher;
+    }
+    
+    private void doAfterIngest(String inputPath, CreateObject createObject) throws ActionException {
+        try {
+            digitalObjectDAO.updateState(createObject.getIngestedObjects(), true);
+            inputQueueItemDAO.setIngested(inputPath);
+            if (erraiDispatcher != null) {
+                MessageBuilder.createMessage()
+                        .toSubject("InputQueueBroadcastReceiver").signalling()
+                        .with("ingested", inputPath)
+                        .noErrorHandling().sendNowWith(erraiDispatcher);
+            }
+        } catch (DatabaseException e) {
+            LOGGER.error("DB ERROR!!!: " + e.getMessage() + ": " + e);
+            e.printStackTrace();
+            throw new ActionException(e);
+        }
     }
 }
