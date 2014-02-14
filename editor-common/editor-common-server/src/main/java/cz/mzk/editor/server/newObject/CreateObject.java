@@ -454,7 +454,7 @@ public class CreateObject {
 
         if (success) ingestedObjects.add(node.getUuid());
 
-        if ((isPage || isSoundUnit) && success) {
+        if (isPage && success) {
             if (!internal) {
                 // TODO: StringBuffer
                 boolean copySuccess;
