@@ -253,10 +253,10 @@ public class CreateObject {
                 if (!newPdfPath.endsWith(Constants.PDF_EXTENSION)) {
                     newPdfPath = newPdfPath.concat(Constants.PDF_EXTENSION);
                 }
-
                 document = PDDocument.load(new File(newPdfPath));
                 int numberOfPages = document.getNumberOfPages();
-                if (node.getPageIndex() > numberOfPages - 1)
+                LOGGER.warn(newPdfPath + ": Count of pages is 0");
+                if (numberOfPages > 0 && node.getPageIndex() > numberOfPages - 1)
                     throw new CreateObjectException("The number of page: " + node.getPageIndex()
                             + " to be used for thumbnail is bigger than count of pages in the file: "
                             + numberOfPages);

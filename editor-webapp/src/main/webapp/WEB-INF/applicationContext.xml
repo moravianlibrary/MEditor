@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<b:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:b="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+    <!-- white list -->
+    <http pattern="/html/**" security="none" />
+	<http pattern="/images/**" security="none" />
+	<http pattern="/css/**" security="none" />
+	<http pattern="/js/**" security="none" />
+	<http pattern="/favicon.ico" security="none" />
+	<http pattern="/request4Adding/**" security="none" /> 
+	<http pattern="/Shibboleth.sso/Login" security="none" />
+	<http pattern="/viewer/**" security="none" />
+  <http pattern="/meditor/hosted.html" security="none" />
+		
+	<!-- filters chain -->
+	<http auto-config="true" use-expressions="true" disable-url-rewriting="true">
+		<intercept-url pattern="/src/main/security" access="isAuthenticated()" />
+		<intercept-url pattern="/gwt/**" access="isAuthenticated()" />
+		<intercept-url pattern="/**/*.html" access="isAuthenticated()" />
+		<intercept-url pattern="/src/main/security" access="isAuthenticated()" />
+		<form-login login-page="/html/login.html" default-target-url="/meditor"/>
+		<custom-filter before="PRE_AUTH_FILTER" ref="janrainAuthenticationFilter" />
+		<custom-filter position="PRE_AUTH_FILTER" ref="shibbolethAuthenticationFilter" />
+		<custom-filter after="PRE_AUTH_FILTER" ref="ldapAuthenticationFilter" />
+		<custom-filter position="CHANNEL_FILTER" ref="channelProcessingFilter" />
+	</http>
+
+	<b:bean id="ldapAuthenticationProvider"
+		class="cz.mzk.editor.server.LDAP.LDAPAuthenticationProvider" />
+
+	<b:bean id="janrainAuthenticationProvider"
+		class="cz.mzk.editor.server.janrain.JanrainAuthenticationProvider">
+	</b:bean>
+
+	<b:bean id="shibbolethAuthenticationProvider"
+		class="cz.mzk.editor.server.shibboleth.ShibbolethAuthenticationProvider">
+	</b:bean>
+
+	<authentication-manager alias="authenticationManager">
+		<authentication-provider ref="ldapAuthenticationProvider" />
+		<authentication-provider ref="janrainAuthenticationProvider" />
+		<authentication-provider ref="shibbolethAuthenticationProvider" />
+	</authentication-manager>
+
+	<b:bean id="ldapAuthenticationFilter"
+		class="cz.mzk.editor.server.LDAP.LDAPAuthenticationFilter">
+		<b:property name="authenticationManager" ref="authenticationManager" />
+	</b:bean>
+
+	<b:bean id="janrainAuthenticationFilter"
+		class="cz.mzk.editor.server.janrain.JanrainAuthenticationFilter">
+		<b:property name="authenticationManager" ref="authenticationManager" />
+	</b:bean>
+
+	<b:bean id="shibbolethAuthenticationFilter"
+		class="cz.mzk.editor.server.shibboleth.ShibbolethAuthenticationFilter">
+		<b:property name="authenticationManager" ref="authenticationManager" />
+	</b:bean>
+
+	<b:bean id="channelProcessingFilter"
+		class="org.springframework.security.web.access.channel.ChannelProcessingFilter">
+		<b:property name="channelDecisionManager" ref="channelDecisionManager" />
+		<b:property name="securityMetadataSource">
+			<filter-security-metadata-source path-type="ant">
+				<intercept-url pattern="/src/main/security" access="REQUIRES_SECURE_CHANNEL" />
+			</filter-security-metadata-source>
+		</b:property>
+	</b:bean>
+
+	<b:bean id="channelDecisionManager"
+		class="org.springframework.security.web.access.channel.ChannelDecisionManagerImpl">
+		<b:property name="channelProcessors">
+			<b:list>
+				<b:ref bean="secureChannelProcessor" />
+				<b:ref bean="insecureChannelProcessor" />
+			</b:list>
+		</b:property>
+	</b:bean>
+
+	<b:bean id="secureChannelProcessor"
+		class="org.springframework.security.web.access.channel.SecureChannelProcessor" />
+	<b:bean id="insecureChannelProcessor"
+		class="org.springframework.security.web.access.channel.InsecureChannelProcessor" />
+
+</b:beans>
