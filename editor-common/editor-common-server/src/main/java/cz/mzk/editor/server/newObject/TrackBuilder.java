@@ -1,6 +1,7 @@
 package cz.mzk.editor.server.newObject;
 
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.utils.DCUtils;
 import cz.mzk.editor.server.fedora.utils.Dom4jUtils;
 import cz.mzk.editor.server.fedora.utils.FoxmlUtils;
@@ -94,9 +95,12 @@ public class TrackBuilder extends FoxmlBuilder {
 
     @Override
     protected void createOtherStreams() {
-        appendDatastream(Constants.DATASTREAM_CONTROLGROUP.E, Constants.DATASTREAM_ID.IMG_FULL, null, "URL", "http://iris.mzk.cz/cache/gramodesky/k4-player-thumb.png");
-        appendDatastream(Constants.DATASTREAM_CONTROLGROUP.E, Constants.DATASTREAM_ID.IMG_PREVIEW, null, "URL", "http://iris.mzk.cz/cache/gramodesky/k4-player-thumb.png");
-        appendDatastream(Constants.DATASTREAM_CONTROLGROUP.E, Constants.DATASTREAM_ID.IMG_THUMB, null, "URL", "http://iris.mzk.cz/cache/gramodesky/k4-player-thumb.png");
+        appendDatastream(Constants.DATASTREAM_CONTROLGROUP.E, Constants.DATASTREAM_ID.IMG_FULL, null, "URL",
+                configuration.getKrameriusHost() + EditorConfiguration.ServerConstants.KRAMERIUS_AUDIO_THUMBNAIL);
+        appendDatastream(Constants.DATASTREAM_CONTROLGROUP.E, Constants.DATASTREAM_ID.IMG_PREVIEW, null, "URL",
+                configuration.getKrameriusHost() + EditorConfiguration.ServerConstants.KRAMERIUS_AUDIO_THUMBNAIL);
+        appendDatastream(Constants.DATASTREAM_CONTROLGROUP.E, Constants.DATASTREAM_ID.IMG_THUMB, null, "URL",
+                configuration.getKrameriusHost() + EditorConfiguration.ServerConstants.KRAMERIUS_AUDIO_THUMBNAIL);
         appendDatastream(Constants.DATASTREAM_CONTROLGROUP.E, Constants.DATASTREAM_ID.WAV,
                 null, "URL", getImageUrl() +".wav");
         appendDatastream(Constants.DATASTREAM_CONTROLGROUP.E, Constants.DATASTREAM_ID.MP3,

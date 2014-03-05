@@ -814,7 +814,7 @@ public class CreateObjectMenuView
             for (int i = 0; i < allNodes.length; i++) {
                 String childItem = allNodes[i].getAttribute(Constants.ATTR_MODEL_ID);
                 if ("page".equals(childItem)) {
-                    SC.say("TODO: Side muze mit pouze jeden nahled");
+                    SC.say(lang.soundUnitPreview());
                     return false;
                 }
 

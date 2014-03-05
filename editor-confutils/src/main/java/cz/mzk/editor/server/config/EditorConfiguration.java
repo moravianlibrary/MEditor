@@ -73,6 +73,8 @@ public abstract class EditorConfiguration {
         public static final String RECORDING_SERVER_KNOWN = "recordingServer.known";
 
         public static final String RECORDING_SERVER_UNKNOWN = "recordingServer.unknown";
+
+        public static final String KRAMERIUS_AUDIO_THUMBNAIL = "/img/audioplayer/k4-player-thumb.png";
         
         /** URN:NBN */
         public static final String RESOLVER_REGISTRAR_CODE = "resolver.registrarCode";

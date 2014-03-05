@@ -94,7 +94,7 @@ public abstract class FoxmlBuilder {
     private String base;
 
     @Inject
-    private EditorConfiguration configuration;
+    protected EditorConfiguration configuration;
 
     private static final Boolean VERSIONABLE = true;
 
