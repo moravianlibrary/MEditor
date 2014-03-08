@@ -239,7 +239,7 @@ public class InsertNewDigitalObjectHandler
 	Resolver resolver = new Resolver();
 	if (config.getResolverRegistrarCode() != null && !config.getResolverRegistrarCode().isEmpty()
 		&& config.getResolverUrl() != null && !config.getResolverUrl().isEmpty()) {
-	    resolver.resolve(config.getResolverUrl(), config.getResolverRegistrarCode(), object);
+	    resolver.resolve(config.getResolverUrl(), config.getResolverRegistrarCode(), object.getModel().getValue());
 	}
     }
     
