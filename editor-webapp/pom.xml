@@ -168,10 +168,10 @@
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>gwt-maven-plugin</artifactId>
 						<configuration>
-                            <localWorkers>2</localWorkers>
-                            <extraJvmArgs>-Xmx4086m</extraJvmArgs>
-                            <compileReports>true</compileReports>
-                            <compilerMetrics>true</compilerMetrics>
+              <localWorkers>2</localWorkers>
+              <extraJvmArgs>-Xmx1536m</extraJvmArgs>
+              <compileReports>true</compileReports>
+              <compilerMetrics>true</compilerMetrics>
 							<noServer>true</noServer>
 							<inplace>false</inplace>
 							<logLevel>INFO</logLevel>
@@ -357,7 +357,7 @@
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>gwt-maven-plugin</artifactId>
 						<configuration>
-                            <extraJvmArgs>-Xmx4086m</extraJvmArgs>
+              <extraJvmArgs>-Xmx1536m</extraJvmArgs>
 							<noServer>true</noServer>
 							<inplace>false</inplace>
 							<logLevel>INFO</logLevel>
