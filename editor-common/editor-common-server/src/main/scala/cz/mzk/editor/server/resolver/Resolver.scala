@@ -3,7 +3,7 @@ import scala.xml.XML._
 import scala.xml._
 import dispatch._, Defaults._
 
-object Resolver {
+class Resolver {
 
   def fst(nSeq: Seq[Node]) = nSeq match {
     case Seq(el) if !el.text.isEmpty => Some(el.text)

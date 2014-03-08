@@ -300,7 +300,8 @@ public abstract class EditorConfiguration {
         public static final String DEFAULT_BASE = "defaultBase";
         
         public static final String DEFAULT_BASE_DEFAULT = "";
-
+        
+        public static final String POST_INGEST_HOOKS = "postIngestHooks";
     }
 
     /**
@@ -806,5 +807,8 @@ public abstract class EditorConfiguration {
     public boolean getAkkaOn() {
         return getConfiguration().getBoolean(ServerConstants.AKKA_ON, false);
     }
-
+    
+    public String[] getPostIngestHooks() {
+        return getConfiguration().getStringArray(ServerConstants.POST_INGEST_HOOKS);
+    }
 }

@@ -24,14 +24,19 @@
 
 package cz.mzk.editor.server.handler;
 
+import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.bus.client.framework.RequestDispatcher;
+
 
 import com.google.inject.name.Named;
 import com.gwtplatform.dispatch.server.ExecutionContext;
@@ -49,10 +54,12 @@ import cz.mzk.editor.server.DAO.InputQueueItemDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.newObject.CreateObject;
+import cz.mzk.editor.server.util.RESTHelper;
 import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.NewDigitalObject;
 import cz.mzk.editor.shared.rpc.action.InsertNewDigitalObjectAction;
 import cz.mzk.editor.shared.rpc.action.InsertNewDigitalObjectResult;
+import cz.mzk.editor.server.resolver.Resolver;
 
 /**
  * @author Jiri Kremser
@@ -165,12 +172,12 @@ public class InsertNewDigitalObjectHandler
             } else {
                 pid = Constants.FEDORA_UUID_PREFIX + object.getUuid();
             }
+     
+            // urn:nbn resolver
+//            notifyResolver(object);
             
-            // ping urn:nbn resolver
-	    if (config.getResolverRegistrarCode() != null && !config.getResolverRegistrarCode().isEmpty()
-		    && config.getResolverUrl() != null && !config.getResolverUrl().isEmpty()) {
-//		 resolver.resolve(config.getResolverUrl(), config.getResolverRegistrarCode(), object);
-	    }
+            // process post-ingest hooks
+            processPostIngestHooks(object);
 
             if (action.isReindex()) {
                 reindexSuccess = ServerUtils.reindex(pid);
@@ -225,5 +232,76 @@ public class InsertNewDigitalObjectHandler
             e.printStackTrace();
             throw new ActionException(e);
         }
+    }
+    
+    private void notifyResolver(NewDigitalObject object) {
+	// ping urn:nbn resolver
+	Resolver resolver = new Resolver();
+	if (config.getResolverRegistrarCode() != null && !config.getResolverRegistrarCode().isEmpty()
+		&& config.getResolverUrl() != null && !config.getResolverUrl().isEmpty()) {
+	    resolver.resolve(config.getResolverUrl(), config.getResolverRegistrarCode(), object);
+	}
+    }
+    
+/**
+ * comma separated list of URLs where http get is sent after successful ingest
+ * you may want to use following variables:
+ *   ${pid} ${sysno} ${name}
+ * NOTE: it is also possible to use substring extraction:
+ * i.e. ${pid:5} is 'pid' without first 5 characters
+ *      ${sysno:-8} is last 8 characters of 'sysno'
+ *      ${name:2:4} is a substring of name starting by 2nd char and ending by 4th character
+ *      ${pid::5} only first 5 characters
+ *      ${pid::-5} pid without last 5 characters
+ * postIngestHooks=http://192.168.0.25:8080/katalog/l.dll?bqkram2clav~clid=${sysno::8}&uuid=${pid:5}
+ */
+    private void processPostIngestHooks(NewDigitalObject object) {
+	String[] urls = config.getPostIngestHooks();
+	if (urls != null && urls.length > 0) {
+	    for (String url : urls) {
+		String readyToPingUrl = doTheSubstitution(url, object);
+		try {
+		    RESTHelper.get(readyToPingUrl, null, null, false);
+		} catch (IOException e) {
+		    LOGGER.error("Unable to send http get request to " + readyToPingUrl + "  reason: " + e.getMessage()
+			    + ": " + e);
+		    e.printStackTrace();
+		}
+	    }
+	}
+    }
+    
+    private static String doTheSubstitution(String url, NewDigitalObject object) {
+	Map<String, String> properties = new HashMap<String, String>(3);
+	properties.put("name", object.getName());
+	properties.put("pid", object.getUuid());
+	properties.put("sysno", object.getSysno());
+
+	Pattern foo = Pattern.compile("(?i)\\$\\{([a-zA-Z]+):?(-?[0-9])?:?(-?[0-9])?\\}");
+	Matcher matcher = foo.matcher(url);
+	StringBuffer sb = new StringBuffer();
+	while (matcher.find()) {
+	    matcher.appendReplacement(sb, "");
+	    String beforeSubstringModification = properties.get(matcher.group(1));
+	    int start = -1;
+	    int end = -1;
+	    try {
+		start = matcher.group(2) == null ? 0 : Math.min(Integer.parseInt(matcher.group(2)),
+			beforeSubstringModification.length() - 1);
+		end = matcher.group(3) == null ? beforeSubstringModification.length() : Math.min(
+			Integer.parseInt(matcher.group(3)), beforeSubstringModification.length());
+	    } catch (NumberFormatException nfe) {
+		start = 0;
+		end = beforeSubstringModification.length();
+	    }
+	    if (start < 0) {
+		sb.append(beforeSubstringModification.substring(beforeSubstringModification.length() + start));
+	    } else {
+		sb.append(beforeSubstringModification.substring(start > 0 ? start : 0,
+			end < 0 ? beforeSubstringModification.length() + end : end));
+	    }
+	}
+	matcher.appendTail(sb);
+	return sb.toString();
     }
 }
