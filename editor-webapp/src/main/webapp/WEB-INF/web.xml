@@ -106,6 +106,15 @@
         <url-pattern>/audio/*</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>HtmlServletImpl</servlet-name>
+        <servlet-class>cz.mzk.editor.server.HtmlServletImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>HtmlServletImpl</servlet-name>
+        <url-pattern>/html/login.html</url-pattern>
+    </servlet-mapping>
+
 	<!-- Servlet for images of scans -->
 	<servlet>
 		<servlet-name>ScanImgService</servlet-name>
