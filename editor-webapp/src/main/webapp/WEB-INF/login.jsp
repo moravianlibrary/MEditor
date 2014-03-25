@@ -1,7 +1,13 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="cz.mzk.editor.client.util.Constants" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%
     String hostname = (String) request.getAttribute("hostname");
-
+    List<Constants.USER_IDENTITY_TYPES> enabledIdentities = ( List<Constants.USER_IDENTITY_TYPES>) request.getAttribute("enabledIdentities");
+    pageContext.setAttribute("openIdEnabled", enabledIdentities.contains(Constants.USER_IDENTITY_TYPES.OPEN_ID));
+    pageContext.setAttribute("ldapEnabled", enabledIdentities.contains(Constants.USER_IDENTITY_TYPES.LDAP));
+    pageContext.setAttribute("shibbolethEnabled", enabledIdentities.contains(Constants.USER_IDENTITY_TYPES.SHIBBOLETH));
 %>
 <!doctype html>
 <html>
@@ -43,52 +49,65 @@
     </div>
     <div id="authn">Autentizace</div>
     <div class="tabbable">
-    
-    
-    
-      <!-- Menu, set the style to show/hide if you want to disable some authentication method -->
-      <ul class="nav nav-tabs">
-      
-        <!-- OpenID -->
-        <li class="active"><a href="#tab1" data-toggle="tab">OpenID</a></li>
 
-          <!-- LDAP -->
-          <li class="${filter.ldap}"><a href="#tab2" data-toggle="tab">LDAP</a></li>
 
-          <!-- Shibboleth -->
-          <li class="${filter.shib}"><a href="#tab3" data-toggle="tab">Shibboleth</a></li>
-      </ul>
-      
-      
-      
-      <div class="tab-content">
-        <div class="tab-pane active" id="tab1">
-          <form name="f" action="../meditor/j_spring_security_check" method="POST">
-            <iframe src="https://metaeditor.rpxnow.com/openid/embed?token_url=<%=hostname%>%2Fmeditor%2Fjanrain_spring_security_check" scrolling="no" frameBorder="no" allowtransparency="true" style="width: 400px; height: 240px" action="../meditor/janrain_spring_security_check" method="POST"></iframe>
-          </form>
+        <ul class="nav nav-tabs">
+
+            <c:if test="${openIdEnabled}">
+                <!-- OpenID -->
+                <li class="active"><a href="#tab1" data-toggle="tab">OpenID</a></li>
+            </c:if>
+
+            <c:if test="${ldapEnabled}">
+                <!-- LDAP -->
+                <li class="show"><a href="#tab2" data-toggle="tab">LDAP</a></li>
+            </c:if>
+
+            <c:if test="${shibbolethEnabled}">
+                <!-- Shibboleth -->
+                <li class="show"><a href="#tab3" data-toggle="tab">Shibboleth</a></li>
+            </c:if>
+        </ul>
+
+
+        <div class="tab-content">
+            <c:if test="${openIdEnabled}">
+                <div class="tab-pane active" id="tab1">
+                    <form name="f" action="../meditor/j_spring_security_check" method="POST">
+                        <iframe src="https://metaeditor.rpxnow.com/openid/embed?token_url=<%=hostname%>%2Fmeditor%2Fjanrain_spring_security_check"
+                                scrolling="no" frameBorder="no" allowtransparency="true"
+                                style="width: 400px; height: 240px" action="../meditor/janrain_spring_security_check"
+                                method="POST"></iframe>
+                    </form>
+                </div>
+            </c:if>
+            <c:if test="${ldapEnabled}">
+                <div class="tab-pane" id="tab2">
+                    <form name="f" action="../meditor/j_spring_security_check" method="POST">
+                        <table id="ldap">
+                            <tr>
+                                <td>Login:</td>
+                                <td><input type="text" name="j_username" value=""/></td>
+                            </tr>
+                            <tr>
+                                <td>Password:</td>
+                                <td><input type="password" name="j_password"/></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"><input name="submit" type="submit" value="Login"/></td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+            </c:if>
+            <c:if test="${shibbolethEnabled}">
+                <div class="tab-pane" id="tab3">
+                    <a id="shib" class="login"
+                       href="http://<%=hostname%>/Shibboleth.sso/Login?target=https%3A%2F%2F<%=hostname%>%2Fmeditor%2Fshibboleth_spring_security_check">
+                        <img border="0" src="../images/shibboleth.png" alt="shibboleth logo" width="350px"/> </a>
+                </div>
+            </c:if>
         </div>
-        <div class="tab-pane" id="tab2">
-          <form name="f" action="../meditor/j_spring_security_check" method="POST">
-            <table id="ldap">
-              <tr>
-                <td>Login:</td>
-                <td><input type="text" name="j_username" value="" /></td>
-              </tr>
-              <tr>
-                <td>Password:</td>
-                <td><input type="password" name="j_password" /></td>
-              </tr>
-              <tr>
-                <td colspan="2"><input name="submit" type="submit" value="Login" /></td>
-              </tr>
-            </table>
-          </form>
-        </div>
-        <div class="tab-pane" id="tab3">
-          <a id="shib" class="login" href="http://<%=hostname%>/Shibboleth.sso/Login?target=https%3A%2F%2F<%=hostname%>%2Fmeditor%2Fshibboleth_spring_security_check">
-          <img border="0" src="../images/shibboleth.png" alt="shibboleth logo" width="350px"/> </a>
-        </div>
-      </div>
     </div>
     <script type="text/javascript" language="javascript">
       var isError = function() {

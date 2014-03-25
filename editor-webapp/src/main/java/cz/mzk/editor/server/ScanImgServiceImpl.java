@@ -112,11 +112,7 @@ public class ScanImgServiceImpl
         }
 
         StringBuffer baseUrl = new StringBuffer();
-        baseUrl.append("http");
-        if (req.getProtocol().toLowerCase().contains("https")) {
-            baseUrl.append('s');
-        }
-        baseUrl.append("://");
+        baseUrl.append("https://");
         if (!URLS.LOCALHOST()) {
             baseUrl.append(req.getServerName());
         } else {
