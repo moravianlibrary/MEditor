@@ -4,7 +4,7 @@ MAINTAINER Martin Rumanek <martin@rumanek.cz>
 
 # install packages
 RUN apt-get -y  update 
-RUN apt-get -y install wget postgresql apache2 libapache2-mod-jk vim unzip curl libtiff-tools imagemagick sox
+RUN apt-get -y install wget postgresql apache2 libapache2-mod-jk vim unzip curl libtiff-tools imagemagick sox ffmpeg
 
 ADD schema.sql /tmp/schema.sql
 RUN sed 's/local   all             all                                     peer/local   all             all                                     md5/' \
