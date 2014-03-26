@@ -39,7 +39,6 @@ import cz.mzk.editor.client.config.EditorClientConfiguration;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class EditorConfiguration.
  */
@@ -283,6 +282,11 @@ public abstract class EditorConfiguration {
          * is used)
          */
         public static final String AKKA_ON = "akkaOn";
+
+        /**
+         * timeout for converting images/soundrecording
+         */
+        public static final String CONVERT_TIMEOUT = "convertTimeout";
 
         public static final String CREATE_INGEST_INFO_XML_FILE = "createIngestInfoXmlFile";
 
@@ -810,5 +814,9 @@ public abstract class EditorConfiguration {
     
     public String[] getPostIngestHooks() {
         return getConfiguration().getStringArray(ServerConstants.POST_INGEST_HOOKS);
+    }
+
+    public int getConvertTimeout() {
+        return getConfiguration().getInt(ServerConstants.CONVERT_TIMEOUT, 180);
     }
 }

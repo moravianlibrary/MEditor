@@ -52,7 +52,6 @@ import cz.mzk.editor.shared.rpc.ImageItem;
 import cz.mzk.editor.shared.rpc.action.ConvertToJPEG2000Action;
 import cz.mzk.editor.shared.rpc.action.ConvertToJPEG2000Result;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ScanFolderHandler.
  */
@@ -139,8 +138,6 @@ public class ConvertToJPEG2000Handler
     @Override
     public void undo(ConvertToJPEG2000Action action, ConvertToJPEG2000Result result, ExecutionContext context)
             throws ActionException {
-        // TODO Auto-generated method stub
-
     }
 
     private boolean convertToAudio(ImageItem item) throws ActionException {
@@ -171,7 +168,7 @@ public class ConvertToJPEG2000Handler
                 p = Runtime.getRuntime().exec(command.toString());
             }
 
-            if (processTimeout(p, 100, 20000)) {
+            if (processTimeout(p, 100, configuration.getConvertTimeout() * 1000)) {
                 int exitValue = p.exitValue();
                 p.getInputStream().close();
                 p.getOutputStream().close();
@@ -242,7 +239,7 @@ public class ConvertToJPEG2000Handler
                 p = Runtime.getRuntime().exec(command.toString());
             }
 
-            if (processTimeout(p, 100, 20000)) {
+            if (processTimeout(p, 100, configuration.getConvertTimeout() * 1000)) {
                 int exitValue = p.exitValue();
                 p.getInputStream().close();
                 p.getOutputStream().close();
