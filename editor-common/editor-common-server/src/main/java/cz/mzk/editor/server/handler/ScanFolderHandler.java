@@ -44,6 +44,7 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.mzk.editor.server.UserProvider;
 import cz.mzk.editor.server.utils.ScanFolder;
 import cz.mzk.editor.server.utils.ScanFolderImpl;
 import cz.mzk.editor.server.util.AudioUtils;
@@ -94,6 +95,9 @@ public class ScanFolderHandler
 
     @Inject
     private ScanFolderImpl.ScanFolderFactory scanFolderFactory;
+
+    @Inject
+    private UserProvider userProvider;
 
     /**
      * Instantiates a new scan input queue handler.
@@ -231,7 +235,7 @@ public class ScanFolderHandler
         if (wrongNames.size() == 0) {
             try {
                 conversionDAO.insertConversionInfo(File.separator + model + File.separator + code
-                        + File.separator);
+                        + File.separator, userProvider.getUserId());
             } catch (DatabaseException e) {
                 LOGGER.error(e.getMessage());
                 e.printStackTrace();

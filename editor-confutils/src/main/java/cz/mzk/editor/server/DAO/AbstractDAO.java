@@ -220,6 +220,15 @@ public abstract class AbstractDAO {
     protected Connection getConnection() throws DatabaseException {
         if (conn == null) {
             initConnection();
+        } else {
+            try {
+                if (conn.isClosed()) {
+                    LOGGER.warn("Connection to database is closed. Init new...");
+                    initConnection();
+                }
+            } catch (SQLException e) {
+                throw new DatabaseException("Unable to connect to database.");
+            }
         }
         return conn;
     }
@@ -439,6 +448,7 @@ public abstract class AbstractDAO {
      *         the database exception
      * @throws SQLException
      */
+    @Deprecated
     protected Long getUserId(boolean closeCon) throws DatabaseException, SQLException {
         SecurityContext secContext =
                 (SecurityContext) httpSessionProvider.get().getAttribute("SPRING_SECURITY_CONTEXT");

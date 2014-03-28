@@ -842,6 +842,12 @@ public class DAOUtilsImpl
         return super.getUserId(closeCon);
     }
 
+    @Override
+    public long getUsersId(String identifier, Constants.USER_IDENTITY_TYPES type, boolean closeCon)
+            throws DatabaseException, SQLException {
+        return super.getUsersId(identifier, type, closeCon);
+    }
+
     /**
      * {@inheritDoc}
      */

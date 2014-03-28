@@ -68,12 +68,12 @@ public class ConversionDAOImpl
      * {@inheritDoc}
      */
     @Override
-    public void insertConversionInfo(String directoryPath) throws DatabaseException {
+    public void insertConversionInfo(String directoryPath, Long userId) throws DatabaseException {
         PreparedStatement insertSt = null;
         try {
             if (daoUtils.checkInputQueue(directoryPath, null, true)) {
                 insertSt = getConnection().prepareStatement(INSERT_CONVERSION_ITEM_STATEMENT);
-                    insertSt.setLong(1, getUserId(true));
+                    insertSt.setLong(1, userId);
                 insertSt.setString(2, DAOUtilsImpl.directoryPathToRightFormat(directoryPath));
 
                 if (insertSt.executeUpdate() == 1) {

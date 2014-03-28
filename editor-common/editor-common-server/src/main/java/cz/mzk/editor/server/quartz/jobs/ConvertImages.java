@@ -174,13 +174,6 @@ public class ConvertImages extends ProgressJob
     }
 
     private void convertItem(ImageItem item) {
-//                try {
-//                    Thread.sleep(500);
-//                } catch (InterruptedException e) {
-//                    // TODO Auto-generated catch block
-//                    LOGGER.error(e.getMessage());
-//                    e.printStackTrace();
-//                }
         ConvertToJPEG2000Action action = new ConvertToJPEG2000Action(item);
         ConvertToJPEG2000Handler handler = guice.getInstance(ConvertToJPEG2000Handler.class);
         try {

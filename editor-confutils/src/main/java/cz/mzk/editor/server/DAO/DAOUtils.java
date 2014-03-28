@@ -610,6 +610,8 @@ public interface DAOUtils {
      */
     Long getUserId(boolean closeCon) throws DatabaseException, SQLException;
 
+    long getUsersId(String identifier, Constants.USER_IDENTITY_TYPES type, boolean closeCon) throws DatabaseException, SQLException;
+
     /**
      * Gets the name.
      * 

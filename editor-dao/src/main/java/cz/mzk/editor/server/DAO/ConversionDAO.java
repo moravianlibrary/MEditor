@@ -42,7 +42,7 @@ public interface ConversionDAO {
      * @throws DatabaseException
      *         the database exception
      */
-    void insertConversionInfo(String directoryPath) throws DatabaseException;
+    void insertConversionInfo(String directoryPath, Long userId) throws DatabaseException;
 
     /**
      * Gets the conversion info.
