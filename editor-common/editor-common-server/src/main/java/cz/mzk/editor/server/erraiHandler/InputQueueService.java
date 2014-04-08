@@ -1,7 +1,7 @@
 package cz.mzk.editor.server.erraiHandler;
 
 import cz.mzk.editor.server.handler.InsertNewDigitalObjectHandler;
-import org.jboss.errai.bus.client.framework.RequestDispatcher;
+import org.jboss.errai.bus.client.api.messaging.RequestDispatcher;
 import org.jboss.errai.bus.server.annotations.Service;
 
 import javax.inject.Inject;

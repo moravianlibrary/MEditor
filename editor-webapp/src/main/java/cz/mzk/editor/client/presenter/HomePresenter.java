@@ -66,7 +66,7 @@ import cz.mzk.editor.shared.rpc.action.CheckAvailabilityAction;
 import cz.mzk.editor.shared.rpc.action.CheckAvailabilityResult;
 import cz.mzk.editor.shared.rpc.action.HasUserRightsAction;
 import cz.mzk.editor.shared.rpc.action.HasUserRightsResult;
-import org.jboss.errai.bus.client.framework.MessageBus;
+import org.jboss.errai.bus.client.api.ClientMessageBus;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -178,7 +178,7 @@ public class HomePresenter
 
     private final LangConstants lang;
 
-    private final MessageBus messageBus;
+    private final ClientMessageBus messageBus;
 
     /**
      * Instantiates a new home presenter.
@@ -203,7 +203,7 @@ public class HomePresenter
                          final DigitalObjectMenuPresenter leftPresenter,
                          final DispatchAsync dispatcher,
                          final PlaceManager placeManager,
-                         final LangConstants lang, MessageBus messageBus) {
+                         final LangConstants lang, ClientMessageBus messageBus) {
         super(eventBus, view, proxy);
         this.leftPresenter = leftPresenter;
         this.dispatcher = dispatcher;

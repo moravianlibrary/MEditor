@@ -91,7 +91,7 @@ import cz.mzk.editor.client.view.window.NewObjectBasicInfoWindow;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.NamedGraphModel;
 import cz.mzk.editor.shared.event.SaveStructureEvent;
-import org.jboss.errai.bus.client.framework.MessageBus;
+import org.jboss.errai.bus.client.api.ClientMessageBus;
 
 /**
  * @author Jiri Kremser
@@ -134,7 +134,7 @@ public class CreateObjectMenuView
     private ImgButton addOcrButton;
 
     private final EventBus eventBus;
-    private final MessageBus messageBus;
+    private final ClientMessageBus messageBus;
 
     private SelectItem creationModeItem;
 
@@ -144,7 +144,7 @@ public class CreateObjectMenuView
      * Instantiates a new digital object menu view.
      */
     @Inject
-    public CreateObjectMenuView(final LangConstants lang, final EventBus eventBus, final MessageBus messageBus) {
+    public CreateObjectMenuView(final LangConstants lang, final EventBus eventBus, final ClientMessageBus messageBus) {
         this.lang = lang;
         this.eventBus = eventBus;
         this.messageBus = messageBus;

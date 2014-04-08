@@ -66,7 +66,7 @@ import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.view.other.InputQueueTree;
 import cz.mzk.editor.client.view.window.EditorSC;
 import cz.mzk.editor.shared.rpc.LockInfo;
-import org.jboss.errai.bus.client.framework.MessageBus;
+import org.jboss.errai.bus.client.api.ClientMessageBus;
 
 /**
  * @author Jiri Kremser
@@ -114,13 +114,13 @@ public class DigitalObjectMenuView
 
     private final SelectItem selectItem = new SelectItem();
     private final EventBus eventBus;
-    private final MessageBus messageBus;
+    private final ClientMessageBus messageBus;
 
     /**
      * Instantiates a new digital object menu view.
      */
     @Inject
-    public DigitalObjectMenuView(final LangConstants lang, final EventBus eventBus, final MessageBus messageBus) {
+    public DigitalObjectMenuView(final LangConstants lang, final EventBus eventBus, final ClientMessageBus messageBus) {
         this.lang = lang;
         this.eventBus = eventBus;
         this.messageBus = messageBus;

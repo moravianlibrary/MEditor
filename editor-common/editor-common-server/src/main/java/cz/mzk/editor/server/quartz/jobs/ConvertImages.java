@@ -38,8 +38,6 @@ import cz.mzk.editor.shared.rpc.ImageItem;
 import cz.mzk.editor.shared.rpc.action.ConvertToJPEG2000Action;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
-import org.jboss.errai.bus.client.api.base.MessageBuilder;
-import org.jboss.errai.bus.client.framework.RequestDispatcher;
 import org.quartz.InterruptableJob;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -66,7 +64,6 @@ public class ConvertImages extends ProgressJob
     private Injector guice = null;
     private boolean continueWithNext = true;
     private int percentDone = 0;
-    private static RequestDispatcher erraiDispatcher;
 
     /**
      * {@inheritDoc}

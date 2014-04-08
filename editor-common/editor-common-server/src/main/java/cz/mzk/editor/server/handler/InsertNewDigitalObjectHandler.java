@@ -35,7 +35,6 @@ import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
-import org.jboss.errai.bus.client.framework.RequestDispatcher;
 
 
 import com.google.inject.name.Named;
@@ -59,7 +58,8 @@ import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.NewDigitalObject;
 import cz.mzk.editor.shared.rpc.action.InsertNewDigitalObjectAction;
 import cz.mzk.editor.shared.rpc.action.InsertNewDigitalObjectResult;
-import cz.mzk.editor.server.resolver.Resolver;
+import org.jboss.errai.bus.client.api.messaging.RequestDispatcher;
+
 
 /**
  * @author Jiri Kremser
@@ -236,11 +236,11 @@ public class InsertNewDigitalObjectHandler
     
     private void notifyResolver(NewDigitalObject object) {
 	// ping urn:nbn resolver
-	Resolver resolver = new Resolver();
-	if (config.getResolverRegistrarCode() != null && !config.getResolverRegistrarCode().isEmpty()
-		&& config.getResolverUrl() != null && !config.getResolverUrl().isEmpty()) {
-	    resolver.resolve(config.getResolverUrl(), config.getResolverRegistrarCode(), object.getModel().getValue());
-	}
+//	Resolver resolver = new Resolver();
+//	if (config.getResolverRegistrarCode() != null && !config.getResolverRegistrarCode().isEmpty()
+//		&& config.getResolverUrl() != null && !config.getResolverUrl().isEmpty()) {
+//	    resolver.resolve(config.getResolverUrl(), config.getResolverRegistrarCode(), object.getModel().getValue());
+//	}
     }
     
 /**

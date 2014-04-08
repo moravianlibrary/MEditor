@@ -34,8 +34,8 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
-import com.gwtplatform.mvp.client.HasEventBus;
 
+import com.gwtplatform.mvp.client.HasEventBus;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.shared.event.ConfigReceivedEvent;
 import cz.mzk.editor.shared.rpc.action.GetClientConfigAction;

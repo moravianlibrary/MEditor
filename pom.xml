@@ -85,13 +85,13 @@
 
 	<properties>
 		<!-- Versions -->
-		<gwt.version>2.4.0</gwt.version>
+		<gwt.version>2.6.0</gwt.version>
 		<gwtp.version>0.7</gwtp.version>
 		<smartGwt.version>3.0</smartGwt.version>
 		<guice.version>3.0</guice.version>
 		<gin.version>1.5.0</gin.version>
 		<akka.version>2.0</akka.version>
-        <errai.version>2.2.0.Final</errai.version>
+        <errai.version>2.4.4.Final</errai.version>
 
 		<warName>meditor</warName>
 		<generatedGwtpSources>target/generated-sources/apt</generatedGwtpSources>
@@ -590,8 +590,8 @@
 					<version>2.3.2</version>
 					<configuration>
 						<debug>true</debug>
-						<source>1.6</source>
-						<target>1.6</target>
+						<source>1.7</source>
+						<target>1.7</target>
 					</configuration>
 				</plugin>
 				<plugin>

@@ -2,8 +2,7 @@ package cz.mzk.editor.server.quartz.jobs;
 
 import cz.mzk.editor.shared.erraiPortable.QuartzJobAction;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
-import org.jboss.errai.bus.client.framework.RequestDispatcher;
-import org.quartz.JobExecutionContext;
+import org.jboss.errai.bus.client.api.messaging.RequestDispatcher;
 import org.quartz.JobKey;
 
 /**

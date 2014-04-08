@@ -46,10 +46,10 @@ import cz.mzk.editor.shared.erraiPortable.QuartzJobAction;
 import cz.mzk.editor.shared.rpc.ProcessItem;
 import cz.mzk.editor.shared.rpc.action.QuartzScheduleJobsAction;
 import cz.mzk.editor.shared.rpc.action.QuartzScheduleJobsResult;
-import org.jboss.errai.bus.client.api.Message;
-import org.jboss.errai.bus.client.api.MessageCallback;
-import org.jboss.errai.bus.client.framework.MessageBus;
-import org.jboss.errai.bus.client.framework.Subscription;
+import org.jboss.errai.bus.client.api.ClientMessageBus;
+import org.jboss.errai.bus.client.api.Subscription;
+import org.jboss.errai.bus.client.api.messaging.Message;
+import org.jboss.errai.bus.client.api.messaging.MessageCallback;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -65,14 +65,14 @@ public class SchedulerWindow
     private final ListGrid jobsGrid;
     @SuppressWarnings("unused")
     private final LangConstants lang;
-    private final MessageBus messageBus;
+    private final ClientMessageBus messageBus;
 
     /**
      * @param eventBus
      * @param lang
      * @param dispatcher
      */
-    public SchedulerWindow(final EventBus eventBus, final LangConstants lang, final DispatchAsync dispatcher, final MessageBus bus) {
+    public SchedulerWindow(final EventBus eventBus, final LangConstants lang, final DispatchAsync dispatcher, final ClientMessageBus bus) {
         super(630, 600, "Scheduler", eventBus, 50);
         this.lang = lang;
         this.messageBus = bus;

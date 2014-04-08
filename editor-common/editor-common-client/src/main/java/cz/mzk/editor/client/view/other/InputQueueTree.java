@@ -88,9 +88,9 @@ import cz.mzk.editor.shared.rpc.action.QuartzConvertImagesAction;
 import cz.mzk.editor.shared.rpc.action.QuartzConvertImagesResult;
 import cz.mzk.editor.shared.rpc.action.ScanInputQueueAction;
 import cz.mzk.editor.shared.rpc.action.ScanInputQueueResult;
-import org.jboss.errai.bus.client.api.Message;
-import org.jboss.errai.bus.client.api.MessageCallback;
-import org.jboss.errai.bus.client.framework.MessageBus;
+import org.jboss.errai.bus.client.api.ClientMessageBus;
+import org.jboss.errai.bus.client.api.messaging.Message;
+import org.jboss.errai.bus.client.api.messaging.MessageCallback;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -117,7 +117,7 @@ public class InputQueueTree
                                              final EventBus eventBus,
                                              SectionStack sectionStack,
                                              final PlaceManager placeManager,
-                                             final MessageBus messageBus,
+                                             final ClientMessageBus messageBus,
                                              boolean force) {
 
         SectionStackSection section1 = new SectionStackSection();
