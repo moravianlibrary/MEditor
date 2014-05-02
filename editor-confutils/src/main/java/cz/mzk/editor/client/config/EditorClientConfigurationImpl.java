@@ -31,11 +31,11 @@ import javax.inject.Inject;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HasHandlers;
 import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.dispatch.shared.DispatchAsync;
 
-import com.gwtplatform.mvp.client.HasEventBus;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
 import cz.mzk.editor.shared.event.ConfigReceivedEvent;
 import cz.mzk.editor.shared.rpc.action.GetClientConfigAction;
@@ -49,7 +49,7 @@ import cz.mzk.editor.shared.rpc.action.GetClientConfigResult;
 @Singleton
 public class EditorClientConfigurationImpl
         extends EditorClientConfiguration
-        implements HasEventBus {
+        implements HasHandlers {
 
     /** The configuration. */
     private MyConfiguration configuration;

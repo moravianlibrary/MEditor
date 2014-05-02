@@ -86,10 +86,10 @@
 	<properties>
 		<!-- Versions -->
 		<gwt.version>2.6.0</gwt.version>
-		<gwtp.version>0.7</gwtp.version>
+		<gwtp.version>1.0</gwtp.version>
 		<smartGwt.version>3.0</smartGwt.version>
 		<guice.version>3.0</guice.version>
-		<gin.version>1.5.0</gin.version>
+		<gin.version>2.1.2</gin.version>
 		<akka.version>2.0</akka.version>
         <errai.version>2.4.4.Final</errai.version>
 

@@ -24,6 +24,7 @@
 
 package cz.mzk.editor.client.view;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.mvp.client.ViewImpl;
 import com.smartgwt.client.widgets.layout.VLayout;
@@ -53,11 +54,11 @@ public class EditorRootView
      * {@inheritDoc}
      */
     @Override
-    public void setInSlot(Object slot, Widget content) {
+    public void setInSlot(Object slot, IsWidget content) {
         super.setInSlot(slot, content);
         mainLayout.removeMembers(mainLayout.getMembers());
         if (content != null) {
-            mainLayout.addMember(content);
+            mainLayout.addMember(content.asWidget());
         }
     }
 

@@ -30,6 +30,7 @@ package cz.mzk.editor.client.view;
 import javax.inject.Inject;
 
 import com.google.gwt.i18n.client.LocaleInfo;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.smartgwt.client.types.Alignment;
@@ -89,7 +90,7 @@ public class AppView
 
     private Window winModal;
 
-    private Widget leftWidget;
+    private IsWidget leftWidget;
 
     // private HasWidgets mainContainer;
 
@@ -217,7 +218,7 @@ public class AppView
      * com.google.gwt.user.client.ui.Widget)
      */
     @Override
-    public void setInSlot(Object slot, Widget content) {
+    public void setInSlot(Object slot, IsWidget content) {
         if (slot == AppPresenter.TYPE_MEDIT_MAIN_CONTENT) {
             setMainContent(content);
             // setTopContent(content);
@@ -234,10 +235,10 @@ public class AppView
      * @param content
      *        the new main content
      */
-    private void setMainContent(Widget content) {
+    private void setMainContent(IsWidget content) {
         mainContainer.removeMembers(mainContainer.getMembers());
         if (content != null) {
-            mainContainer.addMember(content);
+            mainContainer.addMember(content.asWidget());
         }
     }
 
@@ -248,7 +249,7 @@ public class AppView
      *        the new left content
      * @param slot
      */
-    private void setLeftContent(Widget content) {
+    private void setLeftContent(IsWidget content) {
         if (content != null) {
             if (leftWidget != null) {
                 if (leftWidget != content) {
@@ -259,7 +260,7 @@ public class AppView
 
                 }
             }
-            leftContainer.addMember(content);
+            leftContainer.addMember(content.asWidget());
             leftWidget = content;
         }
     }

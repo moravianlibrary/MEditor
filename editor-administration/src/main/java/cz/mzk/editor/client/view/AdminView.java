@@ -30,6 +30,7 @@ package cz.mzk.editor.client.view;
 import javax.inject.Inject;
 
 import com.google.gwt.i18n.client.LocaleInfo;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
@@ -86,7 +87,7 @@ public class AdminView
 
     private Window winModal;
 
-    private Widget leftWidget;
+    private IsWidget leftWidget;
 
     @SuppressWarnings("unused")
     private final EventBus eventBus;
@@ -207,7 +208,7 @@ public class AdminView
      * com.google.gwt.user.client.ui.Widget)
      */
     @Override
-    public void setInSlot(Object slot, Widget content) {
+    public void setInSlot(Object slot, IsWidget content) {
         if (slot == AdminPresenter.TYPE_ADMIN_MAIN_CONTENT) {
             setMainContent(content);
         } else if (slot == AdminPresenter.TYPE_ADMIN_LEFT_CONTENT) {
@@ -223,10 +224,10 @@ public class AdminView
      * @param content
      *        the new main content
      */
-    private void setMainContent(Widget content) {
+    private void setMainContent(IsWidget content) {
         mainContainer.removeMembers(mainContainer.getMembers());
         if (content != null) {
-            mainContainer.addMember(content);
+            mainContainer.addMember(content.asWidget());
         }
     }
 
@@ -237,14 +238,14 @@ public class AdminView
      *        the new left content
      * @param slot
      */
-    private void setLeftContent(Widget content) {
+    private void setLeftContent(IsWidget content) {
         if (content != null) {
             if (leftWidget != null) {
                 if (leftWidget != content) {
                     leftContainer.removeMember(leftContainer.getMember(0));
                 }
             }
-            leftContainer.addMember(content);
+            leftContainer.addMember(content.asWidget());
             leftWidget = content;
         }
     }
