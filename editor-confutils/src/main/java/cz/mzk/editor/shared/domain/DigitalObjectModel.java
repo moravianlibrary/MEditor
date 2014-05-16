@@ -94,13 +94,8 @@ public enum DigitalObjectModel
     /** The SUPPLEMENT */
     SUPPLEMENT("supplement", Constants.INTERNAL_PART_ICON),
 
-    /***/
-    //    SUPPLEMENT("supplement", Constants.MONOGRAPH_UNIT_ICON), 
-
-    /**
-     * TODO: add the whole RELS-EXT support
-     */
-    GRAPHIC("graphic", "", null),
+    /** The GRAPHIC */
+    GRAPHIC("graphic", "",TopLevelObjectModel.MONOGRAPH),
 
     /**
      * Instantiates a new kramerius model.
