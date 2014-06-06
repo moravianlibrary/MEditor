@@ -29,6 +29,8 @@ package cz.mzk.editor.server;
 
 import java.io.IOException;
 
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 import javax.servlet.ServletConfig;
@@ -41,6 +43,7 @@ import javax.inject.Inject;
 
 import com.google.inject.Injector;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.time.DateUtils;
 
 import cz.mzk.editor.client.util.ClientUtils;
@@ -112,7 +115,7 @@ public class ScanImgServiceImpl
         }
 
         StringBuffer baseUrl = new StringBuffer();
-        baseUrl.append("https://");
+        baseUrl.append("http://");
         if (!URLS.LOCALHOST()) {
             baseUrl.append(req.getServerName());
         } else {
@@ -125,9 +128,8 @@ public class ScanImgServiceImpl
         }
         StringBuffer sb = new StringBuffer();
         if (topSpace != null) {
-            String metadata =
-                    RESTHelper.convertStreamToString(RESTHelper
-                            .get(baseUrl + DJATOKA_URL_GET_METADATA + uuid, null, null, true));
+            String metadata = IOUtils.toString(new URL(baseUrl + DJATOKA_URL_GET_METADATA + uuid), StandardCharsets.UTF_8);
+
             String height = null;
             height = metadata.substring(metadata.indexOf("ght\": \"") + 7, metadata.indexOf("\",\n\"dw"));
             String width =
