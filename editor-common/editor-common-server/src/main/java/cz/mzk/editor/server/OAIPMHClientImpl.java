@@ -73,12 +73,16 @@ public class OAIPMHClientImpl
     private static final Logger LOGGER = Logger.getLogger(OAIPMHClientImpl.class);
     private final XPath dcXPath = Dom4jUtils.createXPath("//oai_dc:dc");
 
-    @Inject
     private EditorConfiguration config;
 
     private Document marc2mods;
 
     private Document marc2dc;
+
+    @Inject
+    public OAIPMHClientImpl(EditorConfiguration config) {
+        this.config = config;
+    }
 
     @Override
     public ArrayList<MetadataBundle> search(String url, String base) {
