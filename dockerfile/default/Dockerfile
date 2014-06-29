@@ -67,6 +67,7 @@ ENV JAVA_OPTS -Djava.awt.headless=true -Dkakadu.home=$KAKADU_HOME -Djava.library
 USER root
 ADD initData.sh /initData.sh
 
+# comment this out if you want to disable debug mode
 ENV CATALINA_OPTS "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000"
 
 
