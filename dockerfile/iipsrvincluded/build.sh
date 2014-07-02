@@ -1,2 +1,3 @@
 #!/bin/sh
-docker build -t meditor-iipsrv .
+docker build -t martinrumanek/meditor-iipsrv .
+

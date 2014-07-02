@@ -2,10 +2,16 @@ FROM debian:wheezy
 
 MAINTAINER Martin Rumanek <martin@rumanek.cz>
 
+RUN echo "Version: 20140702"
+
+## install packages
+ENV PATH /usr/bin:/bin:/usr/sbin:/sbin
+ENV DEBIAN_FRONTEND noninteractive
+
 # install packages
 RUN apt-get -y  update; apt-get -y install wget postgresql apache2 libapache2-mod-jk \
 	vim unzip curl libtiff-tools imagemagick sox ffmpeg \
-	libfcgi0ldbl libjpeg62 libmemcached10 libtiff4 libapache2-mod-fcgid
+	less
 
 ADD schema.sql /tmp/schema.sql
 RUN sed 's/local   all             all                                     peer/local   all             all                                     md5/' \
@@ -17,8 +23,7 @@ RUN sed 's/local   all             all                                     peer/
 
 RUN wget --no-verbose http://mirror.hosting90.cz/apache/tomcat/tomcat-7/v7.0.54/bin/apache-tomcat-7.0.54.tar.gz -O /tmp/tomcat.tar.gz && \
     wget --no-verbose https://github.com/moravianlibrary/MEditor/archive/master.zip -O /tmp/meditor.zip && \
-    wget --no-verbose https://dl.dropbox.com/s/9zcorgucorgfe3e/jdk-7u51-linux-x64.tar.gz -O /tmp/java.tar.gz && \
-    wget --no-verbose http://dl.dropbox.com/s/7k24kkvqf1pafec/iipimage-jp2-amd64.deb -O /tmp/iipimage-jp2-amd64.deb
+    wget --no-verbose https://dl.dropbox.com/s/9zcorgucorgfe3e/jdk-7u51-linux-x64.tar.gz -O /tmp/java.tar.gz
 RUN mkdir /usr/java
 RUN tar xzf /tmp/java.tar.gz --directory=/usr/java/
 
@@ -43,8 +48,6 @@ RUN mkdir /etc/apache2/ssl
 RUN openssl req -x509 -nodes -days 1095 -newkey rsa:2048 -keyout /etc/apache2/ssl/apache.key -out /etc/apache2/ssl/apache.crt -subj "/C=CZ/ST=Czech Republic/L=Brno/O=Moravian Library/CN=localhost"
 RUN a2enmod ssl
 
-# iipsrv
-RUN dpkg -i /tmp/iipimage-jp2-amd64.deb 
 
 USER meditor
 RUN mkdir -p /home/meditor/.meditor
@@ -55,7 +58,7 @@ RUN /home/meditor/apache-tomcat-7.0.54/bin/startup.sh && sleep 60
 RUN mv /tmp/meditor/MEditor-master/resources/djatoka /home/meditor/.meditor/djatoka
 RUN mv /tmp/meditor/MEditor-master/resources/xml /home/meditor/.meditor/xml
 ADD djatoka.properties /home/meditor/apache-tomcat-7.0.54/webapps/djatoka/WEB-INF/classes/djatoka.properties
-
+ADD log4j.properties /home/meditor/apache-tomcat-7.0.54/webapps/djatoka/WEB-INF/classes/log4j.properties
 
 ENV DJATOKA_HOME /home/meditor/.meditor/djatoka
 ENV LIBPATH $DJATOKA_HOME/lib
@@ -63,13 +66,16 @@ ENV LD_LIBRARY_PATH $LIBPATH/Linux-x86-64
 ENV KAKADU_HOME $DJATOKA_HOME/bin/Linux-x86-64
 ENV KAKADU_LIBRARY_PATH -DLD_LIBRARY_PATH=$LIBPATH/Linux-x86-64
 ENV JAVA_OPTS -Djava.awt.headless=true -Dkakadu.home=$KAKADU_HOME -Djava.library.path=$LIBPATH/Linux-x86-64 $KAKADU_LIBRARY_PATH
+ENV PATH /usr/java/jdk1.7.0_51/bin:$PATH
+
 
 USER root
-ADD initData.sh /initData.sh
+ADD init.sh /init.sh
 
 # comment this out if you want to disable debug mode
 ENV CATALINA_OPTS "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000"
 
-
-ENTRYPOINT /initData.sh && /etc/init.d/postgresql start && /etc/init.d/apache2 start && su -l -m meditor -c "/home/meditor/apache-tomcat-7.0.54/bin/startup.sh" && /bin/bash
+RUN sed "s/data_directory = '\/var\/lib\/postgresql\/9.1\/main'/data_directory = '\/meditor-data\/postgres-data\/main'/" /etc/postgresql/9.1/main/postgresql.conf > /tmp/postgresql.conf
+RUN mv /tmp/postgresql.conf /etc/postgresql/9.1/main/postgresql.conf
+RUN mv /home/meditor/.meditor /home/meditor/.meditorDefault && ln -s /meditor-data/.meditor /home/meditor/.meditor
 

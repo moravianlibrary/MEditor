@@ -1,2 +1,2 @@
 #!/bin/sh
-docker build -t meditor .
+docker build -t martinrumanek/meditor .

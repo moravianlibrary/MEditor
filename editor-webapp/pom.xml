@@ -276,8 +276,9 @@
                         <groupId>org.apache.tomcat.maven</groupId>
                         <artifactId>tomcat7-maven-plugin</artifactId>
                         <configuration>
-                            <url>http://editor-devel.mzk.cz:8080/manager/text</url>
-                            <server>meditor-devel-tomcat</server>
+                            <url>http://localhost:8080/manager/text</url>
+                            <username>tomcat</username>
+                            <password>tomcat</password>
                             <warFile>
                                 ${basedir}/../target/${warName}.war
                             </warFile>
