@@ -65,7 +65,7 @@ ENV LIBPATH $DJATOKA_HOME/lib
 ENV LD_LIBRARY_PATH $LIBPATH/Linux-x86-64
 ENV KAKADU_HOME $DJATOKA_HOME/bin/Linux-x86-64
 ENV KAKADU_LIBRARY_PATH -DLD_LIBRARY_PATH=$LIBPATH/Linux-x86-64
-ENV JAVA_OPTS -Djava.awt.headless=true -Dkakadu.home=$KAKADU_HOME -Djava.library.path=$LIBPATH/Linux-x86-64 $KAKADU_LIBRARY_PATH
+ENV JAVA_OPTS -Dfile.encoding=UTF8 -Djava.awt.headless=true -Dkakadu.home=$KAKADU_HOME -Djava.library.path=$LIBPATH/Linux-x86-64 $KAKADU_LIBRARY_PATH
 ENV PATH /usr/java/jdk1.7.0_51/bin:$PATH
 
 
