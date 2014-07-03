@@ -1,7 +1,9 @@
 FROM martinrumanek/meditor
 
 
-RUN apt-get install libfcgi0ldbl libjpeg62 libmemcached10 libtiff4 libapache2-mod-fcgid
+RUN apt-get -y install libfcgi0ldbl libjpeg62 libmemcached10 libtiff4 libapache2-mod-fcgid
+
+RUN wget --no-verbose http://dl.dropbox.com/s/7k24kkvqf1pafec/iipimage-jp2-amd64.deb -O /tmp/iipimage-jp2-amd64.deb
 
 # iipsrv
 RUN dpkg -i /tmp/iipimage-jp2-amd64.deb

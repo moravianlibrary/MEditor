@@ -2,7 +2,7 @@ FROM debian:wheezy
 
 MAINTAINER Martin Rumanek <martin@rumanek.cz>
 
-RUN echo "Version: 20140702"
+RUN echo "Version: 20140705"
 
 ## install packages
 ENV PATH /usr/bin:/bin:/usr/sbin:/sbin
@@ -10,7 +10,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # install packages
 RUN apt-get -y  update; apt-get -y install wget postgresql apache2 libapache2-mod-jk \
-	vim unzip curl libtiff-tools imagemagick sox ffmpeg \
+	vim unzip curl libtiff-tools imagemagick sox ffmpeg libsox-fmt-mp3 \
 	less
 
 ADD schema.sql /tmp/schema.sql
@@ -77,5 +77,6 @@ ENV CATALINA_OPTS "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address
 
 RUN sed "s/data_directory = '\/var\/lib\/postgresql\/9.1\/main'/data_directory = '\/meditor-data\/postgres-data\/main'/" /etc/postgresql/9.1/main/postgresql.conf > /tmp/postgresql.conf
 RUN mv /tmp/postgresql.conf /etc/postgresql/9.1/main/postgresql.conf
-RUN mv /home/meditor/.meditor /home/meditor/.meditorDefault && ln -s /meditor-data/.meditor /home/meditor/.meditor
+RUN mv /home/meditor/.meditor /home/meditor/.meditorDefault && ln -s /meditor-data/.meditor /home/meditor/.meditor \
+    && rm -r /home/meditor/output/ && ln -s /meditor-data/.meditor/output /home/meditor/output
 

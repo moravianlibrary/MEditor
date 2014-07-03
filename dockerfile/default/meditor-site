@@ -4,6 +4,7 @@ RewriteRule  ^/$ /meditor/ [R]
 
 <IfModule jk_module>
         JkMount /meditor/* meditor
+        JKMount /djatoka/* djatoka
 </IfModule>
 
 </VirtualHost>
