@@ -1,5 +1,6 @@
 FROM martinrumanek/meditor
 
+RUN echo "Version: 20140716"
 
 RUN apt-get -y install libfcgi0ldbl libjpeg62 libmemcached10 libtiff4 libapache2-mod-fcgid
 
