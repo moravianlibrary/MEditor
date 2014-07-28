@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# workaround files owner problem
+chown -R meditor:meditor /home/meditor/
+
 if [ ! -d "/meditor-data/import" ]; then
   mkdir /meditor-data/import
 fi
