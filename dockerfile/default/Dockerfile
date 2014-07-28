@@ -80,3 +80,5 @@ RUN mv /tmp/postgresql.conf /etc/postgresql/9.1/main/postgresql.conf
 RUN mv /home/meditor/.meditor /home/meditor/.meditorDefault && ln -s /meditor-data/.meditor /home/meditor/.meditor \
     && rm -r /home/meditor/output/ && ln -s /meditor-data/.meditor/output /home/meditor/output
 
+# workaround files owner problem
+RUN chown -R meditor:meditor /home/meditor/
