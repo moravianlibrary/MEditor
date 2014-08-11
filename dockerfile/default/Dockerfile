@@ -21,7 +21,7 @@ RUN sed 's/local   all             all                                     peer/
  createdb meditor --owner=meditor; \
  psql --command \"alter user \\\"meditor\\\" with password 'meditor';\"; psql -f /tmp/schema.sql meditor"
 
-RUN wget --no-verbose http://mirror.hosting90.cz/apache/tomcat/tomcat-7/v7.0.54/bin/apache-tomcat-7.0.54.tar.gz -O /tmp/tomcat.tar.gz && \
+RUN wget --no-verbose http://mirror.hosting90.cz/apache/tomcat/tomcat-7/v7.0.55/bin/apache-tomcat-7.0.55.tar.gz -O /tmp/tomcat.tar.gz && \
     wget --no-verbose https://github.com/moravianlibrary/MEditor/archive/master.zip -O /tmp/meditor.zip && \
     wget --no-verbose https://dl.dropbox.com/s/9zcorgucorgfe3e/jdk-7u51-linux-x64.tar.gz -O /tmp/java.tar.gz
 RUN mkdir /usr/java
@@ -31,12 +31,12 @@ RUN adduser --disabled-password --gecos "" meditor
 USER meditor
 ENV JAVA_HOME /usr/java/jdk1.7.0_51
 ENV PATH $JAVA_HOME/bin:$PATH
-RUN tar xzf /tmp/tomcat.tar.gz --directory=/home/meditor/
-ENV CATALINA_HOME /home/meditor/apache-tomcat-7.0.54
-RUN wget --no-verbose https://dl.dropbox.com/s/txg6h2f0ws3e2fs/meditor.war -O /home/meditor/apache-tomcat-7.0.54/webapps/meditor.war
-RUN wget --no-verbose http://jdbc.postgresql.org/download/postgresql-9.1-903.jdbc4.jar -O /home/meditor/apache-tomcat-7.0.54/lib/postgresql-9.1-903.jdbc4.jar
+RUN tar xzf /tmp/tomcat.tar.gz --directory=/home/meditor/ && mv /home/meditor/apache-tomcat-* /home/meditor/tomcat
+ENV CATALINA_HOME /home/meditor/tomcat
+RUN wget --no-verbose https://dl.dropbox.com/s/txg6h2f0ws3e2fs/meditor.war -O /home/meditor/tomcat/webapps/meditor.war
+RUN wget --no-verbose http://jdbc.postgresql.org/download/postgresql-9.1-903.jdbc4.jar -O /home/meditor/tomcat/lib/postgresql-9.1-903.jdbc4.jar
 RUN unzip /tmp/meditor.zip -d /tmp/meditor/
-RUN mv /tmp/meditor/MEditor-master/resources/djatoka/dist/djatoka.war /home/meditor/apache-tomcat-7.0.54/webapps/djatoka.war
+RUN mv /tmp/meditor/MEditor-master/resources/djatoka/dist/djatoka.war /home/meditor/tomcat/webapps/djatoka.war
 
 USER root
 RUN a2enmod rewrite && a2enmod jk
@@ -54,18 +54,18 @@ RUN mkdir -p /home/meditor/.meditor
 ADD configuration.properties /home/meditor/.meditor/configuration.properties
 ADD ldap.properties /home/meditor/.meditor/ldap.properties
 
-RUN /home/meditor/apache-tomcat-7.0.54/bin/startup.sh && sleep 60
+RUN /home/meditor/tomcat/bin/startup.sh && sleep 60
 RUN mv /tmp/meditor/MEditor-master/resources/djatoka /home/meditor/.meditor/djatoka
 RUN mv /tmp/meditor/MEditor-master/resources/xml /home/meditor/.meditor/xml
-ADD djatoka.properties /home/meditor/apache-tomcat-7.0.54/webapps/djatoka/WEB-INF/classes/djatoka.properties
-ADD log4j.properties /home/meditor/apache-tomcat-7.0.54/webapps/djatoka/WEB-INF/classes/log4j.properties
+ADD djatoka.properties /home/meditor/tomcat/webapps/djatoka/WEB-INF/classes/djatoka.properties
+ADD log4j.properties /home/meditor/tomcat/webapps/djatoka/WEB-INF/classes/log4j.properties
 
 ENV DJATOKA_HOME /home/meditor/.meditor/djatoka
 ENV LIBPATH $DJATOKA_HOME/lib
 ENV LD_LIBRARY_PATH $LIBPATH/Linux-x86-64
 ENV KAKADU_HOME $DJATOKA_HOME/bin/Linux-x86-64
 ENV KAKADU_LIBRARY_PATH -DLD_LIBRARY_PATH=$LIBPATH/Linux-x86-64
-ENV JAVA_OPTS -Dfile.encoding=UTF8 -Djava.awt.headless=true -Dkakadu.home=$KAKADU_HOME -Djava.library.path=$LIBPATH/Linux-x86-64 $KAKADU_LIBRARY_PATH
+ENV JAVA_OPTS -Dfile.encoding=UTF8 -Djava.awt.headless=true -Dfile.encoding=UTF8 -XX:MaxPermSize=256m -Xms1024m -Xmx3072m -Dkakadu.home=$KAKADU_HOME -Djava.library.path=$LIBPATH/Linux-x86-64 $KAKADU_LIBRARY_PATH
 ENV PATH /usr/java/jdk1.7.0_51/bin:$PATH
 
 

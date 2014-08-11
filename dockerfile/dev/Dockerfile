@@ -1,3 +1,3 @@
-FROM martinrumanek/meditor-iipsrv
+FROM meditor-iipsrv
 
-ADD tomcat-users.xml /home/meditor/apache-tomcat-7.0.54/conf/tomcat-users.xml
+ADD tomcat-users.xml /home/meditor/tomcat/conf/tomcat-users.xml

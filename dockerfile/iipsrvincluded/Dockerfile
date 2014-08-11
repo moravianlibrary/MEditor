@@ -1,4 +1,4 @@
-FROM martinrumanek/meditor
+FROM meditor
 
 RUN echo "Version: 20140716"
 
