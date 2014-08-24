@@ -1,4 +1,4 @@
-FROM meditor
+FROM moravianlibrary/meditor
 
 RUN echo "Version: 20140716"
 
