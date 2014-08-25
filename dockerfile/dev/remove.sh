@@ -1,6 +1,6 @@
 #!/bin/sh
-docker stop kramerius
-docker rm kramerius
-docker stop meditor
-docker rm meditor
+docker stop kramerius-dev
+docker rm kramerius-dev
+docker stop meditor-dev
+docker rm meditor-dev
 

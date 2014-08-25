@@ -1,6 +1,6 @@
-FROM meditor
+FROM moravianlibrary/meditor
 
-RUN echo "Version: 20140716"
+ENV REFRESHED_AT 2014-08-25
 
 RUN apt-get -y install libfcgi0ldbl libjpeg62 libmemcached10 libtiff4 libapache2-mod-fcgid
 
