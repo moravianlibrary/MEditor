@@ -489,7 +489,7 @@ public class CreateObject {
             if (isPage) {
                 String ocrPath = node.getAditionalInfoOrOcr();
                 if (ocrPath != null && !"".equals(ocrPath)) {
-                    insertManagedDatastream(DATASTREAM_ID.TEXT_OCR, node.getUuid(), ocrPath, true, "text/xml");
+                    insertManagedDatastream(DATASTREAM_ID.TEXT_OCR, node.getUuid(), ocrPath, true, "text/plain");
                 }
 
                 String altoPath = node.getPartNumberOrAlto();

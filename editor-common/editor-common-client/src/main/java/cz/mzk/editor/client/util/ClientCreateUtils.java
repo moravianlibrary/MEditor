@@ -317,7 +317,7 @@ public class ClientCreateUtils {
             if (exists) {
                 if (imgUuid != null && !"".equals(imgUuid)) {
                     newObj.setUuid(imgUuid.startsWith("uuid:") ? imgUuid.substring("uuid:".length())
-                            : imgUuid);
+        : imgUuid);
                 } else {
                     throw new CreateObjectException("unknown uuid of an existing object");
                 }
@@ -327,6 +327,18 @@ public class ClientCreateUtils {
             if (aditionalInfoOrOcr != null && !"".equals(aditionalInfoOrOcr)) {
                 newObj.setAditionalInfoOrOcr(aditionalInfoOrOcr);
             }
+
+            String ocr = node.getAttribute(Constants.ATTR_OCR_PATH);
+            if (ocr != null && !"".equals(ocr)) {
+                newObj.setAditionalInfoOrOcr(ocr);
+            }
+
+            String alto = node.getAttribute(Constants.ATTR_ALTO_PATH);
+            if (alto != null && !"".equals(alto)) {
+                newObj.setPartNumberOrAlto(Constants.ATTR_PART_NUMBER_OR_ALTO);
+            }
+
+
 
             newObj.setPath(imgUuid);
 
