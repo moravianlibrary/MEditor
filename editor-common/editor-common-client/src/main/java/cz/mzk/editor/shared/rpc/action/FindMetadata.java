@@ -51,7 +51,7 @@ public class FindMetadata {
     private String id;
 
     @In(3)
-    private boolean oai;
+    private Constants.SEARCH_METHOD method;
 
     @In(4)
     private String oaiQuery;

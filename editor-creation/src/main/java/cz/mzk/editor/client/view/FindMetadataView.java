@@ -75,12 +75,15 @@ public class FindMetadataView
     private final VStack layout;
     private final ButtonItem findButtonZ39;
     private final ButtonItem findButtonOai;
+    private final ButtonItem findButtonXservices;
     private final IButton nextButton;
     private final IButton withoutButton;
     private final DynamicForm form1;
     private final DynamicForm form2;
+    private final DynamicForm form3;
     private final TextItem searchValueZ39;
     private final TextItem searchValueOai;
+    private final TextItem searchValueXservices;
     private final SelectItem oaiUrl;
     private final SelectItem oaiIdPrefix;
     private final SelectItem oaiBase;
@@ -186,10 +189,39 @@ public class FindMetadataView
         });
         form2.setFields(oaiUrl, oaiIdPrefix, oaiBase, searchValueOai, findButtonOai);
 
+
+        form3 = new DynamicForm();
+        form3.setGroupTitle(lang.findMetadata() + " X-services");
+        form3.setIsGroup(true);
+        form3.setWidth(320);
+        form3.setHeight(90);
+        form3.setColWidths(70, "*");
+        form3.setPadding(5);
+        findButtonXservices = new ButtonItem(lang.find());
+        findButtonXservices.setAutoFit(true);
+        findButtonXservices.setStartRow(false);
+        findButtonXservices.setWidth(80);
+        findButtonXservices.setColSpan(2);
+        searchValueXservices = new TextItem();
+        searchValueXservices.setTitle(Constants.SYSNO);
+        searchValueXservices.setWrapTitle(false);
+        searchValueXservices.setHoverOpacity(75);
+        searchValueXservices.setHoverWidth(330);
+        searchValueXservices.setHoverStyle("interactImageHover");
+        searchValueXservices.addItemHoverHandler(new ItemHoverHandler() {
+
+            @Override
+            public void onItemHover(ItemHoverEvent event) {
+                searchValueXservices.setPrompt(HtmlCode.nobr(lang.findHint()));
+            }
+        });
+        form3.setFields(searchValueXservices, findButtonXservices);
+
         HLayout hLayout = new HLayout();
         hLayout.setMembersMargin(10);
         hLayout.addMember(form2);
         hLayout.addMember(form1);
+        hLayout.addMember(form3);
         hLayout.setExtraSpace(10);
 
         printStack = new SectionStack();
@@ -278,15 +310,23 @@ public class FindMetadataView
         return findButtonOai;
     }
 
+    public ButtonItem getFindButtonXservices() {
+        return findButtonXservices;
+    }
+
     /*
-     * (non-Javadoc)
-     * @see
-     * cz.mzk.editor.client.presenter.HomePresenter.MyView#getUuid
-     * ()
-     */
+         * (non-Javadoc)
+         * @see
+         * cz.mzk.editor.client.presenter.HomePresenter.MyView#getUuid
+         * ()
+         */
     @Override
     public TextItem getZ39Id() {
         return searchValueZ39;
+    }
+
+    public TextItem getSearchValueXservices() {
+        return searchValueXservices;
     }
 
     @Override

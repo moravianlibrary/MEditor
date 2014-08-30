@@ -97,6 +97,10 @@ public class FindMetadataPresenter
 
         ButtonItem getFindOai();
 
+        ButtonItem getFindButtonXservices();
+
+        TextItem getSearchValueXservices();
+
         ListGrid getResults();
 
         void refreshData(ListGridRecord[] data);
@@ -221,6 +225,12 @@ public class FindMetadataPresenter
                 findPropriateMetadata();
             }
         });
+        getView().getFindButtonXservices().addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                findMetadataXservices();
+            }
+        });
         getView().getNext().setDisabled(true);
         getView().getNext().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
@@ -307,12 +317,12 @@ public class FindMetadataPresenter
         }
     }
 
-    private void findMetadata(Constants.SEARCH_FIELD field, String id, boolean oai, String query) {
+    private void findMetadata(Constants.SEARCH_FIELD field, String id, Constants.SEARCH_METHOD method, String query) {
         results.clear();
         if (query == null || id == null) {
             return;
         }
-        dispatcher.execute(new FindMetadataAction(field, id, oai, query, getView().getOaiBase()
+        dispatcher.execute(new FindMetadataAction(field, id, method, query, getView().getOaiBase()
                 .getValueAsString()), new DispatchCallback<FindMetadataResult>() {
 
             @Override
@@ -355,8 +365,12 @@ public class FindMetadataPresenter
             findBy = Constants.SEARCH_FIELD.TITLE;
         }
         if (findBy != null) {
-            findMetadata(findBy, (String) getView().getZ39Id().getValue(), false, getQuery());
+            findMetadata(findBy, (String) getView().getZ39Id().getValue(), Constants.SEARCH_METHOD.Z39_50, getQuery());
         }
+    }
+
+    private void findMetadataXservices() {
+        findMetadata(Constants.SEARCH_FIELD.SYSNO, (String) getView().getSearchValueXservices().getValue(), Constants.SEARCH_METHOD.X_SERVICES, getQuery());
     }
 
     private void findPropriateMetadata() {
@@ -375,17 +389,17 @@ public class FindMetadataPresenter
                 getView().getFindBy().setValue(Constants.SYSNO);
                 getView().getZ39Id().setTitle(Constants.SYSNO);
                 getView().getZ39Id().redraw();
-                findMetadata(null, id, true, getQuery());
+                findMetadata(null, id, Constants.SEARCH_METHOD.OAI, getQuery());
             } else if (id.length() == 10) {
                 getView().getFindBy().setValue(lang.fbarcode());
                 getView().getZ39Id().setTitle(lang.fbarcode());
                 getView().getZ39Id().redraw();
-                findMetadata(Constants.SEARCH_FIELD.BAR, id, true, getQuery());
+                findMetadata(Constants.SEARCH_FIELD.BAR, id, Constants.SEARCH_METHOD.OAI, getQuery());
             } else {
                 getView().getFindBy().setValue(lang.ftitle());
                 getView().getZ39Id().setTitle(lang.ftitle());
                 getView().getZ39Id().redraw();
-                findMetadata(Constants.SEARCH_FIELD.TITLE, id, false, getQuery());
+                findMetadata(Constants.SEARCH_FIELD.TITLE, id, Constants.SEARCH_METHOD.Z39_50, getQuery());
             }
         }
     }

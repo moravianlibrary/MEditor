@@ -25,7 +25,7 @@
  * 
  */
 
-package cz.mzk.editor.server;
+package cz.mzk.editor.server.metadataDownloader;
 
 import java.io.File;
 import java.io.IOException;

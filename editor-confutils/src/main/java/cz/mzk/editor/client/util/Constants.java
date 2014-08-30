@@ -895,6 +895,12 @@ public class Constants {
         TITLE
     }
 
+    public static enum SEARCH_METHOD {
+        OAI,
+        Z39_50,
+        X_SERVICES
+    }
+
     /**
      * Several actions can be aggregated using this enum.
      */

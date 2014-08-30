@@ -21,24 +21,31 @@ import org.dom4j.XPath;
  */
 public class MarcDocument {
 
-    private static final Map<String, String> prefixNamespaceMap;
     private static final Map<String, XPath> xpathCache = new HashMap<String, XPath>();
-    private static final String X_PATH_OAI_PREFIX = "/oai:OAI-PMH/oai:GetRecord/oai:record/oai:metadata";
 
+
+    private final String xpathPrefix;
+    private static final Map<String, String> prefixNamespaceMap;
+    private final Document doc;
     static {
         prefixNamespaceMap = new HashMap<String, String>();
         prefixNamespaceMap.put("tei", "http://www.tei-c.org/ns/1.0");
         prefixNamespaceMap.put("marc21", "http://www.loc.gov/MARC21/slim");
         prefixNamespaceMap.put("oai", Namespaces.oai.getURI());
     }
-    private final Document doc;
 
     public MarcDocument(Document doc) {
+        this.xpathPrefix =  "/oai:OAI-PMH/oai:GetRecord/oai:record/oai:metadata";
+        this.doc = doc;
+    }
+
+    public MarcDocument(Document doc, String xpathPrefix) {
+        this.xpathPrefix = xpathPrefix;
         this.doc = doc;
     }
 
     public String findSysno() {
-        String xpath = X_PATH_OAI_PREFIX + "/marc21:record/marc21:controlfield[@tag='001']";
+        String xpath = xpathPrefix + "/marc21:record/marc21:controlfield[@tag='001']";
         return findValue(xpath);
     }
 
@@ -48,14 +55,14 @@ public class MarcDocument {
 
     private String findDatafieldAndSubfield(String datafield, char subfield) {
         String xpath =
-                X_PATH_OAI_PREFIX + "/marc21:record/marc21:datafield[@tag='" + datafield
+                xpathPrefix + "/marc21:record/marc21:datafield[@tag='" + datafield
                         + "']/marc21:subfield[@code='" + subfield + "']";
         return findValue(xpath);
     }
 
     public List<String> find080a() {
         String xpath =
-                X_PATH_OAI_PREFIX + "/marc21:record/marc21:datafield[@tag='080']/marc21:subfield[@code='a']";
+                xpathPrefix + "/marc21:record/marc21:datafield[@tag='080']/marc21:subfield[@code='a']";
         return findValues(xpath);
     }
 

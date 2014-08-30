@@ -38,6 +38,8 @@ import com.gwtplatform.dispatch.server.ExecutionContext;
 import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.server.metadataDownloader.XServicesClient;
 import org.apache.log4j.Logger;
 
 import org.dom4j.Document;
@@ -48,8 +50,8 @@ import org.dom4j.XPath;
 
 import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
-import cz.mzk.editor.server.OAIPMHClient;
-import cz.mzk.editor.server.Z3950Client;
+import cz.mzk.editor.server.metadataDownloader.OAIPMHClient;
+import cz.mzk.editor.server.metadataDownloader.Z3950Client;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.utils.Dom4jUtils;
 import cz.mzk.editor.server.util.RESTHelper;
@@ -75,6 +77,8 @@ public class FindMetadataHandler
 
     private final OAIPMHClient oaiClient;
 
+    private final XServicesClient xServicesClient;
+
     /**
      * Instantiates a new put recently modified handler.
      * 
@@ -84,10 +88,12 @@ public class FindMetadataHandler
     @Inject
     public FindMetadataHandler(final EditorConfiguration configuration,
                                Z3950Client z39Client,
-                               OAIPMHClient oaiClient) {
+                               OAIPMHClient oaiClient,
+                               XServicesClient xServicesClient) {
         this.configuration = configuration;
         this.z39Client = z39Client;
         this.oaiClient = oaiClient;
+        this.xServicesClient = xServicesClient;
     }
 
     /*
@@ -113,7 +119,8 @@ public class FindMetadataHandler
 
         ArrayList<MetadataBundle> bundle = null;
         ArrayList<MetadataBundle> enrichedBundle = null;
-        boolean isOai = action.isOai();
+        boolean isOai = action.getMethod().equals(Constants.SEARCH_METHOD.OAI);
+        boolean isZ39 = action.getMethod().equals(Constants.SEARCH_METHOD.Z39_50);
 
         String sys = action.getId();
         if (isOai && sys != null && sys.length() == 10) {
@@ -126,7 +133,8 @@ public class FindMetadataHandler
             String completeQuery = String.format(action.getOaiQuery(), sys);
             bundle = oaiClient.search(completeQuery, action.getBase());
 
-        } else {
+        }
+        if (isZ39) {
             bundle = z39Client.search(action.getSearchType(), action.getId());
             if (ClientUtils.toBoolean(configuration.getVsup())) {
                 return new FindMetadataResult(bundle);
@@ -141,7 +149,14 @@ public class FindMetadataHandler
                 }
             }
         }
-        return new FindMetadataResult(action.isOai() ? bundle : enrichedBundle);
+
+        if (action.getMethod().equals(Constants.SEARCH_METHOD.X_SERVICES)) {
+            xServicesClient.search(action.getId());
+        }
+
+
+
+        return new FindMetadataResult(action.getMethod().equals(Constants.SEARCH_METHOD.OAI) ? bundle : enrichedBundle);
     }
 
     /*

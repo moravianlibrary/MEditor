@@ -48,7 +48,7 @@
 // 330, Boston, MA  02111-1307, USA.
 // 
 
-package cz.mzk.editor.server;
+package cz.mzk.editor.server.metadataDownloader;
 
 import java.util.ArrayList;
 import java.util.Enumeration;

@@ -34,16 +34,11 @@ import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.name.Names;
 import com.gwtplatform.dispatch.server.guice.HandlerModule;
 
+import cz.mzk.editor.server.*;
+import cz.mzk.editor.server.metadataDownloader.*;
 import org.quartz.SchedulerFactory;
 import org.quartz.impl.StdSchedulerFactory;
 
-import cz.mzk.editor.server.OAIPMHClient;
-import cz.mzk.editor.server.OAIPMHClientImpl;
-import cz.mzk.editor.server.RequestForAddingServiceImpl;
-import cz.mzk.editor.server.SessionListener;
-import cz.mzk.editor.server.URLS;
-import cz.mzk.editor.server.Z3950Client;
-import cz.mzk.editor.server.Z3950ClientImpl;
 import cz.mzk.editor.server.DAO.ActionDAO;
 import cz.mzk.editor.server.DAO.ActionDAOImpl;
 import cz.mzk.editor.server.DAO.ConversionDAO;
@@ -338,6 +333,7 @@ public class ServerModule
         bind(StoredDigitalObjectHandler.class).to(StoredDigitalObjectHandlerImpl.class);
         bind(Z3950Client.class).to(Z3950ClientImpl.class);
         bind(OAIPMHClient.class).to(OAIPMHClientImpl.class);
+        bind(XServicesClient.class).to(XServicesClientImpl.class);
 
         bind(IPaddressChecker.class).to(RequestIPaddressChecker.class);
 
