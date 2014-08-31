@@ -151,7 +151,7 @@ public class FindMetadataHandler
         }
 
         if (action.getMethod().equals(Constants.SEARCH_METHOD.X_SERVICES)) {
-            xServicesClient.search(action.getId());
+            enrichedBundle = xServicesClient.search(action.getId(), "nkc01");
         }
 
 

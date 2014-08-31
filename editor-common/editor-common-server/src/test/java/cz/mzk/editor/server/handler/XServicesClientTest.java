@@ -18,7 +18,7 @@ public class XServicesClientTest {
     @Test
     public void testDcFindBySysno() {
         XServicesClient xServicesClient = new XServicesClientImpl();
-        List<MetadataBundle> metadataBundles = xServicesClient.search("001810391");
+        List<MetadataBundle> metadataBundles = xServicesClient.search("001810391", "nkc01");
         String author = metadataBundles.get(0).getDc().getCreator().get(0);
         assertEquals(author, "Hejný, Milan");
     }
