@@ -99,6 +99,7 @@ public class GetClientConfigHandler
         result.put(EditorConfiguration.ServerConstants.OAI_PMH_URLS, configuration.getOaiUrls());
         result.put(EditorConfiguration.ServerConstants.OAI_PMH_PREFIXES, configuration.getOaiPrefixes());
         result.put(EditorConfiguration.ServerConstants.OAI_PMH_BASES, configuration.getOaiBases());
+        result.put(EditorConfiguration.ServerConstants.X_SERVICES_BASES, configuration.getXServiceBases());
         result.put(EditorClientConfiguration.Constants.OAI_RECORD_IDENTIFIER_LENGTH,
                    configuration.getOaiRecordIdentifierLength());
         result.put(EditorClientConfiguration.Constants.HOSTNAME, configuration.getHostname());

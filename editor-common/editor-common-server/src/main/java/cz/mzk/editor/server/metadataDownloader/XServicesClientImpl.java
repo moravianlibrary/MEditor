@@ -73,7 +73,7 @@ public class XServicesClientImpl implements XServicesClient {
                             marcDoc.find260c(),
                             marcDoc.find910b());
 
-            MetadataBundle bundle = new MetadataBundle(dc, BiblioModsUtils.toModsClient(modsCollection), null);
+            MetadataBundle bundle = new MetadataBundle(dc, BiblioModsUtils.toModsClient(modsCollection), marcSpecific);
             retList.add(bundle);
 
         } catch (DocumentException e) {

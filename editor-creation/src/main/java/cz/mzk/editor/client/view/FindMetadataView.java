@@ -84,6 +84,7 @@ public class FindMetadataView
     private final TextItem searchValueZ39;
     private final TextItem searchValueOai;
     private final TextItem searchValueXservices;
+    private final SelectItem xServicesBase;
     private final SelectItem oaiUrl;
     private final SelectItem oaiIdPrefix;
     private final SelectItem oaiBase;
@@ -215,7 +216,11 @@ public class FindMetadataView
                 searchValueXservices.setPrompt(HtmlCode.nobr(lang.findHint()));
             }
         });
-        form3.setFields(searchValueXservices, findButtonXservices);
+        xServicesBase = new SelectItem();
+        xServicesBase.setTitle(lang.fbase());
+        xServicesBase.setWrapTitle(false);
+
+        form3.setFields(xServicesBase, searchValueXservices, findButtonXservices);
 
         HLayout hLayout = new HLayout();
         hLayout.setMembersMargin(10);
@@ -403,6 +408,10 @@ public class FindMetadataView
     @Override
     public SelectItem getOaiBase() {
         return oaiBase;
+    }
+
+    public SelectItem getXServicesBase() {
+        return xServicesBase;
     }
 
     /**

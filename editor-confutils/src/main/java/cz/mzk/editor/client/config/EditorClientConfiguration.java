@@ -72,6 +72,10 @@ public abstract class EditorClientConfiguration {
 
         public static final String[] OAI_PMH_BASES_DEFAULT = {"MZK01", "MZK03"};
 
+        public static final String X_SERVICES_BASES = "xServicesBases";
+
+        public static final String[] X_SERVICES_BASES_DEFAULT = {"NKC01", "SKC01"};
+
         public static final String OAI_RECORD_IDENTIFIER_LENGTH = "oaiRecordIdentifierLength";
 
         public static final String VSUP = "vsup";
@@ -133,6 +137,10 @@ public abstract class EditorClientConfiguration {
 
     public String[] getOaiBases() {
         return getConfiguration().getStringArray(Constants.OAI_PMH_BASES);
+    }
+
+    public String[] getXServicesBases() {
+        return getConfiguration().getStringArray(Constants.X_SERVICES_BASES);
     }
 
     public String[] getOaiPrefixes() {

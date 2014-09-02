@@ -89,6 +89,8 @@ public class FindMetadataPresenter
 
         SelectItem getOaiBase();
 
+        SelectItem getXServicesBase();
+
         SelectItem getOaiUrl();
 
         SelectItem getFindBy();
@@ -203,6 +205,8 @@ public class FindMetadataPresenter
                     getView().getOaiPrefix().setValueMap(config.getOaiPrefixes());
                     getView().getOaiPrefix().setValue(config.getOaiPrefixes()[0]);
                     getView().getOaiBase().setValueMap(config.getOaiBases());
+                    getView().getXServicesBase().setValueMap(config.getXServicesBases());
+                    getView().getXServicesBase().setValue(config.getXServicesBases()[0]);
                     getView().getOaiBase().setValue(config.getOaiBases()[0]);
                     if (findLater) {
                         findLater = false;
@@ -276,6 +280,8 @@ public class FindMetadataPresenter
             getView().getOaiPrefix().setValue(config.getOaiPrefixes()[0]);
             getView().getOaiBase().setValueMap(config.getOaiBases());
             getView().getOaiBase().setValue(config.getOaiBases()[0]);
+            getView().getXServicesBase().setValueMap(config.getXServicesBases());
+            getView().getXServicesBase().setValue(config.getXServicesBases()[0]);
         } else {
             findLater = true;
         }
@@ -322,8 +328,16 @@ public class FindMetadataPresenter
         if (query == null || id == null) {
             return;
         }
-        dispatcher.execute(new FindMetadataAction(field, id, method, query, getView().getOaiBase()
-                .getValueAsString()), new DispatchCallback<FindMetadataResult>() {
+        String base = null;
+        switch (method) {
+            case OAI:
+                base = getView().getOaiBase().getValueAsString();
+                break;
+            case X_SERVICES:
+                base = getView().getXServicesBase().getValueAsString();
+        }
+
+        dispatcher.execute(new FindMetadataAction(field, id, method, query, base), new DispatchCallback<FindMetadataResult>() {
 
             @Override
             public void callback(FindMetadataResult result) {

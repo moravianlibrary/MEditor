@@ -158,10 +158,14 @@ public abstract class EditorConfiguration {
         public static final String[] OAI_PMH_PREFIXES_DEFAULT =
                 EditorClientConfiguration.Constants.OAI_PMH_PREFIXES_DEFAULT;
 
-        public static final String OAI_PMH_BASES = EditorClientConfiguration.Constants.OAI_PMH_BASES;
+        public static final String X_SERVICES_BASES = EditorClientConfiguration.Constants.X_SERVICES_BASES;
 
         public static final String[] OAI_PMH_BASES_DEFAULT =
                 EditorClientConfiguration.Constants.OAI_PMH_BASES_DEFAULT;
+
+        public static final String OAI_PMH_BASES = EditorClientConfiguration.Constants.OAI_PMH_BASES;
+
+        public static final String[] X_SERVICES_BASES_DEFAULT = EditorClientConfiguration.Constants.X_SERVICES_BASES_DEFAULT;
 
         // access
         /** The Constant ACCESS_PATTERN_SEPARATOR. */
@@ -504,6 +508,17 @@ public abstract class EditorConfiguration {
             return new String[] {""};
         } else
             return foo;
+    }
+
+    public String[] getXServiceBases() {
+        String[] bases = getConfiguration().getStringArray(ServerConstants.X_SERVICES_BASES);
+        if (bases == null || bases.length == 0) {
+            return ServerConstants.X_SERVICES_BASES_DEFAULT;
+        } else if ("no".equals(bases[0])) {
+            return new String[] {""};
+        } else
+            return bases;
+
     }
 
     public String getOaiRecordIdentifierLength() {
