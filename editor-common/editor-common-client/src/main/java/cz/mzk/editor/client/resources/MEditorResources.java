@@ -46,7 +46,7 @@ public interface MEditorResources
      * 
      * @return the image resource
      */
-    @Source("logo.png")
+    @Source("editor_logo.png")
     ImageResource logo();
 
     // @Source("logo_blue.gif")
