@@ -1,0 +1,12 @@
+language: java
+install: mvn clean install
+deploy:
+  provider: releases
+  api_key:
+    secure: uJDKKSyNAT/zhSdFiq9E1U4FtODVTF505+zG+1kEsY6zvu0EzWdj4+S5ZC8H3V8krzpfjGEU20lCsAuWPe6hQbZSgZRHI/PUtX36XO8Zj/raE/v08+l91JQy5ie6L0Gat4hY1Jw1arPkheCaTAZU7qKtk6zgQLaEdhxt1JT7Bm4=
+  file: target/meditor.war
+  on:
+    tags: true
+    all_branches: true
+    repo: moravianlibrary/MEditor
+
