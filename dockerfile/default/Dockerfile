@@ -14,9 +14,8 @@ RUN apt-get -y  update; apt-get -y install wget postgresql apache2 libapache2-mo
 	less
 
 ADD schema.sql /tmp/schema.sql
-RUN sed 's/local   all             all                                     peer/local   all             all                                     md5/' \
-  /etc/postgresql/9.1/main/pg_hba.conf > pg_hba.conf && \
-    mv pg_hba.conf /etc/postgresql/9.1/main/pg_hba.conf && \
+RUN sed -i 's/local   all             all                                     peer/local   all             all                                     md5/' \
+  /etc/postgresql/9.1/main/pg_hba.conf && \
   /etc/init.d/postgresql start && su -l postgres -c "createuser meditor --no-superuser --no-createdb --no-createrole; \
  createdb meditor --owner=meditor; \
  psql --command \"alter user \\\"meditor\\\" with password 'meditor';\"; psql -f /tmp/schema.sql meditor"
@@ -75,10 +74,7 @@ ADD init.sh /init.sh
 # comment this out if you want to disable debug mode
 ENV CATALINA_OPTS "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000"
 
-RUN sed "s/data_directory = '\/var\/lib\/postgresql\/9.1\/main'/data_directory = '\/meditor-data\/postgres-data\/main'/" /etc/postgresql/9.1/main/postgresql.conf > /tmp/postgresql.conf
-RUN mv /tmp/postgresql.conf /etc/postgresql/9.1/main/postgresql.conf
+RUN sed -i "s/data_directory = '\/var\/lib\/postgresql\/9.1\/main'/data_directory = '\/meditor-data\/postgres-data\/main'/" /etc/postgresql/9.1/main/postgresql.conf
 RUN mv /home/meditor/.meditor /home/meditor/.meditorDefault && ln -s /meditor-data/.meditor /home/meditor/.meditor \
     && rm -r /home/meditor/output/ && ln -s /meditor-data/.meditor/output /home/meditor/output
 
-# workaround files owner problem
-RUN chown -R meditor:meditor /home/meditor/
