@@ -62,7 +62,7 @@ public abstract class EditorClientConfiguration {
 
         public static final String OAI_PMH_URLS = "oaiUrls";
 
-        public static final String[] OAI_PMH_URLS_DEFAULT = {"http://oai.mzk.cz"};
+        public static final String[] OAI_PMH_URLS_DEFAULT = {"http://aleph.mzk.cz/OAI"};
 
         public static final String OAI_PMH_PREFIXES = "oaiIdPrefixes";
 
