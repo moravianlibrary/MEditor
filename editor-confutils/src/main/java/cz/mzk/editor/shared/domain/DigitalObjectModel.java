@@ -97,6 +97,8 @@ public enum DigitalObjectModel
     /** The GRAPHIC */
     GRAPHIC("graphic", "",TopLevelObjectModel.MONOGRAPH),
 
+    SHEETMUSIC("sheetmusic", "", TopLevelObjectModel.MONOGRAPH),
+
     /**
      * Instantiates a new kramerius model.
      * 
