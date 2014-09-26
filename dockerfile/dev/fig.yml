@@ -1,0 +1,26 @@
+meditorDev:
+  image: moravianlibrary/meditor-dev
+  command: /init.sh
+  ports:
+    - "80:80"
+    - "443:443"
+    - "5432:5432"
+    - "8000:8000"
+  volumes:
+    - /meditor-data:meditor-data
+  dns:
+    - 8.8.8.8
+    - 9.9.9.9
+  links:
+    - krameriusDev:kramerius 
+krameriusDev:
+  image: moravianlibrary/kramerius-dev
+  command: /init.sh
+  ports:
+    - "82:80"
+  volumes:
+    - /kramerius-data:/kramerius-data
+  dns:
+    - 8.8.8.8
+    - 9.9.9.9
+  
