@@ -62,6 +62,7 @@ alias /imageserver/ /imageserver-data/
 <VirtualHost *:443>
 RewriteEngine On
 RewriteRule  ^/$ /meditor/ [R]
+RewriteRule  ^/meditor$ /meditor/ [R]
 RewriteRule  ^/djatoka$ /djatoka/ [R]
 
 SSLEngine on
