@@ -1,4 +1,4 @@
-# Metadata Editor
+# Metadata Editor [![Build Status](https://travis-ci.org/moravianlibrary/MEditor.svg?branch=master)](https://travis-ci.org/moravianlibrary/MEditor)
 
 RIA web application developed for purposes of digitization of old cultural assets. For more information continue to our [wiki](http://code.google.com/p/meta-editor/wiki/SideBar?tm=6).
 
