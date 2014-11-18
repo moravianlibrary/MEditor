@@ -20,7 +20,7 @@ RUN sed -i 's/local   all             all                                     pe
  createdb meditor --owner=meditor; \
  psql --command \"alter user \\\"meditor\\\" with password 'meditor';\"; psql -f /tmp/schema.sql meditor"
 
-RUN wget --no-verbose http://mirror.hosting90.cz/apache/tomcat/tomcat-7/v7.0.56/bin/apache-tomcat-7.0.56.tar.gz -O /tmp/tomcat.tar.gz && \
+RUN wget --no-verbose http://mirror.hosting90.cz/apache/tomcat/tomcat-7/v7.0.57/bin/apache-tomcat-7.0.57.tar.gz -O /tmp/tomcat.tar.gz && \
     wget --no-verbose https://github.com/moravianlibrary/MEditor/archive/master.zip -O /tmp/meditor.zip && \
     wget --no-verbose https://dl.dropbox.com/s/9zcorgucorgfe3e/jdk-7u51-linux-x64.tar.gz -O /tmp/java.tar.gz
 RUN mkdir /usr/java
