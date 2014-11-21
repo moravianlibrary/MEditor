@@ -524,6 +524,8 @@ public class CreateObjectMenuView
                                             "",
                                             "",
                                             "",
+                                            "",
+                                            "",
                                             true,
                                             true);
                             for (Record rec : selection) {
@@ -537,6 +539,8 @@ public class CreateObjectMenuView
                                                 rec.getAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE),
                                                 rec.getAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO),
                                                 rec.getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR),
+                                                rec.getAttribute(Constants.ATTR_OCR_PATH),
+                                                rec.getAttribute(Constants.ATTR_ALTO_PATH),
                                                 true,
                                                 false);
                             }
@@ -578,6 +582,8 @@ public class CreateObjectMenuView
                                         getModel().getValue(),
                                         getModel() == DigitalObjectModel.PAGE ? Constants.PAGE_TYPES.NP
                                                 .toString() : "",
+                                        "",
+                                        "",
                                         "",
                                         "",
                                         "",
@@ -978,6 +984,8 @@ public class CreateObjectMenuView
                                 String noteOrIntSubtitle,
                                 String partNumberOrAlto,
                                 String aditionalInfoOrOcr,
+                                String ocrPath,
+                                String altoPath,
                                 boolean isOpen,
                                 boolean exist) {
         TreeNode parentNode = structureTree.findById(parent);
@@ -991,6 +999,8 @@ public class CreateObjectMenuView
                                                    noteOrIntSubtitle,
                                                    partNumberOrAlto,
                                                    aditionalInfoOrOcr,
+                                                   ocrPath,
+                                                   altoPath,
                                                    isOpen,
                                                    exist), parentNode);
         structureTreeGrid.setData(structureTree);
@@ -1046,6 +1056,8 @@ public class CreateObjectMenuView
                                                  childNode.getAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE),
                                                  childNode.getAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO),
                                                  childNode.getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR),
+                                                 childNode.getAttribute(Constants.ATTR_OCR_PATH),
+                                                 childNode.getAttribute(Constants.ATTR_ALTO_PATH),
                                                  childNode.getAttributeAsBoolean("isOpen"),
                                                  childNode.getAttributeAsBoolean(Constants.ATTR_EXIST));
                 String altoPath = childNode.getAttributeAsString(Constants.ATTR_ALTO_PATH);

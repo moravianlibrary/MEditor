@@ -120,6 +120,8 @@ public class CreateObjectMenuPresenter
                              String noteOrIntSubtitle,
                              String partNumberOrAlto,
                              String aditionalInfoOrOcr,
+                             String ocrPath,
+                             String altoPath,
                              boolean isOpen,
                              boolean exist);
 
@@ -587,6 +589,8 @@ public class CreateObjectMenuPresenter
                                       pages.get(i).getAttribute(Constants.ATTR_PICTURE_OR_UUID),
                                       (modelId != null) ? modelId :DigitalObjectModel.PAGE.getValue(), //TODO-MR: recording
                                       type,
+                                      "",
+                                      "",
                                       "",
                                       "",
                                       "",

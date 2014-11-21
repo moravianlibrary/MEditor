@@ -505,6 +505,8 @@ public class CreateStructurePresenter
                                                 "",
                                                 "",
                                                 "",
+                                                "",
+                                                "",
                                                 true,
                                                 false);
         leftPresenter.getView().getSubelementsGrid().selectRecord(0);
@@ -1366,6 +1368,8 @@ public class CreateStructurePresenter
                                                     noteOrSubtitle,
                                                     partNumOrAlto,
                                                     aditionalInfoOrOcr,
+                                                    "",
+                                                    "",
                                                     true,
                                                     false);
         } else { // adding something and enrich it with selected pages

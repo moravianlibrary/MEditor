@@ -50,6 +50,8 @@ public class SubstructureTreeNode
                                 String noteOrIntSubtitle,
                                 String partNumberOrAlto,
                                 String aditionalInfoOrOcr,
+                                String ocrPath,
+                                String altoPath,
                                 boolean isOpen,
                                 boolean exist) {
         setAttribute(Constants.ATTR_ID, id);
@@ -62,6 +64,8 @@ public class SubstructureTreeNode
         setAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE, noteOrIntSubtitle);
         setAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO, partNumberOrAlto);
         setAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR, aditionalInfoOrOcr);
+        setAttribute(Constants.ATTR_OCR_PATH, ocrPath);
+        setAttribute(Constants.ATTR_ALTO_PATH, altoPath);
         setAttribute("isOpen", isOpen);
         setAttribute(Constants.ATTR_EXIST, exist);
         setAttribute(Constants.ATTR_CREATE, !exist);

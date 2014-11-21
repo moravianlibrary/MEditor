@@ -522,6 +522,8 @@ public class ClientCreateUtils {
                                      treeNode.getAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE),
                                      treeNode.getAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO),
                                      treeNode.getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR),
+                                     treeNode.getAttribute(Constants.ATTR_OCR_PATH),
+                                     treeNode.getAttribute(Constants.ATTR_ALTO_PATH),
                                      treeNode.getAttributeAsBoolean(Constants.ATTR_EXIST));
     }
 
@@ -547,6 +549,8 @@ public class ClientCreateUtils {
                                          node.getPropNoteOrIntSubtitle(),
                                          node.getPropPartNumberOrAlto(),
                                          node.getPropAditionalInfoOrOcr(),
+                                         node.getPropOcrPath(),
+                                         node.getPropAltoPath(),
                                          true,
                                          ClientUtils.toBoolean(node.getPropName()));
         return subNode;

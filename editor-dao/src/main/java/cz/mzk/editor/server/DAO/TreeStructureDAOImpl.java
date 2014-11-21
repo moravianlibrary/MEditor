@@ -106,7 +106,7 @@ public class TreeStructureDAOImpl
     public static final String INSERT_NODE =
             "INSERT INTO "
                     + Constants.TABLE_TREE_STRUCTURE_NODE
-                    + " (tree_structure_id, prop_id, prop_parent, prop_name, prop_picture_or_uuid, prop_model_id, prop_type, prop_date_or_int_part_name, prop_note_or_int_subtitle, prop_part_number_or_alto, prop_aditional_info_or_ocr, prop_exist) VALUES ((?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?))";
+                    + " (tree_structure_id, prop_id, prop_parent, prop_name, prop_picture_or_uuid, prop_model_id, prop_type, prop_date_or_int_part_name, prop_note_or_int_subtitle, prop_part_number_or_alto, prop_aditional_info_or_ocr, prop_ocr_path, prop_alto_path, prop_exist) VALUES ((?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?), (?))";
 
     /** The Constant LOGGER. */
     private static final Logger LOGGER = Logger.getLogger(TreeStructureDAOImpl.class);
@@ -282,6 +282,8 @@ public class TreeStructureDAOImpl
                                                   rs.getString("prop_note_or_int_subtitle"),
                                                   rs.getString("prop_part_number_or_alto"),
                                                   rs.getString("prop_aditional_info_or_ocr"),
+                                                  rs.getString("prop_ocr_path"),
+                                                  rs.getString("prop_alto_path"),
                                                   rs.getBoolean("prop_exist")));
 
             }
@@ -367,7 +369,9 @@ public class TreeStructureDAOImpl
                     insSt.setString(9, node.getPropNoteOrIntSubtitle());
                     insSt.setString(10, node.getPropPartNumberOrAlto());
                     insSt.setString(11, node.getPropAditionalInfoOrOcr());
-                    insSt.setBoolean(12, node.isPropExist());
+                    insSt.setString(12, node.getPropOcrPath());
+                    insSt.setString(13, node.getPropAltoPath());
+                    insSt.setBoolean(14, node.isPropExist());
                     total += insSt.executeUpdate();
                 }
                 if (total != structure.size()) {

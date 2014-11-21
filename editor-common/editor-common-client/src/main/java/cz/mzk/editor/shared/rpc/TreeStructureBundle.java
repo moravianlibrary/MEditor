@@ -81,6 +81,8 @@ public class TreeStructureBundle
         private String propNoteOrIntSubtitle;
         private String propPartNumberOrAlto;
         private String propAditionalInfoOrOcr;
+        private String ocrPath;
+        private String altoPath;
         private boolean propExist;
 
         public TreeStructureNode() {
@@ -97,6 +99,8 @@ public class TreeStructureBundle
                                  String propNoteOrIntSubtitle,
                                  String propPartNumberOrAlto,
                                  String propAditionalInfoOrOcr,
+                                 String ocrPath,
+                                 String altoPath,
                                  boolean propExist) {
             super();
             this.propId = propId;
@@ -109,6 +113,8 @@ public class TreeStructureBundle
             this.propNoteOrIntSubtitle = propNoteOrIntSubtitle;
             this.propPartNumberOrAlto = propPartNumberOrAlto;
             this.propAditionalInfoOrOcr = propAditionalInfoOrOcr;
+            this.ocrPath=ocrPath;
+            this.altoPath=altoPath;
             this.propExist = propExist;
         }
 
@@ -277,6 +283,21 @@ public class TreeStructureBundle
             this.propExist = propExist;
         }
 
+        public String getPropOcrPath() {
+            return ocrPath;
+        }
+
+        public void setPropOcrPath(String ocrPath) {
+            this.ocrPath = ocrPath;
+        }
+
+        public String getPropAltoPath() {
+            return altoPath;
+        }
+
+        public void setPropAltoPath(String altoPath) {
+            this.altoPath = altoPath;
+        }
     }
 
 }
