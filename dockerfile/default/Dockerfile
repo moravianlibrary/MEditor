@@ -9,16 +9,10 @@ ENV PATH /usr/bin:/bin:/usr/sbin:/sbin
 ENV DEBIAN_FRONTEND noninteractive
 
 # install packages
-RUN apt-get -y  update; apt-get -y install wget postgresql apache2 libapache2-mod-jk \
+RUN apt-get -y  update; apt-get -y install wget apache2 libapache2-mod-jk \
 	vim unzip curl libtiff-tools imagemagick sox ffmpeg libsox-fmt-mp3 \
 	less
 
-ADD schema.sql /tmp/schema.sql
-RUN sed -i 's/local   all             all                                     peer/local   all             all                                     md5/' \
-  /etc/postgresql/9.1/main/pg_hba.conf && \
-  /etc/init.d/postgresql start && su -l postgres -c "createuser meditor --no-superuser --no-createdb --no-createrole; \
- createdb meditor --owner=meditor; \
- psql --command \"alter user \\\"meditor\\\" with password 'meditor';\"; psql -f /tmp/schema.sql meditor"
 
 RUN wget --no-verbose http://mirror.hosting90.cz/apache/tomcat/tomcat-7/v7.0.57/bin/apache-tomcat-7.0.57.tar.gz -O /tmp/tomcat.tar.gz && \
     wget --no-verbose https://github.com/moravianlibrary/MEditor/archive/master.zip -O /tmp/meditor.zip && \
@@ -74,7 +68,8 @@ ADD init.sh /init.sh
 # comment this out if you want to disable debug mode
 ENV CATALINA_OPTS "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000"
 
-RUN sed -i "s/data_directory = '\/var\/lib\/postgresql\/9.1\/main'/data_directory = '\/meditor-data\/postgres-data\/main'/" /etc/postgresql/9.1/main/postgresql.conf
+ADD tomcat-users.xml /home/meditor/tomcat/conf/tomcat-users.xml
+
 RUN mv /home/meditor/.meditor /home/meditor/.meditorDefault && ln -s /meditor-data/.meditor /home/meditor/.meditor \
     && rm -r /home/meditor/output/ && ln -s /meditor-data/.meditor/output /home/meditor/output
 
