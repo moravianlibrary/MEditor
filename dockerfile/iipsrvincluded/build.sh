@@ -1,4 +1,4 @@
 #!/bin/sh
-docker build -t moravianlibrary/meditor ../default/
-docker build -t moravianlibrary/meditor-iipsrv .
+docker build -t meditor ../default/
+docker build -t meditor-iipsrv .
 

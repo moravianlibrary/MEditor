@@ -1,2 +1,2 @@
 #!/bin/sh
-docker build -t moravianlibrary/meditor .
+docker build -t meditor .
