@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -40,6 +42,7 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.metadataDownloader.XServicesClient;
+import cz.mzk.editor.server.util.StringUtils;
 import org.apache.log4j.Logger;
 
 import org.dom4j.Document;
@@ -130,9 +133,13 @@ public class FindMetadataHandler
         }
 
         if (isOai) {
-            String completeQuery = String.format(action.getOaiQuery(), sys);
+            Map<String, String> properties = new HashMap<String, String>(3);
+            properties.put("url", action.getOaiUrl());
+            properties.put("oaiprefix", action.getPrefix());
+            properties.put("base", action.getBase());
+            properties.put("sysno", sys);
+            String completeQuery = StringUtils.doTheSubstitution(configuration.getOaiString(), properties);
             bundle = oaiClient.search(completeQuery, action.getBase());
-
         }
         if (isZ39) {
             bundle = z39Client.search(action.getSearchType(), action.getId());
@@ -142,7 +149,12 @@ public class FindMetadataHandler
             // co kdyz to je v Z39.50 a neni to v oai
             enrichedBundle = new ArrayList<MetadataBundle>(bundle.size());
             for (MetadataBundle bun : bundle) {
-                String completeQuery = String.format(action.getOaiQuery(), bun.getMarc().getSysno());
+                Map<String, String> properties = new HashMap<String, String>(3);
+                properties.put("url", action.getOaiUrl());
+                properties.put("oaiprefix", action.getPrefix());
+                properties.put("base", action.getBase());
+                properties.put("sysno", bun.getMarc().getSysno());
+                String completeQuery = StringUtils.doTheSubstitution(configuration.getOaiString(), properties);
                 ArrayList<MetadataBundle> foo = oaiClient.search(completeQuery, action.getBase());
                 if (!foo.isEmpty()) {
                     enrichedBundle.add(foo.get(0));

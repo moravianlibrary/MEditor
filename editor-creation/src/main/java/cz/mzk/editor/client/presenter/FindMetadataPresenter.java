@@ -323,9 +323,9 @@ public class FindMetadataPresenter
         }
     }
 
-    private void findMetadata(Constants.SEARCH_FIELD field, String id, Constants.SEARCH_METHOD method, String query) {
+    private void findMetadata(Constants.SEARCH_FIELD field, String id, Constants.SEARCH_METHOD method) {
         results.clear();
-        if (query == null || id == null) {
+        if (id == null) {
             return;
         }
         String base = null;
@@ -336,8 +336,10 @@ public class FindMetadataPresenter
             case X_SERVICES:
                 base = getView().getXServicesBase().getValueAsString();
         }
+        String prefix = getView().getOaiPrefix().getValueAsString();
+        String url = getView().getOaiUrl().getValueAsString();
 
-        dispatcher.execute(new FindMetadataAction(field, id, method, query, base), new DispatchCallback<FindMetadataResult>() {
+        dispatcher.execute(new FindMetadataAction(field, id, method, url, base, prefix), new DispatchCallback<FindMetadataResult>() {
 
             @Override
             public void callback(FindMetadataResult result) {
@@ -379,12 +381,12 @@ public class FindMetadataPresenter
             findBy = Constants.SEARCH_FIELD.TITLE;
         }
         if (findBy != null) {
-            findMetadata(findBy, (String) getView().getZ39Id().getValue(), Constants.SEARCH_METHOD.Z39_50, getQuery());
+            findMetadata(findBy, (String) getView().getZ39Id().getValue(), Constants.SEARCH_METHOD.Z39_50);
         }
     }
 
     private void findMetadataXservices() {
-        findMetadata(Constants.SEARCH_FIELD.SYSNO, (String) getView().getSearchValueXservices().getValue(), Constants.SEARCH_METHOD.X_SERVICES, getQuery());
+        findMetadata(Constants.SEARCH_FIELD.SYSNO, (String) getView().getSearchValueXservices().getValue(), Constants.SEARCH_METHOD.X_SERVICES);
     }
 
     private void findPropriateMetadata() {
@@ -392,43 +394,33 @@ public class FindMetadataPresenter
         if (id != null && !"".equals(id)) {
             int oaiIdLength = -1;
             try {
-                oaiIdLength = Integer.parseInt(config.getOaiRecordIdentifierLength());
+                // oairecord length can be variable (for example MLP's oaid is sequence number)
+                if (!"variable".equals(config.getOaiRecordIdentifierLength())) {
+                    oaiIdLength = Integer.parseInt(config.getOaiRecordIdentifierLength());
+                }
             } catch (NumberFormatException nfe) {
                 SC.warn("V konfiguraci je spatne zadana hodnota pro "
                         + EditorClientConfiguration.Constants.OAI_RECORD_IDENTIFIER_LENGTH
-                        + " (musi byt cislo)");
+                        + " (musi byt cislo nebo 'variable' pro promennou delku)");
                 return;
             }
-            if (id.length() == oaiIdLength) {
+            if (oaiIdLength == -1 || id.length() == oaiIdLength) {
                 getView().getFindBy().setValue(Constants.SYSNO);
                 getView().getZ39Id().setTitle(Constants.SYSNO);
                 getView().getZ39Id().redraw();
-                findMetadata(null, id, Constants.SEARCH_METHOD.OAI, getQuery());
+                findMetadata(null, id, Constants.SEARCH_METHOD.OAI);
             } else if (id.length() == 10) {
                 getView().getFindBy().setValue(lang.fbarcode());
                 getView().getZ39Id().setTitle(lang.fbarcode());
                 getView().getZ39Id().redraw();
-                findMetadata(Constants.SEARCH_FIELD.BAR, id, Constants.SEARCH_METHOD.OAI, getQuery());
+                findMetadata(Constants.SEARCH_FIELD.BAR, id, Constants.SEARCH_METHOD.OAI);
             } else {
                 getView().getFindBy().setValue(lang.ftitle());
                 getView().getZ39Id().setTitle(lang.ftitle());
                 getView().getZ39Id().redraw();
-                findMetadata(Constants.SEARCH_FIELD.TITLE, id, Constants.SEARCH_METHOD.Z39_50, getQuery());
+                findMetadata(Constants.SEARCH_FIELD.TITLE, id, Constants.SEARCH_METHOD.Z39_50);
             }
         }
-    }
-
-    private String getQuery() {
-        String url = getView().getOaiUrl().getValueAsString();
-        String prefix = getView().getOaiPrefix().getValueAsString();
-        String base = getView().getOaiBase().getValueAsString();
-        if (url == null || prefix == null || base == null) {
-            return null;
-        }
-        String query =
-                config.getVsup() ? ClientCreateUtils.format(OAI_STRING_VSUP, 'p', url, base)
-                        : ClientCreateUtils.format(OAI_STRING, 'p', url, prefix, base);
-        return query;
     }
 
 }

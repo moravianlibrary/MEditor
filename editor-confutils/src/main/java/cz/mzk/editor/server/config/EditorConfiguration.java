@@ -148,6 +148,10 @@ public abstract class EditorConfiguration {
         /** The Constant Z3950_DEFAULT_BAR_LENGTH. */
         public static final int[] Z3950_DEFAULT_BAR_LENGTH = {10, 10, 10, 10};
 
+        public static final String OAI_STRING = "oaiString";
+
+        public static final String OAI_STRING_DEFAULT = "${url}?verb=GetRecord&identifier=${oaiprefix}${base}-${sysno}&metadataPrefix=";
+
         public static final String OAI_PMH_URLS = EditorClientConfiguration.Constants.OAI_PMH_URLS;
 
         public static final String[] OAI_PMH_URLS_DEFAULT =
@@ -508,6 +512,14 @@ public abstract class EditorConfiguration {
             return new String[] {""};
         } else
             return foo;
+    }
+
+    public String getOaiString() {
+        String oaiString = getConfiguration().getString(ServerConstants.OAI_STRING);
+        if (oaiString == null) {
+            return ServerConstants.OAI_STRING_DEFAULT;
+        }
+        return oaiString;
     }
 
     public String[] getXServiceBases() {

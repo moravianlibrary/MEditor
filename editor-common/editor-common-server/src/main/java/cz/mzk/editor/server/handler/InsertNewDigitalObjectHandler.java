@@ -28,11 +28,10 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
+import cz.mzk.editor.server.util.StringUtils;
 import org.apache.log4j.Logger;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 
@@ -272,36 +271,10 @@ public class InsertNewDigitalObjectHandler
     }
     
     private static String doTheSubstitution(String url, NewDigitalObject object) {
-	Map<String, String> properties = new HashMap<String, String>(3);
-	properties.put("name", object.getName());
-	properties.put("pid", object.getUuid());
-	properties.put("sysno", object.getSysno());
-
-	Pattern foo = Pattern.compile("(?i)\\$\\{([a-zA-Z]+):?(-?[0-9])?:?(-?[0-9])?\\}");
-	Matcher matcher = foo.matcher(url);
-	StringBuffer sb = new StringBuffer();
-	while (matcher.find()) {
-	    matcher.appendReplacement(sb, "");
-	    String beforeSubstringModification = properties.get(matcher.group(1));
-	    int start = -1;
-	    int end = -1;
-	    try {
-		start = matcher.group(2) == null ? 0 : Math.min(Integer.parseInt(matcher.group(2)),
-			beforeSubstringModification.length() - 1);
-		end = matcher.group(3) == null ? beforeSubstringModification.length() : Math.min(
-			Integer.parseInt(matcher.group(3)), beforeSubstringModification.length());
-	    } catch (NumberFormatException nfe) {
-		start = 0;
-		end = beforeSubstringModification.length();
-	    }
-	    if (start < 0) {
-		sb.append(beforeSubstringModification.substring(beforeSubstringModification.length() + start));
-	    } else {
-		sb.append(beforeSubstringModification.substring(start > 0 ? start : 0,
-			end < 0 ? beforeSubstringModification.length() + end : end));
-	    }
-	}
-	matcher.appendTail(sb);
-	return sb.toString();
+        Map<String, String> properties = new HashMap<String, String>(3);
+        properties.put("name", object.getName());
+        properties.put("pid", object.getUuid());
+        properties.put("sysno", object.getSysno());
+        return StringUtils.doTheSubstitution(url, properties);
     }
 }

@@ -54,10 +54,13 @@ public class FindMetadata {
     private Constants.SEARCH_METHOD method;
 
     @In(4)
-    private String oaiQuery;
+    private String oaiUrl;
 
     @In(5)
     private String base;
+
+    @In(6)
+    private String prefix;
 
     @Out(1)
     private ArrayList<MetadataBundle> bundle;
