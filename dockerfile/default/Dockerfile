@@ -50,6 +50,7 @@ ADD ldap.properties /home/meditor/.meditor/ldap.properties
 RUN /home/meditor/tomcat/bin/startup.sh && sleep 60
 RUN mv /tmp/meditor/MEditor-master/resources/djatoka /home/meditor/.meditor/djatoka
 RUN mv /tmp/meditor/MEditor-master/resources/xml /home/meditor/.meditor/xml
+RUN mv /tmp/meditor/MEditor-master/resources/convertAudio /home/meditor/.meditor/convertAudio
 ADD djatoka.properties /home/meditor/tomcat/webapps/djatoka/WEB-INF/classes/djatoka.properties
 ADD log4j.properties /home/meditor/tomcat/webapps/djatoka/WEB-INF/classes/log4j.properties
 
