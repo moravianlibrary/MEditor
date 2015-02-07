@@ -381,6 +381,12 @@
 				<groupId>org.jvnet.jaxb2_commons</groupId>
 				<artifactId>runtime</artifactId>
 				<version>0.4.1</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.sun.xml.bind</groupId>
+                        <artifactId>jaxb-impl</artifactId>
+                    </exclusion>
+                </exclusions>
 			</dependency>
 			<dependency>
 				<groupId>com.uwyn</groupId>
@@ -575,7 +581,7 @@
 				<plugin>
 					<groupId>org.jvnet.jaxb2.maven2</groupId>
 					<artifactId>maven-jaxb2-plugin</artifactId>
-					<version>0.7.3</version>
+					<version>0.12.3</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
