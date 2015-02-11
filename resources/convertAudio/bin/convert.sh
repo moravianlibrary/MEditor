@@ -10,12 +10,13 @@ fi
 
 function mp3 {
     cp $1 $2.mp3
-    ffmpeg -i  $1 -acodec libvorbis -aq 5 $2.ogg
+    ffmpeg -y -i  $1 -acodec libvorbis -aq 5 $2.ogg
+    ffmpeg -y -i $1 -acodec pcm_u8  $2.wav
 }
 function wav {
     cp $1 $2.wav
-    ffmpeg -i  $1 -acodec libmp3lame $2.mp3
-    ffmpeg -i  $1 -acodec libvorbis -aq 5 $2.ogg
+    ffmpeg -y -i  $1 -acodec libmp3lame $2.mp3
+    ffmpeg -y -i  $1 -acodec libvorbis -aq 5 $2.ogg
 }
 
 
