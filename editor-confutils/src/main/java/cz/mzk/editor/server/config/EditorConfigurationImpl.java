@@ -39,6 +39,7 @@ import com.google.inject.Singleton;
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.EnvironmentConfiguration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 
@@ -125,6 +126,7 @@ public class EditorConfigurationImpl
         }
         file.setReloadingStrategy(new FileChangedReloadingStrategy());
         constconf.addConfiguration(file);
+        constconf.addConfiguration(new EnvironmentConfiguration());
         constconf.setProperty(ServerConstants.EDITOR_HOME, WORKING_DIR);
         this.configuration = constconf;
 
