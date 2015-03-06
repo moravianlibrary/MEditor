@@ -1,5 +1,9 @@
 language: java
 install: mvn clean install
+env:
+  global:
+    - secure: "FiY3fzDckn5tkHrd/xtOquIJtwZ9UJg4AK1rbbVLA8Jp2U1BuE3wllk67qE4QMKUJwYYkBWv9pNXhY1C/Jl0ntXuaG8T4GXcHD0pxjhacGhsW48hYinaZSAmnwnJYRN+PMOdnehHcq/O9w20FuwrVSRTlvbVq5V4t25wUZ2rmK8="
+    - secure: "MS/Ya+ZjeddTj8yHWWMiUCyBryM0mM5xBTmE86BKR9tzK7gA8b7p2gli7bzYhYaji4EOmy4SsdgOTdyp1bjpiuzrEEWg0nwypxXQygEEg6O9t2GFmightABj85mWnlpm5Ck4XO8sjG5YiK+lss/mPFgwgRYCSX3AJbvIM606hFI="
 deploy:
   provider: releases
   api_key:
@@ -9,4 +13,7 @@ deploy:
     tags: true
     all_branches: true
     repo: moravianlibrary/MEditor
+after_success:
+  - "curl --ftp-create-dirs -T target/meditor.war -u $FTP_USER:$FTP_PASSWORD ftp://178.62.117.237/meditor.war"
+  - "curl https://registry.hub.docker.com/u/moravianlibrary/meditor/trigger/45687579-deca-4b2c-99ce-c14a03b07a00/"
 
