@@ -126,7 +126,6 @@ public class EditorConfigurationImpl
         }
         file.setReloadingStrategy(new FileChangedReloadingStrategy());
         constconf.addConfiguration(file);
-        constconf.addConfiguration(new EnvironmentConfiguration());
         constconf.setProperty(ServerConstants.EDITOR_HOME, WORKING_DIR);
         this.configuration = constconf;
 
@@ -145,6 +144,7 @@ public class EditorConfigurationImpl
         }
         constconf.setProperty(ServerConstants.IMAGES_LOCATION, ServerConstants.DEFAULT_IMAGES_LOCATION
                 + hostname + File.separator);
+        constconf.addConfiguration(new EnvironmentConfiguration());
     }
 
     /*
