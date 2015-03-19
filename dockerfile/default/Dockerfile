@@ -2,7 +2,7 @@ FROM debian:wheezy
 
 MAINTAINER Martin Rumanek <martin@rumanek.cz>
 
-ENV REFRESHED_AT 2015-02-11
+ENV REFRESHED_AT 2015-03-19
 
 ## install packages
 ENV PATH /usr/bin:/bin:/usr/sbin:/sbin
@@ -16,18 +16,20 @@ RUN apt-get -y  update; apt-get -y install wget apache2 libapache2-mod-jk \
 
 RUN wget --no-verbose http://mirror.hosting90.cz/apache/tomcat/tomcat-7/v7.0.59/bin/apache-tomcat-7.0.59.tar.gz -O /tmp/tomcat.tar.gz && \
     wget --no-verbose https://github.com/moravianlibrary/MEditor/archive/master.zip -O /tmp/meditor.zip && \
-    wget --no-verbose https://dl.dropbox.com/s/9zcorgucorgfe3e/jdk-7u51-linux-x64.tar.gz -O /tmp/java.tar.gz
+    wget --no-verbose http://ftp-devel.mzk.cz/jre/jdk-7u75-linux-x64.tar.gz -O /tmp/java.tar.gz -O /tmp/java.tar.gz
 RUN mkdir /usr/java
 RUN tar xzf /tmp/java.tar.gz --directory=/usr/java/
 
+
 RUN adduser --disabled-password --gecos "" meditor
 USER meditor
-ENV JAVA_HOME /usr/java/jdk1.7.0_51
+ENV JAVA_HOME /usr/java/jdk1.7.0_75
 ENV PATH $JAVA_HOME/bin:$PATH
 RUN tar xzf /tmp/tomcat.tar.gz --directory=/home/meditor/ && mv /home/meditor/apache-tomcat-* /home/meditor/tomcat
 ENV CATALINA_HOME /home/meditor/tomcat
-RUN wget --no-verbose https://dl.dropbox.com/s/txg6h2f0ws3e2fs/meditor.war -O /home/meditor/tomcat/webapps/meditor.war
-RUN wget --no-verbose http://jdbc.postgresql.org/download/postgresql-9.1-903.jdbc4.jar -O /home/meditor/tomcat/lib/postgresql-9.1-903.jdbc4.jar
+RUN wget --no-verbose http://ftp-devel.mzk.cz/meditor/master/meditor.war -O /home/meditor/tomcat/webapps/meditor.war
+
+RUN wget --no-verbose https://jdbc.postgresql.org/download/postgresql-9.3-1103.jdbc4.jar -O /home/meditor/tomcat/lib/postgresql-9.3-1103.jdbc4.jar 
 RUN unzip /tmp/meditor.zip -d /tmp/meditor/
 RUN mv /tmp/meditor/MEditor-master/resources/djatoka/dist/djatoka.war /home/meditor/tomcat/webapps/djatoka.war
 
@@ -73,4 +75,5 @@ ADD tomcat-users.xml /home/meditor/tomcat/conf/tomcat-users.xml
 
 RUN mv /home/meditor/.meditor /home/meditor/.meditorDefault && ln -s /meditor-data/.meditor /home/meditor/.meditor \
     && rm -r /home/meditor/output/ && ln -s /meditor-data/.meditor/output /home/meditor/output
+
 
