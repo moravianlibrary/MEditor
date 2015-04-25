@@ -16,4 +16,10 @@ deploy:
 after_success:
   - "curl --ftp-create-dirs -T target/meditor.war -u $FTP_USER:$FTP_PASSWORD ftp://178.62.117.237/meditor.war"
   - "curl https://registry.hub.docker.com/u/moravianlibrary/meditor/trigger/45687579-deca-4b2c-99ce-c14a03b07a00/"
+webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/5c3ba0227a5ec1a9f3f8
+    on_success: change
+    on_failure: always
+    on_start: false
 
