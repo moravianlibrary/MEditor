@@ -1,0 +1,22 @@
+meditor:
+  build: .
+  volumes:
+    - /data/meditor:/meditor-data
+    - /data/imageserver:/imageserver-data
+  environment:
+   - VIRTUAL_HOST=editor
+#  - CATALINA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000"
+  ports:
+    - "8080:8080"
+    - "8443:8443"
+  links:
+    - meditorPostgres:meditorPostgres
+meditorPostgres:
+  image: "postgres:9.3"
+  environment:
+    - POSTGRES_USER=meditor
+    - POSTGRES_PASSWORD=meditor
+  volumes:
+    - /data/meditor/postgres:/var/lib/postgresql/data
+  ports:
+    - "5432:5432"
