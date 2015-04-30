@@ -11,20 +11,45 @@
 %>
 <!doctype html>
 <html>
-  <head>
+<head>
     <script type="text/javascript">
-      var _gaq = _gaq || [];
-      _gaq.push([ '_setAccount', 'UA-19922555-1' ]);
-      _gaq.push([ '_trackPageview' ]);
-      
-      (function() {
-      	var ga = document.createElement('script');
-      	ga.type = 'text/javascript';
-      	ga.async = true;
-      	ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      	var s = document.getElementsByTagName('script')[0];
-      	s.parentNode.insertBefore(ga, s);
-      })();
+        var _gaq = _gaq || [];
+        _gaq.push([ '_setAccount', 'UA-19922555-1' ]);
+        _gaq.push([ '_trackPageview' ]);
+
+        (function() {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+    <!-- Janrain AuthN -->
+    <script type="text/javascript">
+        (function() {
+            if (typeof window.janrain !== 'object') window.janrain = {};
+            if (typeof window.janrain.settings !== 'object') window.janrain.settings = {};
+            janrain.settings.tokenUrl = 'https://${filter.hostname}%2Fmeditor%2Fjanrain_spring_security_check';
+            function isReady() { janrain.ready = true; };
+            if (document.addEventListener) {
+                document.addEventListener("DOMContentLoaded", isReady, false);
+            } else {
+                window.attachEvent('onload', isReady);
+            }
+            var e = document.createElement('script');
+            e.type = 'text/javascript';
+            e.id = 'janrainAuthWidget';
+            if (document.location.protocol === 'https:') {
+                e.src = 'https://rpxnow.com/js/lib/metaeditor/engage.js';
+            } else {
+                e.src = 'http://widget-cdn.rpxnow.com/js/lib/metaeditor/engage.js';
+            }
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(e, s);
+        })();
     </script>
     <!-- Bootstrap -->
     <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen" />
@@ -74,10 +99,7 @@
             <c:if test="${openIdEnabled}">
                 <div class="tab-pane active" id="tab1">
                     <form name="f" action="../meditor/j_spring_security_check" method="POST">
-                        <iframe src="https://metaeditor.rpxnow.com/openid/embed?token_url=<%=hostname%>%2Fmeditor%2Fjanrain_spring_security_check"
-                                scrolling="no" frameBorder="no" allowtransparency="true"
-                                style="width: 400px; height: 240px" action="../meditor/janrain_spring_security_check"
-                                method="POST"></iframe>
+                        <div id="janrainEngageEmbed"></div>
                     </form>
                 </div>
             </c:if>
