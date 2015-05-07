@@ -32,7 +32,7 @@
         (function() {
             if (typeof window.janrain !== 'object') window.janrain = {};
             if (typeof window.janrain.settings !== 'object') window.janrain.settings = {};
-            janrain.settings.tokenUrl = 'https://${filter.hostname}%2Fmeditor%2Fjanrain_spring_security_check';
+            janrain.settings.tokenUrl = 'https://<%=hostname%>%2Fmeditor%2Fjanrain_spring_security_check';
             function isReady() { janrain.ready = true; };
             if (document.addEventListener) {
                 document.addEventListener("DOMContentLoaded", isReady, false);
