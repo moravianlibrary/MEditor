@@ -1,22 +1,43 @@
 meditor:
   build: .
   volumes:
-    - /data/meditor:/meditor-data
+    - /data/meditor/meditor-data:/meditor-data
     - /data/imageserver:/imageserver-data
   environment:
    - VIRTUAL_HOST=editor
 #  - CATALINA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000"
   ports:
-    - "8080:8080"
-    - "8443:8443"
+    - "80:8080"
+    - "443:8443"
   links:
     - meditorPostgres:meditorPostgres
+    - ldap:ldap
 meditorPostgres:
   image: "postgres:9.3"
   environment:
     - POSTGRES_USER=meditor
     - POSTGRES_PASSWORD=meditor
+    - POSTGRES_DB=meditor
   volumes:
     - /data/meditor/postgres:/var/lib/postgresql/data
   ports:
     - "5432:5432"
+ldap:
+  image: nickstenning/slapd
+  environment:
+    -  LDAP_DOMAIN=medit.mzk.cz
+    -  LDAP_ORGANISATION="MZK"
+    -  LDAP_ROOTPASS=s3cr3tpassw0rd
+  volumes:
+    - /data/meditor/ldap/etc:/etc/ldap/slapd.d
+    - /data/meditor/ldap/ldap:/var/lib/ldap/
+phpldapadmin:
+  image: windfisch/phpldapadmin
+  links:
+    - ldap:ldap
+  environment:
+    -  LDAP_HOST=ldap
+    -  LDAP_BASE_DN=dc=medit,dc=mzk,dc=cz
+    -  LDAP_LOGIN_DN=cn=admin,dc=medit,dc=mzk,dc=cz
+  ports:
+    - "444:443"

@@ -86,7 +86,7 @@
                maxThreads="150" SSLEnabled="true" scheme="https" secure="true"
                clientAuth="false" sslProtocol="TLS" 
                keystoreFile="/root/.keystore"
-               keystorePass="changeit" />
+               keystorePass="somekey" />
    
 
     <!-- Define an AJP 1.3 Connector on port 8009 -->
