@@ -193,7 +193,7 @@ public abstract class AbstractDAO {
 
         if (!contextIsCorrect && !conf.isLocalhost() && pool == null && login != null && password != null
                 && port != null && name != null) {
-            createCorrectContext(login, password, port, name);
+            createCorrectContext(host, login, password, port, name);
         }
 
         if (password == null || password.length() < 3) {
@@ -263,7 +263,7 @@ public abstract class AbstractDAO {
      * @param name
      *        the name
      */
-    private void createCorrectContext(String login, String password, String port, String name) {
+    private void createCorrectContext(String host, String login, String password, String port, String name) {
         String pathPrefix = System.getProperty("catalina.home");
         boolean changed = false;
 
@@ -349,7 +349,7 @@ public abstract class AbstractDAO {
                 changed = true;
             }
 
-            String url = "jdbc:postgresql://localhost:" + port + "/" + name;
+            String url = "jdbc:postgresql://" + host + ":" + port + "/" + name;
             String urlAttr = resourceEl.getAttribute("url");
             if (urlAttr == null || !url.equals(urlAttr)) {
                 resourceEl.setAttribute("url", url);
