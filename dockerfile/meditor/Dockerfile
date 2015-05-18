@@ -2,7 +2,7 @@ FROM debian:sid
 
 MAINTAINER Martin Rumanek <martin@rumanek.cz>
 
-ENV REFRESHED_AT 2015-05-09
+ENV REFRESHED_AT 2015-05-14
 
 ## install packages
 RUN apt-get -y  update && apt-get -y install unzip curl libtiff-tools imagemagick sox ffmpeg libsox-fmt-mp3 
@@ -29,8 +29,6 @@ RUN unzip -o /tmp/meditor/MEditor-master/resources/djatoka/dist/djatoka.war -d $
 
 
 RUN mkdir -p /root/.meditor
-ADD configuration.properties /root/.meditor/configuration.properties
-ADD ldap.properties /root/.meditor/ldap.properties
 
 RUN mv /tmp/meditor/MEditor-master/resources/djatoka /root/.meditor/djatoka
 RUN mv /tmp/meditor/MEditor-master/resources/xml /root/.meditor/xml
@@ -49,6 +47,14 @@ ENV JAVA_OPTS -Dfile.encoding=UTF8 -Djava.awt.headless=true -Dfile.encoding=UTF8
 RUN keytool -genkey -alias tomcat  -dname "CN=localhost, OU=mzk, S=cz, C=cz" -keyalg RSA -storepass somekey -keypass somekey
 ADD rewrite.config $CATALINA_HOME/conf/Catalina/localhost/
 ADD server.xml $CATALINA_HOME/conf/
+ADD tomcat-users.xml /tmp/tomcat-users.xml
+
+# want empty properties configuration
+RUN touch /root/.meditor/configuration.properties
+ADD ldap.properties /root/.meditor/ldap.properties
+
+EXPOSE 8080
+EXPOSE 8843
 
 ADD docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
