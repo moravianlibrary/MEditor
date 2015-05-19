@@ -6,7 +6,7 @@ meditor:
    - dbHost=meditorPostgres
    - dbPassword=meditor
    - oaiUrls=http://aleph.nkp.cz/OAI
-   - oaiIdPrefixes="oai:aleph.nkp.cz:"
+   - "oaiIdPrefixes=oai:aleph.nkp.cz:"
    - oaiBases=SKC,NKC
    - oaiRecordIdentifierLength=variable
    - fedoraHost=http://fedora/fedora
