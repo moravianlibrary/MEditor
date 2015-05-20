@@ -60,3 +60,6 @@ ADD docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["catalina.sh", "run"]
 
+# default conf
+ENV hostanme=localhost
+

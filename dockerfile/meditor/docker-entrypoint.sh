@@ -30,5 +30,13 @@ if [ -d /data/meditor/xsl ]; then
 
 fi
 
+# converted images in persistent storage
+rm -rf /root/output
+
+if [ ! -d /data/meditor/temp ]; then
+  mkdir /data/meditor/temp
+fi
+
+ln -s /data/meditor/temp /root/output
 
 exec "$@"
