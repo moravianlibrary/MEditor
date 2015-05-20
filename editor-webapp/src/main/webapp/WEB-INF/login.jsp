@@ -32,7 +32,7 @@
         (function() {
             if (typeof window.janrain !== 'object') window.janrain = {};
             if (typeof window.janrain.settings !== 'object') window.janrain.settings = {};
-            janrain.settings.tokenUrl = 'https://<%=hostname%>%2Fmeditor%2Fjanrain_spring_security_check';
+            janrain.settings.tokenUrl = '<%=hostname%>/meditor/janrain_spring_security_check';
             function isReady() { janrain.ready = true; };
             if (document.addEventListener) {
                 document.addEventListener("DOMContentLoaded", isReady, false);
@@ -125,7 +125,7 @@
             <c:if test="${shibbolethEnabled}">
                 <div class="tab-pane" id="tab3">
                     <a id="shib" class="login"
-                       href="http://<%=hostname%>/Shibboleth.sso/Login?target=https%3A%2F%2F<%=hostname%>%2Fmeditor%2Fshibboleth_spring_security_check">
+                       href="<%=hostname%>/Shibboleth.sso/Login?target=<%=hostname%>%2Fmeditor%2Fshibboleth_spring_security_check">
                         <img border="0" src="../images/shibboleth.png" alt="shibboleth logo" width="350px"/> </a>
                 </div>
             </c:if>
