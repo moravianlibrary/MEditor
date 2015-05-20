@@ -21,7 +21,7 @@ meditor:
    - imageServer.unknown=/data/imageserver/meditor/
    - imageExtension=jpg, JPG, png, tiff, tif, jpeg, jp2, pdf
   volumes:
-    - /meditor-data/meditor:/meditor-data
+    - /data/meditor:/data/meditor
     - /data/imageserver:/data/imageserver
   ports:
     - "80:8080"
