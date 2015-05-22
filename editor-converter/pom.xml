@@ -29,6 +29,11 @@
 			<name>Scala-tools Maven2 Repository</name>
 			<url>http://scala-tools.org/repo-releases</url>
 		</repository>
+    <repository>
+      <id>repo.akka.io</id>
+      <name>Akka Maven Repo</name>
+      <url>http://repo.akka.io/repository/</url>
+    </repository>
 	</repositories>
 
 	<pluginRepositories>
