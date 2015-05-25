@@ -69,7 +69,7 @@ NO_PROBLEM=""
 # TIFF_TMP1=`tempfile -s ".tif"`;
   TIFF_TMP2=`tempfile -s ".tif"`;
   echo "converting";
-  convert -colorspace RGB  -compress None $2 $TIFF_TMP2 && {
+  convert  -compress None $2 $TIFF_TMP2 && {
      NO_PROBLEM="ok";
   }
   #&& tiffcp -c none $TIFF_TMP1 $TIFF_TMP2 && rm $TIFF_TMP1 && {
