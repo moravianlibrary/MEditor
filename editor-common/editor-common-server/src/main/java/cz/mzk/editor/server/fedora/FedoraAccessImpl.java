@@ -780,16 +780,12 @@ public class FedoraAccessImpl
         });
 
         FedoraAPIAService APIAservice = null;
-        try {
-            APIAservice =
-                    new FedoraAPIAService(new URL(configuration.getFedoraLogin() + "/wsdl?api=API-A"),
-                                          new QName("http://www.fedora.info/definitions/1/0/api/",
-                                                    "Fedora-API-A-Service"));
-        } catch (MalformedURLException e) {
-            LOGGER.error("InvalidURL API-A:" + e);
-            throw new RuntimeException(e);
-        }
+
+        APIAservice = new FedoraAPIAService();
+        String endpointAddress = configuration.getFedoraHost() + "/services/access";
         APIAport = APIAservice.getPort(FedoraAPIA.class);
+
+        ((BindingProvider) APIAport).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointAddress);
         ((BindingProvider) APIAport).getRequestContext().put(BindingProvider.USERNAME_PROPERTY, user);
         ((BindingProvider) APIAport).getRequestContext().put(BindingProvider.PASSWORD_PROPERTY, pwd);
 
@@ -810,20 +806,16 @@ public class FedoraAccessImpl
         });
 
         FedoraAPIMService APIMservice = null;
-        try {
-            APIMservice =
-                    new FedoraAPIMService(new URL(configuration.getFedoraHost() + "/wsdl?api=API-M"),
-                                          new QName("http://www.fedora.info/definitions/1/0/api/",
-                                                    "Fedora-API-M-Service"));
-        } catch (MalformedURLException e) {
-            LOGGER.error("InvalidURL API-M:" + e);
-            throw new RuntimeException(e);
-        }
+        APIMservice = new FedoraAPIMService();
+        String endpointAddress = configuration.getFedoraHost() + "/services/management";
+
         APIMport = APIMservice.getPort(FedoraAPIM.class);
+        ((BindingProvider) APIMport).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointAddress);
         ((BindingProvider) APIMport).getRequestContext().put(BindingProvider.USERNAME_PROPERTY, user);
         ((BindingProvider) APIMport).getRequestContext().put(BindingProvider.PASSWORD_PROPERTY, pwd);
 
     }
+
 
     /*
      * (non-Javadoc)

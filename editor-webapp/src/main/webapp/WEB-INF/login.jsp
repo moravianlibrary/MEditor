@@ -83,10 +83,8 @@
                 <li class="active"><a href="#tab1" data-toggle="tab">OpenID</a></li>
             </c:if>
 
-            <c:if test="${ldapEnabled}">
                 <!-- LDAP -->
                 <li class="show"><a href="#tab2" data-toggle="tab">LDAP</a></li>
-            </c:if>
 
             <c:if test="${shibbolethEnabled}">
                 <!-- Shibboleth -->
@@ -103,7 +101,6 @@
                     </form>
                 </div>
             </c:if>
-            <c:if test="${ldapEnabled}">
                 <div class="tab-pane" id="tab2">
                     <form name="f" action="../meditor/j_spring_security_check" method="POST">
                         <table id="ldap">
@@ -121,7 +118,6 @@
                         </table>
                     </form>
                 </div>
-            </c:if>
             <c:if test="${shibbolethEnabled}">
                 <div class="tab-pane" id="tab3">
                     <a id="shib" class="login"
