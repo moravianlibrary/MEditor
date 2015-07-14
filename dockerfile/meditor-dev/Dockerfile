@@ -64,5 +64,3 @@ CMD ["catalina.sh", "run"]
 ENV hostanme=localhost
 ENV inputQueue=/data/meditor/import
 
-ADD meditor.war $CATALINA_HOME/webapps/meditor.war 
-
