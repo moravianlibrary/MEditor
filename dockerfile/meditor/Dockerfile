@@ -2,13 +2,13 @@ FROM debian:sid
 
 MAINTAINER Martin Rumanek <martin@rumanek.cz>
 
-ENV REFRESHED_AT 2015-05-14
+ENV REFRESHED_AT 2015-07-14
 
 ## install packages
 RUN apt-get -y  update && apt-get -y install unzip curl libtiff-tools imagemagick sox ffmpeg libsox-fmt-mp3 
 
 # run tomcat
-RUN curl -sL --no-verbose http://apache.miloslavbrada.cz/tomcat/tomcat-8/v8.0.22/bin/apache-tomcat-8.0.22.tar.gz -o /tmp/tomcat.tar.gz && \
+RUN curl -sL --no-verbose http://apache.miloslavbrada.cz/tomcat/tomcat-8/v8.0.24/bin/apache-tomcat-8.0.24.tar.gz -o /tmp/tomcat.tar.gz && \
     curl -sL --no-verbose http://ftp-devel.mzk.cz/jre/jdk-7u75-linux-x64.tar.gz -o /tmp/java.tar.gz
 RUN mkdir -p /usr/local/java
 ENV JAVA_HOME /usr/local/java/jdk1.7.0_75
