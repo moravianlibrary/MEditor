@@ -672,7 +672,7 @@ public abstract class FoxmlBuilder {
         List<StringPlusAuthorityPlusTypeClient> physDescForms = null;
         Element physDescEl = modsRootEl.addElement(new QName("physicalDescription", Namespaces.mods));
 
-        if (mods != null && mods.getPhysicalDescription().size() > 0
+        if (mods != null && mods.getPhysicalDescription() != null && mods.getPhysicalDescription().size() > 0
                 && mods.getPhysicalDescription().get(0).getForm() != null
                 && mods.getPhysicalDescription().get(0).getForm().size() > 0) {
             physDescForms = mods.getPhysicalDescription().get(0).getForm();
