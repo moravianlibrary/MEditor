@@ -328,14 +328,16 @@ public class ClientCreateUtils {
                 newObj.setAditionalInfoOrOcr(aditionalInfoOrOcr);
             }
 
-            String ocr = node.getAttribute(Constants.ATTR_OCR_PATH);
-            if (ocr != null && !"".equals(ocr)) {
-                newObj.setAditionalInfoOrOcr(ocr);
-            }
+            if (model == DigitalObjectModel.PAGE) {
+                String ocr = node.getAttribute(Constants.ATTR_OCR_PATH);
+                if (ocr != null && !"".equals(ocr)) {
+                    newObj.setAditionalInfoOrOcr(ocr);
+                }
 
-            String alto = node.getAttribute(Constants.ATTR_ALTO_PATH);
-            if (alto != null && !"".equals(alto)) {
-                newObj.setPartNumberOrAlto(Constants.ATTR_PART_NUMBER_OR_ALTO);
+                String alto = node.getAttribute(Constants.ATTR_ALTO_PATH);
+                if (alto != null && !"".equals(alto)) {
+                    newObj.setPartNumberOrAlto(alto);
+                }
             }
 
 
