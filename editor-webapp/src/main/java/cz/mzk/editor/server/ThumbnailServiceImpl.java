@@ -40,13 +40,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import javax.inject.Inject;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 
 import com.google.inject.Injector;
 
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.util.IOUtils;
-import cz.mzk.editor.server.util.RESTHelper;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -75,13 +81,35 @@ public class ThumbnailServiceImpl
                         + Constants.SERVLET_THUMBNAIL_PREFIX.length() + 1);
 
         if (uuid != null && !"".equals(uuid)) {
+            Response imageServerResponse = null;
             resp.setContentType("image/jpeg");
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             sb.append(config.getFedoraHost()).append("/objects/").append(uuid)
                     .append("/datastreams/IMG_THUMB/content");
             InputStream is = null;
             if (!Constants.MISSING.equals(uuid)) {
-                is = RESTHelper.get(sb.toString(), config.getFedoraLogin(), config.getFedoraPassword(), true);
+                try {
+                    // HttpUrlConnection neumi redirect http <-> https proto se musime ptat na dvakrat
+                    // http://stackoverflow.com/questions/30196009/jaxrs-2-0-client-follow-redirects-property-doesnt-work
+                    // http://stackoverflow.com/questions/1884230/java-doesnt-follow-redirect-in-urlconnection
+                    HttpAuthenticationFeature authentication = HttpAuthenticationFeature.basic(config.getFedoraLogin(), config.getFedoraPassword());
+                    Client fedoraClient = ClientBuilder.newClient(new ClientConfig().register(authentication));
+                    WebTarget fedoraWebTarget = fedoraClient.target(sb.toString());
+                    Invocation.Builder invocationBuilder = fedoraWebTarget.request();
+                    Response fedoraResponse = invocationBuilder.get();
+                    System.out.println("thumbnail response status: " + fedoraResponse.getStatus());
+                    String imageLocation = fedoraResponse.getHeaderString("Location");
+                    fedoraResponse.close();
+
+                    Client imageServerClient = ClientBuilder.newClient();
+                    WebTarget imageServerWebTarget = imageServerClient.target(imageLocation);
+                    Invocation.Builder imageServerInvocationBuilder = imageServerWebTarget.request();
+                    imageServerResponse = imageServerInvocationBuilder.get();
+                    System.out.println("image response status: " + imageServerResponse.getStatus());
+                    is = imageServerResponse.readEntity(InputStream.class);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             } else {
                 is = new FileInputStream(new File("images/other/file_not_found.png"));
             }
@@ -100,6 +128,7 @@ public class ThumbnailServiceImpl
                 if (is != null) {
                     try {
                         is.close();
+                        imageServerResponse.close();
                     } catch (IOException e) {
                         // TODO: zalogovat
                     } finally {
