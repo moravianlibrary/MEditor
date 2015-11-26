@@ -554,6 +554,18 @@
                 <version>2.0.1</version>
             </dependency>
 
+			<dependency>
+				<groupId>com.yourmediashelf.fedora.client</groupId>
+				<artifactId>fedora-client-core</artifactId>
+				<version>0.7</version>
+				<exclusions>
+					<exclusion>
+						<groupId>xerces</groupId>
+						<artifactId>xercesImpl</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 
