@@ -26,7 +26,7 @@ package cz.mzk.editor.client.view.other;
 
 import java.util.LinkedHashMap;
 
-import com.gwtplatform.dispatch.shared.DispatchAsync;
+import com.gwtplatform.dispatch.rpc.shared.DispatchAsync;
 import com.smartgwt.client.widgets.form.fields.SelectItem;
 
 import cz.mzk.editor.client.dispatcher.DispatchCallback;

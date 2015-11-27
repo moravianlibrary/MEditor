@@ -37,8 +37,8 @@ import org.jboss.errai.bus.client.api.base.MessageBuilder;
 
 
 import com.google.inject.name.Named;
-import com.gwtplatform.dispatch.server.ExecutionContext;
-import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
+import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
+import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.mzk.editor.client.CreateObjectException;

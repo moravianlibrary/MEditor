@@ -3,6 +3,7 @@ package cz.mzk.editor.server.handler;
 import cz.mzk.editor.server.metadataDownloader.XServicesClient;
 import cz.mzk.editor.server.metadataDownloader.XServicesClientImpl;
 import cz.mzk.editor.shared.rpc.MetadataBundle;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 public class XServicesClientTest {
 
     @Test
+    @Ignore
     public void testDcFindBySysno() {
         XServicesClient xServicesClient = new XServicesClientImpl();
         List<MetadataBundle> metadataBundles = xServicesClient.search("001810391", "nkc01");

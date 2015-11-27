@@ -85,13 +85,13 @@
 
 	<properties>
 		<!-- Versions -->
-		<gwt.version>2.6.0</gwt.version>
-		<gwtp.version>1.0</gwtp.version>
-		<smartGwt.version>3.0</smartGwt.version>
+		<gwt.version>2.7.0</gwt.version>
+		<gwtp.version>1.5.1</gwtp.version>
+		<smartGwt.version>5.0-p20151129</smartGwt.version>
 		<guice.version>3.0</guice.version>
 		<gin.version>2.1.2</gin.version>
 		<akka.version>2.0</akka.version>
-        <errai.version>2.4.4.Final</errai.version>
+        <errai.version>3.2.1.Final</errai.version>
 
 		<warName>meditor</warName>
 		<generatedGwtpSources>target/generated-sources/apt</generatedGwtpSources>
@@ -241,8 +241,8 @@
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.smartgwt</groupId>
-				<artifactId>smartgwt</artifactId>
+				<groupId>com.isomorphic.smartgwt.lgpl</groupId>
+				<artifactId>smartgwt-lgpl</artifactId>
 				<version>${smartGwt.version}</version>
 			</dependency>
 			<dependency>
@@ -273,7 +273,7 @@
 					</exclusion>
 					<exclusion>
 						<groupId>com.gwtplatform</groupId>
-						<artifactId>gwtp-dispatch-server-spring</artifactId>
+						<artifactId>gwtp-dispatch-rpc-server-spring</artifactId>
 					</exclusion>
 
 				</exclusions>
@@ -661,7 +661,7 @@
                 <plugin>
                     <groupId>org.jvnet.jax-ws-commons</groupId>
                     <artifactId>jaxws-maven-plugin</artifactId>
-                    <version>2.2</version>
+                    <version>2.3</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.tomcat.maven</groupId>

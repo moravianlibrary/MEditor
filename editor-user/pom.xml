@@ -37,8 +37,8 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.smartgwt</groupId>
-			<artifactId>smartgwt</artifactId>
+			<groupId>com.isomorphic.smartgwt.lgpl</groupId>
+			<artifactId>smartgwt-lgpl</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
