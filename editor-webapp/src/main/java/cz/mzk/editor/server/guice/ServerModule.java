@@ -32,8 +32,8 @@ import javax.xml.namespace.NamespaceContext;
 import com.google.inject.Scopes;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.name.Names;
-import com.gwtplatform.dispatch.server.guice.HandlerModule;
 
+import com.gwtplatform.dispatch.rpc.server.guice.HandlerModule;
 import cz.mzk.editor.server.*;
 import cz.mzk.editor.server.metadataDownloader.*;
 import org.quartz.SchedulerFactory;
@@ -339,6 +339,7 @@ public class ServerModule
         install(new FactoryModuleBuilder()
                 .implement(ScanFolder.class, ScanFolderImpl.class)
                 .build(ScanFolderImpl.ScanFolderFactory.class));
+
 
         // static injection
         requestStaticInjection(FedoraUtils.class);

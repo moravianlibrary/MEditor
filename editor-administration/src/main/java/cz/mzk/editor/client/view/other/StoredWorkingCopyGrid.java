@@ -27,7 +27,7 @@ package cz.mzk.editor.client.view.other;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.gwtplatform.dispatch.shared.DispatchAsync;
+import com.gwtplatform.dispatch.rpc.shared.DispatchAsync;
 import com.smartgwt.client.types.SelectionStyle;
 import com.smartgwt.client.types.SortArrow;
 import com.smartgwt.client.types.SortDirection;

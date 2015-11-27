@@ -14,7 +14,7 @@
 	<!-- Smart GWT -->
 	<inherits name='com.smartgwt.SmartGwt' />
 	<inherits name='com.smartgwt.SmartGwtNoScript' />
-	<inherits name='com.smartgwt.tools.SmartGwtTools' />
+	<inherits name="com.smartgwt.Tools"/>
 
 
 	<!-- SmartGWT EE <inherits name="com.smartgwtee.SmartGwtEE"/> <inherits 

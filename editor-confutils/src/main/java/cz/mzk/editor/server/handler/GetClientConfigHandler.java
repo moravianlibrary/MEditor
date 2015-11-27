@@ -32,16 +32,17 @@ import java.util.Iterator;
 
 import javax.inject.Inject;
 
-import com.gwtplatform.dispatch.server.ExecutionContext;
-import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
+import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
+import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.mzk.editor.shared.rpc.action.GetClientConfigAction;
+import cz.mzk.editor.shared.rpc.action.GetClientConfigResult;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.config.EditorClientConfiguration;
 import cz.mzk.editor.server.config.EditorConfiguration;
-import cz.mzk.editor.shared.rpc.action.GetClientConfigAction;
-import cz.mzk.editor.shared.rpc.action.GetClientConfigResult;
+
 
 // TODO: Auto-generated Javadoc
 /**
@@ -110,11 +111,11 @@ public class GetClientConfigHandler
     }
 
     /*
-     * (non-Javadoc)
-     * @see
-     * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType
-     * ()
-     */
+         * (non-Javadoc)
+         * @see
+         * com.gwtplatform.dispatch.server.actionhandler.ActionHandler#getActionType
+         * ()
+         */
     @Override
     public Class<GetClientConfigAction> getActionType() {
         return GetClientConfigAction.class;
