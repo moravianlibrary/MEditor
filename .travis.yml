@@ -8,7 +8,7 @@ notifications:
   email: false
   webhooks:
       urls: https://webhooks.gitter.im/e/b38a7fadad0c7821d365
-      on_success: change
+      on_success: never
       on_failure: change
       on_start: never
 
