@@ -1,25 +1,20 @@
 language: java
-install: mvn clean install
-env:
-  global:
-    - secure: "FiY3fzDckn5tkHrd/xtOquIJtwZ9UJg4AK1rbbVLA8Jp2U1BuE3wllk67qE4QMKUJwYYkBWv9pNXhY1C/Jl0ntXuaG8T4GXcHD0pxjhacGhsW48hYinaZSAmnwnJYRN+PMOdnehHcq/O9w20FuwrVSRTlvbVq5V4t25wUZ2rmK8="
-    - secure: "MS/Ya+ZjeddTj8yHWWMiUCyBryM0mM5xBTmE86BKR9tzK7gA8b7p2gli7bzYhYaji4EOmy4SsdgOTdyp1bjpiuzrEEWg0nwypxXQygEEg6O9t2GFmightABj85mWnlpm5Ck4XO8sjG5YiK+lss/mPFgwgRYCSX3AJbvIM606hFI="
-deploy:
-  provider: releases
-  api_key:
-    secure: uJDKKSyNAT/zhSdFiq9E1U4FtODVTF505+zG+1kEsY6zvu0EzWdj4+S5ZC8H3V8krzpfjGEU20lCsAuWPe6hQbZSgZRHI/PUtX36XO8Zj/raE/v08+l91JQy5ie6L0Gat4hY1Jw1arPkheCaTAZU7qKtk6zgQLaEdhxt1JT7Bm4=
-  file: target/meditor.war
-  on:
-    tags: true
-    all_branches: true
-    repo: moravianlibrary/MEditor
-after_success:
-  - "curl --ftp-create-dirs -T target/meditor.war -u $FTP_USER:$FTP_PASSWORD ftp://178.62.117.237/meditor.war"
-  - "curl https://registry.hub.docker.com/u/moravianlibrary/meditor/trigger/45687579-deca-4b2c-99ce-c14a03b07a00/"
-webhooks:
-    urls:
-      - https://webhooks.gitter.im/e/5c3ba0227a5ec1a9f3f8
-    on_success: change
-    on_failure: always
-    on_start: false
+jdk: oraclejdk7
 
+install: mvn clean install
+sudo: false
+
+notifications:
+  email: false
+  webhooks:
+      urls: https://webhooks.gitter.im/e/b38a7fadad0c7821d365
+      on_success: never
+      on_failure: change
+      on_start: never
+
+deploy:
+  skip_cleanup: true
+  provider: script
+  script: >-
+            curl --ftp-create-dirs -T target/meditor.war -u $FTP_USER:$FTP_PASSWORD ftp://ftp-devel.mzk.cz/meditor/master/;
+            curl -H "Content-Type: application/json" --data '{"docker_tag": "latest"}' -X POST https://registry.hub.docker.com/u/moravianlibrary/meditor/trigger/45687579-deca-4b2c-99ce-c14a03b07a00/
