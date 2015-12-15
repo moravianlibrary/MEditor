@@ -44,4 +44,6 @@ fi
 
 ln -s /data/meditor/temp /root/output
 
+cp /data/meditor/.keystore /root/
+
 exec "$@"
