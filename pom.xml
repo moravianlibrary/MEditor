@@ -85,20 +85,13 @@
 
 	<properties>
 		<!-- Versions -->
-<<<<<<< HEAD
 		<gwt.version>2.7.0</gwt.version>
-		<gwtp.version>1.0</gwtp.version>
+		<gwtp.version>1.2</gwtp.version>
 		<!--<gwtp.version>1.5.1</gwtp.version>-->
 		<smartGwt.version>5.0-p20151129</smartGwt.version>
-=======
-		<gwt.version>2.6.1</gwt.version>
-		<gwtp.version>1.2</gwtp.version>
-		<smartGwt.version>3.0</smartGwt.version>
->>>>>>> 5c7705a... update gwtp (1.0->1.2)
 		<guice.version>3.0</guice.version>
 		<gin.version>2.1.2</gin.version>
 		<akka.version>2.0</akka.version>
-		<!--<errai.version>2.4.4.Final</errai.version>-->
 		<errai.version>3.2.2.Final</errai.version>
 
 		<warName>meditor</warName>
