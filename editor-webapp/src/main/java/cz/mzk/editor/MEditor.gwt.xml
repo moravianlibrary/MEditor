@@ -65,6 +65,9 @@
 
 	<entry-point class='cz.mzk.editor.client.MEditor' />
 
+	<!-- allow Super Dev Mode -->
+    <add-linker name="xsiframe"/>
+
 	<!-- Specify the paths for translatable code -->
 	<source path='client' />
 	<source path='shared' />
