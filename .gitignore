@@ -15,3 +15,6 @@ META-INF
 .gwt
 *.swp
 .errai
+
+editor-confutils/src/main/java/cz/mzk/editor/client/util/*
+editor-confutils/src/main/java/cz/mzk/editor/client/util/!ClientUtils.java
