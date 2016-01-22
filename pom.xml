@@ -86,8 +86,7 @@
 	<properties>
 		<!-- Versions -->
 		<gwt.version>2.7.0</gwt.version>
-		<gwtp.version>1.2</gwtp.version>
-		<!--<gwtp.version>1.5.1</gwtp.version>-->
+		<gwtp.version>1.5.1</gwtp.version>
 		<smartGwt.version>5.0-p20151129</smartGwt.version>
 		<guice.version>3.0</guice.version>
 		<gin.version>2.1.2</gin.version>
@@ -274,7 +273,7 @@
 					</exclusion>
 					<exclusion>
 						<groupId>com.gwtplatform</groupId>
-						<artifactId>gwtp-dispatch-server-spring</artifactId>
+						<artifactId>gwtp-dispatch-rpc-server-spring</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>
@@ -662,7 +661,7 @@
 				<plugin>
 					<groupId>org.jvnet.jax-ws-commons</groupId>
 					<artifactId>jaxws-maven-plugin</artifactId>
-					<version>2.2</version>
+					<version>2.3</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.tomcat.maven</groupId>
