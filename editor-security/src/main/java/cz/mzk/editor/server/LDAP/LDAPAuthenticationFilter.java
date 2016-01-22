@@ -125,11 +125,11 @@ public class LDAPAuthenticationFilter
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
 
-        if (!configuration.isLocalhost()) {
-            super.successfulAuthentication(request, response, chain, authResult);
-        } else {
+        if (configuration.isLocalhost()) {
             SecurityContextHolder.getContext().setAuthentication(authResult);
-            response.sendRedirect(response.encodeRedirectURL(URLS.MAIN_PAGE + "?gwt.codesvr=127.0.0.1:9997"));
+            response.sendRedirect(response.encodeRedirectURL(URLS.MAIN_PAGE));
+        } else {
+            super.successfulAuthentication(request, response, chain, authResult);
         }
 
     }

@@ -27,7 +27,7 @@ package cz.mzk.editor.client.view.window;
 import java.util.ArrayList;
 
 import com.google.web.bindery.event.shared.EventBus;
-import com.gwtplatform.dispatch.shared.DispatchAsync;
+import com.gwtplatform.dispatch.rpc.shared.DispatchAsync;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.types.Side;
 import com.smartgwt.client.widgets.AnimationCallback;

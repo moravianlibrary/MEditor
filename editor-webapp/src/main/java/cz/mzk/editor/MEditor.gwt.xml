@@ -14,7 +14,7 @@
 	<!-- Smart GWT -->
 	<inherits name='com.smartgwt.SmartGwt' />
 	<inherits name='com.smartgwt.SmartGwtNoScript' />
-	<inherits name='com.smartgwt.tools.SmartGwtTools' />
+	<inherits name="com.smartgwt.Tools"/>
 
 
 	<!-- SmartGWT EE <inherits name="com.smartgwtee.SmartGwtEE"/> <inherits 
@@ -64,6 +64,9 @@
 		value="cz.mzk.editor.client.gin.EditorGinjector" />
 
 	<entry-point class='cz.mzk.editor.client.MEditor' />
+
+	<!-- allow Super Dev Mode -->
+    <add-linker name="xsiframe"/>
 
 	<!-- Specify the paths for translatable code -->
 	<source path='client' />

@@ -31,7 +31,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
-import com.gwtplatform.dispatch.shared.DispatchAsync;
+import com.gwtplatform.dispatch.rpc.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.ViewImpl;
 import com.smartgwt.client.widgets.IButton;
 import com.smartgwt.client.widgets.grid.ListGrid;
