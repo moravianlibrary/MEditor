@@ -99,7 +99,7 @@ public class LDAPAuthenticationFilter
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
 	    AuthenticationException failed) throws IOException, ServletException {
-        
+
         // handle the failure and redirect user to the right page
         if (failed instanceof BadCredentialsException) {
             SecurityUtils.redirectToErrorLoginPage(request, response);
@@ -108,7 +108,7 @@ public class LDAPAuthenticationFilter
             SecurityUtils.redirectToErrorDBLoginPage(request, response);
             return;
         }
-        
+
         HttpSession session = request.getSession(true);
         Object ldapId = session.getAttribute(HttpCookies.UNKNOWN_ID_KEY);
         if (ldapId != null && failed instanceof UsernameNotFoundException) {
@@ -125,11 +125,11 @@ public class LDAPAuthenticationFilter
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
 
-        if (!configuration.isLocalhost()) {
-            super.successfulAuthentication(request, response, chain, authResult);
-        } else {
+        if (configuration.isLocalhost()) {
             SecurityContextHolder.getContext().setAuthentication(authResult);
-            response.sendRedirect(response.encodeRedirectURL(URLS.MAIN_PAGE + "?gwt.codesvr=127.0.0.1:9997"));
+            response.sendRedirect(response.encodeRedirectURL(URLS.MAIN_PAGE));
+        } else {
+            super.successfulAuthentication(request, response, chain, authResult);
         }
 
     }
