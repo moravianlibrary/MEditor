@@ -13,7 +13,6 @@
 
 	<!-- Smart GWT -->
 	<inherits name='com.smartgwt.SmartGwt' />
-	<inherits name='com.smartgwt.SmartGwtNoScript' />
 	<inherits name='com.smartgwt.tools.SmartGwtTools' />
 
 
@@ -104,8 +103,8 @@
 		value="com.google.gwt.user.client.ui.KeyboardListenerCollection" />
 
 
-    <set-property name="user.agent" value="safari, gecko1_8" />
-
-    <!-- <set-property name="user.agent" value="safari"/> -->
+    <!--<set-property name="user.agent" value="safari, gecko1_8" />-->
+    <set-property name="user.agent" value="gecko1_8" />
+	<!--<set-property name="user.agent" value="safari"/> -->
 
 </module>
