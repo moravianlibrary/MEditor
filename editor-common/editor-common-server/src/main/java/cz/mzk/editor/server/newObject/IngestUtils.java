@@ -26,12 +26,6 @@ package cz.mzk.editor.server.newObject;
 
 import javax.inject.Inject;
 
-import com.yourmediashelf.fedora.client.FedoraClient;
-import com.yourmediashelf.fedora.client.FedoraClientException;
-import com.yourmediashelf.fedora.client.FedoraCredentials;
-import com.yourmediashelf.fedora.client.request.FedoraRequest;
-import com.yourmediashelf.fedora.client.request.Ingest;
-import com.yourmediashelf.fedora.client.response.IngestResponse;
 import cz.mzk.editor.client.util.Constants;
 import org.apache.log4j.Logger;
 
@@ -41,7 +35,6 @@ import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfiguration.ServerConstants;
 import cz.mzk.editor.server.util.RESTHelper;
 
-import java.net.MalformedURLException;
 
 /**
  * @author Matous Jobanek
