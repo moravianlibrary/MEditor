@@ -295,8 +295,10 @@ public class CreateObject {
                 for (NewDigitalObject child : childrenToAdd) {
                     if (!child.getExist()) {
                         String uuid = insertFOXML(child, mods, dc);
-                        child.setUuid(uuid);
+                        child.setUuid(Constants.FEDORA_UUID_PREFIX + uuid);
                         append(node, child);
+                    } else {
+                        insertFOXML(child, mods, dc);
                     }
                 }
             }
@@ -667,7 +669,14 @@ public class CreateObject {
                         NamedGraphModel.getRelationship(parrent.getModel(), child.getModel()),
                         child.getName());
         FoxmlUtils.addRelationshipToRelsExt(document, rel);
-        FedoraUtils.putRelsExt(parrent.getUuid(), document.asXML(), false);
+
+
+        String parentUuid = parrent.getUuid();
+        if (parentUuid != null && !parentUuid.startsWith(Constants.FEDORA_UUID_PREFIX)) {
+            parentUuid = Constants.FEDORA_UUID_PREFIX + parentUuid;
+        }
+
+        FedoraUtils.putRelsExt(parentUuid, document.asXML(), false);
     }
 
     /**

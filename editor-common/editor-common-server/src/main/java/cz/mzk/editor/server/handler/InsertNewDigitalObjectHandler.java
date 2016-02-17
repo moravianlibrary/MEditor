@@ -95,6 +95,8 @@ public class InsertNewDigitalObjectHandler
 
     private static RequestDispatcher erraiDispatcher;
 
+    private boolean reindexSuccess = false;
+
     public InsertNewDigitalObjectHandler() {
         super();
     }
@@ -114,13 +116,12 @@ public class InsertNewDigitalObjectHandler
             throw new ActionException("Bad authorization in " + this.getClass().toString());
         }
 
-        NewDigitalObject object = action.getObject();
+        NewDigitalObject object = existTransformer(action.getObject());
         if (LOGGER.isInfoEnabled()) {
             LOGGER.debug("Inserting digital object: " + object.getName());
         }
 
         boolean ingestSuccess;
-        boolean reindexSuccess;
         boolean deepZoomSuccess = true;
         String pid = null;
 
@@ -143,7 +144,7 @@ public class InsertNewDigitalObjectHandler
                                      fedoraAccess);
             ingestSuccess = createObject.insertAllTheStructureToFOXMLs(object);
 
-            if (!createObject.getTopLevelUuid().equals(object.getUuid())) {
+            if (object.getUuid() != null && createObject.getTopLevelUuid() != null && !createObject.getTopLevelUuid().equals(object.getUuid())) {
                 try {
                     // chro chro
                     if (digitalObjectDAO.updateTopObjectUuid(createObject.getTopLevelUuid(),
@@ -165,12 +166,6 @@ public class InsertNewDigitalObjectHandler
             } else {
         	doAfterIngest(action.getInputPath(), createObject);
             }
-
-            if (object.getUuid() != null && object.getUuid().contains(Constants.FEDORA_UUID_PREFIX)) {
-                pid = object.getUuid();
-            } else {
-                pid = Constants.FEDORA_UUID_PREFIX + object.getUuid();
-            }
      
             // urn:nbn resolver
 //            notifyResolver(object);
@@ -179,10 +174,11 @@ public class InsertNewDigitalObjectHandler
             processPostIngestHooks(object);
 
             if (action.isReindex()) {
-                reindexSuccess = ServerUtils.reindex(pid);
+                this.reindexSuccess = this.reindex(object);
             } else {
-                reindexSuccess = true;
+                this.reindexSuccess = true;
             }
+
             if (config.getImageServerInternal()) {
                 deepZoomSuccess = ServerUtils.generateDeepZoom(pid);
             }
@@ -193,6 +189,34 @@ public class InsertNewDigitalObjectHandler
         return new InsertNewDigitalObjectResult(ingestSuccess, reindexSuccess, deepZoomSuccess, pid);
 
     }
+
+
+    private NewDigitalObject existTransformer(NewDigitalObject object) {
+        for (NewDigitalObject child : object.getChildren()) {
+                NewDigitalObject ifExistChild = existTransformer(child);
+                if (ifExistChild.getExist()) {
+                    object.setExist(true);
+                }
+        }
+        return object;
+    }
+
+    private boolean reindex(NewDigitalObject object) {
+        if (object.getUuid() != null) {
+            return ServerUtils.reindex(object.getUuid());
+        }
+
+        for (NewDigitalObject child : object.getChildren()) {
+            if (child.getExist() && child.getUuid() != null && !"".equals(child.getUuid())) {
+                    return ServerUtils.reindex(child.getUuid());
+            } else {
+                reindex(child);
+            }
+        }
+        return false;
+
+    }
+
 
     /**
      * {@inheritDoc}

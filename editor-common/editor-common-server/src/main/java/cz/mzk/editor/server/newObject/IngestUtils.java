@@ -26,6 +26,13 @@ package cz.mzk.editor.server.newObject;
 
 import javax.inject.Inject;
 
+import com.yourmediashelf.fedora.client.FedoraClient;
+import com.yourmediashelf.fedora.client.FedoraClientException;
+import com.yourmediashelf.fedora.client.FedoraCredentials;
+import com.yourmediashelf.fedora.client.request.FedoraRequest;
+import com.yourmediashelf.fedora.client.request.Ingest;
+import com.yourmediashelf.fedora.client.response.IngestResponse;
+import cz.mzk.editor.client.util.Constants;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.server.DAO.DatabaseException;
@@ -33,6 +40,8 @@ import cz.mzk.editor.server.DAO.DigitalObjectDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfiguration.ServerConstants;
 import cz.mzk.editor.server.util.RESTHelper;
+
+import java.net.MalformedURLException;
 
 /**
  * @author Matous Jobanek
@@ -74,10 +83,15 @@ public class IngestUtils {
                                  String topLevelUuid,
                                  String inputDirPath) {
 
+        if (uuid != null && !uuid.startsWith(Constants.FEDORA_UUID_PREFIX)) {
+            uuid = Constants.FEDORA_UUID_PREFIX + uuid;
+        }
+
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("Ingesting the digital object with PID" + (!uuid.contains("uuid:") ? " uuid:" : " ")
                     + uuid + " label:" + label + ", model: " + model);
         }
+
         String login = config.getFedoraLogin();
         String password = config.getFedoraPassword();
         String url = config.getFedoraHost() + "/objects/new";
@@ -94,12 +108,13 @@ public class IngestUtils {
             if (topLevelUuid != null && inputDirPath != null) {
                 try {
                     if (!uuid.equals(topLevelUuid)) {
-                        digitalObjectDAO.insertNewDigitalObject(uuid,
-                                                                model,
-                                                                label,
-                                                                inputDirPath,
-                                                                topLevelUuid,
-                                                                false);
+                        //TODO-MR
+//                        digitalObjectDAO.insertNewDigitalObject(uuid,
+//                                                                model,
+//                                                                label,
+//                                                                inputDirPath,
+//                                                                topLevelUuid,
+//                                                                false);
                     } else {
                         digitalObjectDAO.updateTopObjectTime(uuid);
                     }

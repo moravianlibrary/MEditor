@@ -187,6 +187,10 @@ public class ServerUtils {
     }
 
     public static boolean reindex(String pid) {
+        if (!pid.startsWith(Constants.FEDORA_UUID_PREFIX)) {
+            pid = Constants.FEDORA_UUID_PREFIX + pid;
+        }
+
         return krameriusRest(KRAMERIUS_ACTION.REINDEX, pid);
     }
 
