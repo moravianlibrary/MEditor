@@ -25,11 +25,6 @@
 			<name>geomajas</name>
 			<url>http://apps.geomajas.org/nexus/content/groups/latest/</url>
 		</repository>
-		<repository>
-			<id>k-int</id>
-			<name>Knowledge Integration</name>
-			<url>http://developer.k-int.com/maven2/</url>
-		</repository>
 	</repositories>
 
 	<dependencies>
