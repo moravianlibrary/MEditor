@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.gwtplatform.dispatch.shared.DispatchAsync;
+import com.gwtplatform.dispatch.rpc.shared.DispatchAsync;
 import com.smartgwt.client.data.DSRequest;
 import com.smartgwt.client.data.DSResponse;
 import com.smartgwt.client.data.DataSourceField;

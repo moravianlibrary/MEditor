@@ -43,13 +43,10 @@ import javax.inject.Inject;
 
 import com.google.inject.Injector;
 
-import com.yourmediashelf.fedora.client.FedoraClient;
-import com.yourmediashelf.fedora.client.FedoraClientException;
-import com.yourmediashelf.fedora.client.FedoraCredentials;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.config.EditorConfiguration;
-import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import cz.mzk.editor.server.util.IOUtils;
+import cz.mzk.editor.server.util.RESTHelper;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -62,8 +59,6 @@ public class ThumbnailServiceImpl
     /** The config. */
     @Inject
     private EditorConfiguration config;
-    private static final Logger LOGGER = Logger.getLogger(ThumbnailServiceImpl.class);
-
 
     /*
      * (non-Javadoc)
@@ -72,33 +67,45 @@ public class ThumbnailServiceImpl
      * , javax.servlet.http.HttpServletResponse)
      */
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
+            IOException {
         resp.addHeader("Cache-Control", "max-age=" + Constants.HTTP_CACHE_SECONDS);
-        String uuid = req.getRequestURI().substring(req.getRequestURI().indexOf(Constants.SERVLET_THUMBNAIL_PREFIX)
+        String uuid =
+                req.getRequestURI().substring(req.getRequestURI().indexOf(Constants.SERVLET_THUMBNAIL_PREFIX)
                         + Constants.SERVLET_THUMBNAIL_PREFIX.length() + 1);
 
         if (uuid != null && !"".equals(uuid)) {
             resp.setContentType("image/jpeg");
+            StringBuffer sb = new StringBuffer();
+            sb.append(config.getFedoraHost()).append("/objects/").append(uuid)
+                    .append("/datastreams/IMG_THUMB/content");
             InputStream is = null;
             if (!Constants.MISSING.equals(uuid)) {
-                FedoraCredentials credentials = new FedoraCredentials(config.getFedoraHost(), config.getFedoraLogin(), config.getFedoraPassword());
-                FedoraClient fc = new FedoraClient(credentials);
-                try {
-                    is = FedoraClient.getDatastreamDissemination(uuid, "IMG_THUMB").execute(fc).getEntityInputStream();
-                } catch (FedoraClientException e) {
-                    LOGGER.error(e.getMessage());
-                }
+                is = RESTHelper.get(sb.toString(), config.getFedoraLogin(), config.getFedoraPassword(), true);
             } else {
                 is = new FileInputStream(new File("images/other/file_not_found.png"));
             }
+            if (is == null) {
+                return;
+            }
             ServletOutputStream os = resp.getOutputStream();
 
-            if (is != null) {
-                IOUtils.copy(is, os);
-                is.close();
-            } else {
-                LOGGER.error("Fedora client returned null InputStream");
-                resp.setStatus(500);
+            try {
+                IOUtils.copyStreams(is, os);
+
+            } catch (IOException e) {
+                // TODO: zalogovat
+            } finally {
+                os.flush();
+                if (is != null) {
+                    try {
+                        is.close();
+                    } catch (IOException e) {
+                        // TODO: zalogovat
+                    } finally {
+                        is = null;
+                    }
+                }
             }
             resp.setStatus(200);
         } else {

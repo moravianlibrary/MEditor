@@ -8,22 +8,18 @@
 
 
 <title>Metadata Editor</title>
-<script type="text/javascript">
-	var _gaq = _gaq || [];
-	_gaq.push([ '_setAccount', 'UA-19922555-1' ]);
-	_gaq.push([ '_trackPageview' ]);
+	<script src=meditor/sc/modules/ISC_Core.js></script>
 
-	(function() {
-		var ga = document.createElement('script');
-		ga.type = 'text/javascript';
-		ga.async = true;
-		ga.src = ('https:' == document.location.protocol ? 'https://ssl'
-				: 'http://www')
-				+ '.google-analytics.com/ga.js';
-		var s = document.getElementsByTagName('script')[0];
-		s.parentNode.insertBefore(ga, s);
-	})();
-</script>
+	<script src=meditor/sc/modules/ISC_Foundation.js></script>
+	<script src=meditor/sc/modules/ISC_Containers.js></script>
+	<script src=meditor/sc/modules/ISC_Grids.js></script>
+	<script src=meditor/sc/modules/ISC_Forms.js></script>
+	<script src=meditor/sc/modules/ISC_RichTextEditor.js></script>
+	<script src=meditor/sc/modules/ISC_DataBinding.js></script>
+	<script src=meditor/sc/modules/ISC_Calendar.js></script>
+
+<script src="meditor/sc/skins/Enterprise/load_skin.js"></script>
+
 </head>
 <body>
 
@@ -48,8 +44,7 @@
 	<!-- If you add any GWT meta tags, they must   -->
 	<!-- be added before this line.                -->
 	<!--                                           -->
-	<script type="text/javascript" language="javascript"
-		src="./meditor/meditor.nocache.js"></script>
+	<script type="text/javascript" language="javascript" src="meditor/meditor.nocache.js"></script>
 
 	<noscript>
 		<div class="noJavaScript">Your web browser must have JavaScript

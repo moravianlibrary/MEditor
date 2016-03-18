@@ -28,8 +28,8 @@
 package cz.mzk.editor.server.guice;
 
 import com.google.inject.servlet.ServletModule;
-import com.gwtplatform.dispatch.server.guice.DispatchServiceImpl;
-import com.gwtplatform.dispatch.shared.Action;
+import com.gwtplatform.dispatch.rpc.server.guice.DispatchServiceImpl;
+import com.gwtplatform.dispatch.rpc.shared.Action;
 
 // TODO: Auto-generated Javadoc
 /**

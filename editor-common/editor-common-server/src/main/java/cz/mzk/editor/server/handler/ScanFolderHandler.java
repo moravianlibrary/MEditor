@@ -40,8 +40,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.inject.Inject;
 
 import com.google.inject.Provider;
-import com.gwtplatform.dispatch.server.ExecutionContext;
-import com.gwtplatform.dispatch.server.actionhandler.ActionHandler;
+import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
+import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.mzk.editor.server.UserProvider;

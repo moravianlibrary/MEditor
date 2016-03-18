@@ -35,7 +35,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
-import com.gwtplatform.dispatch.shared.DispatchAsync;
+import com.gwtplatform.dispatch.rpc.shared.DispatchAsync;
 import com.gwtplatform.mvp.client.ViewWithUiHandlers;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
 import com.smartgwt.client.data.Record;
@@ -505,51 +505,12 @@ public class CreateObjectMenuView
                             root.setAttribute(Constants.ATTR_NAME, uuidField.getValueAsString());
                             structureTreeGrid.setData(structureTree);
                         } else {
-                            String parentId = selection[0].getAttributeAsString(Constants.ATTR_PARENT);
-                            TreeNode parent = structureTree.findById(parentId);
-                            boolean parentIsTopLvl =
-                                    NamedGraphModel.isTopLvlModel(DigitalObjectModel.parseString(parent
-                                            .getAttribute(Constants.ATTR_MODEL_ID)));
-                            String newParentId = String.valueOf(getUiHandlers().newId());
-
-                            // add new parent
-                            addSubstructure(newParentId,
-                                            parent.getAttribute(parentIsTopLvl ? Constants.ATTR_ID
-                                                    : Constants.ATTR_PARENT),
-                                            uuidField.getValueAsString(),
-                                            uuidField.getValueAsString(),
-                                            getModel().getValue(),
-                                            "",
-                                            "",
-                                            "",
-                                            "",
-                                            "",
-                                            "",
-                                            "",
-                                            true,
-                                            true);
-                            for (Record rec : selection) {
-                                addSubstructure(String.valueOf(getUiHandlers().newId()),
-                                                newParentId,
-                                                rec.getAttribute(Constants.ATTR_NAME),
-                                                rec.getAttribute(Constants.ATTR_PICTURE_OR_UUID),
-                                                rec.getAttribute(Constants.ATTR_MODEL_ID),
-                                                rec.getAttribute(Constants.ATTR_TYPE),
-                                                rec.getAttribute(Constants.ATTR_DATE_OR_INT_PART_NAME),
-                                                rec.getAttribute(Constants.ATTR_NOTE_OR_INT_SUBTITLE),
-                                                rec.getAttribute(Constants.ATTR_PART_NUMBER_OR_ALTO),
-                                                rec.getAttribute(Constants.ATTR_ADITIONAL_INFO_OR_OCR),
-                                                rec.getAttribute(Constants.ATTR_OCR_PATH),
-                                                rec.getAttribute(Constants.ATTR_ALTO_PATH),
-                                                true,
-                                                false);
-                            }
-                            if (structureTree.getChildren(parent).length == structureTreeGrid
-                                    .getSelectedRecords().length && !parentIsTopLvl) {
-                                //parent has no other children (no siblings) and is not top lvl
-                                structureTree.remove(parent);
-                                structureTreeGrid.setData(structureTree);
-                            }
+                            TreeNode selectedNode = (TreeNode)selection[0];
+                            TreeNode parentNode = structureTree.findById(selectedNode.getAttribute(Constants.ATTR_PARENT));
+                            parentNode.setAttribute(Constants.ATTR_EXIST, true);
+                            parentNode.setAttribute(Constants.ATTR_CREATE, false);
+                            parentNode.setAttribute(Constants.ATTR_PICTURE_OR_UUID, uuidField.getValueAsString());
+                            parentNode.setAttribute(Constants.ATTR_NAME, uuidField.getValueAsString());
                         }
                         structureTreeGrid.redraw();
                     }

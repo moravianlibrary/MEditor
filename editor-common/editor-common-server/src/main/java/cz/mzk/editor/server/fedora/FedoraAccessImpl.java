@@ -53,6 +53,7 @@ import javax.xml.xpath.XPathFactory;
 
 import javax.inject.Inject;
 
+import cz.mzk.editor.client.util.Constants;
 import org.apache.log4j.Logger;
 
 import org.w3c.dom.DOMException;
@@ -125,6 +126,10 @@ public class FedoraAccessImpl
      */
     @Override
     public Document getRelsExt(String uuid) throws IOException {
+        if (!uuid.startsWith(Constants.FEDORA_UUID_PREFIX)) {
+            uuid = Constants.FEDORA_UUID_PREFIX + uuid;
+        }
+
         String relsExtUrl = relsExtUrl(uuid);
         LOGGER.debug("Reading rels ext +" + relsExtUrl);
         InputStream docStream =

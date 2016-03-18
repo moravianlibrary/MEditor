@@ -176,7 +176,7 @@ public class JanrainAuthenticationFilter
             SecurityUtils.redirectToErrorDBLoginPage(request, response);
             return;
         }
-        
+
         HttpSession session = request.getSession(true);
         Object openId = session.getAttribute(HttpCookies.UNKNOWN_ID_KEY);
         if (openId != null && failed instanceof UsernameNotFoundException) {
@@ -193,11 +193,11 @@ public class JanrainAuthenticationFilter
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
 
-        if (!configuration.isLocalhost()) {
-            super.successfulAuthentication(request, response, chain, authResult);
-        } else {
+        if (configuration.isLocalhost()) {
             SecurityContextHolder.getContext().setAuthentication(authResult);
-            response.sendRedirect(response.encodeRedirectURL(URLS.MAIN_PAGE + "?gwt.codesvr=127.0.0.1:9997"));
+            response.sendRedirect(response.encodeRedirectURL(URLS.MAIN_PAGE));
+        } else {
+            super.successfulAuthentication(request, response, chain, authResult);
         }
 
     }

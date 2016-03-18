@@ -206,7 +206,9 @@ public class FoxmlUtils {
         org.dom4j.Element referenceEl =
                 descriptionEl.addElement(new QName(reference.getRelationName().getStringRepresentation(),
                                                    Namespaces.kramerius));
-        String resourceStr = "info:fedora/".concat(Constants.FEDORA_UUID_PREFIX + reference.getTargetUuid());
+        String targetUuid = reference.getTargetUuid().startsWith(Constants.FEDORA_UUID_PREFIX)
+                ? reference.getTargetUuid() : Constants.FEDORA_UUID_PREFIX + reference.getTargetUuid();
+        String resourceStr = "info:fedora/".concat(targetUuid);
         referenceEl.addAttribute(new QName("resource", Namespaces.rdf), resourceStr);
     }
 

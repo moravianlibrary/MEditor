@@ -15,6 +15,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Namespace;
 import org.dom4j.Visitor;
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.xml.sax.SAXException;
 
 import javax.ws.rs.client.Client;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -43,7 +45,10 @@ public class XServicesClientImpl implements XServicesClient {
     public ArrayList<MetadataBundle> search(String sysno, String base) {
         ArrayList<MetadataBundle> retList = new ArrayList<MetadataBundle>();
 
-        Client client = ClientBuilder.newClient();
+        Client client = new ResteasyClientBuilder()
+                .establishConnectionTimeout(100, TimeUnit.SECONDS)
+                .socketTimeout(2, TimeUnit.SECONDS)
+                .build();
         String marc = client.target("http://aleph.nkp.cz/X?op=ill_get_doc&doc_number=" + sysno + "&library=" + base).request().get(String.class);
 
 

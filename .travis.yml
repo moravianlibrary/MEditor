@@ -1,6 +1,4 @@
 language: java
-jdk: oraclejdk7
-
 install: mvn clean install
 sudo: false
 
@@ -12,9 +10,3 @@ notifications:
       on_failure: change
       on_start: never
 
-deploy:
-  skip_cleanup: true
-  provider: script
-  script: >-
-            curl --ftp-create-dirs -T target/meditor.war -u $FTP_USER:$FTP_PASSWORD ftp://ftp-devel.mzk.cz/meditor/master/;
-            curl -H "Content-Type: application/json" --data '{"docker_tag": "latest"}' -X POST https://registry.hub.docker.com/u/moravianlibrary/meditor/trigger/45687579-deca-4b2c-99ce-c14a03b07a00/

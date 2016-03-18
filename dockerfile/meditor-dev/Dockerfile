@@ -20,7 +20,7 @@ ENV PATH  $CATALINA_HOME/bin:$JAVA_HOME/bin:$PATH
 
 
 RUN curl -sL --no-verbose https://github.com/moravianlibrary/MEditor/archive/master.zip -o /tmp/meditor.zip 
-RUN curl -sL  http://ftp-devel.mzk.cz/meditor/testing/meditor.war -o $CATALINA_HOME/webapps/meditor.war
+RUN curl -sL  http://ftp-devel.mzk.cz/meditor/updateGwtp/meditor.war -o $CATALINA_HOME/webapps/meditor.war
 RUN curl -sL https://jdbc.postgresql.org/download/postgresql-9.4-1201.jdbc41.jar -o $CATALINA_HOME/lib/postgresql-9.4-1201.jdbc41.jar
 RUN unzip /tmp/meditor.zip -d /tmp/meditor/
 

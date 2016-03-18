@@ -30,11 +30,12 @@ package cz.mzk.editor.client.gin;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
+import com.gwtplatform.common.client.CommonGinModule;
 import com.gwtplatform.mvp.client.RootPresenter;
 import com.gwtplatform.mvp.client.gin.AbstractPresenterModule;
-import com.gwtplatform.mvp.client.proxy.ParameterTokenFormatter;
+import com.gwtplatform.mvp.shared.proxy.ParameterTokenFormatter;
 import com.gwtplatform.mvp.client.proxy.PlaceManager;
-import com.gwtplatform.mvp.client.proxy.TokenFormatter;
+import com.gwtplatform.mvp.shared.proxy.TokenFormatter;
 
 import cz.mzk.editor.client.EditorPlaceManager;
 import cz.mzk.editor.client.LangConstants;
@@ -180,6 +181,8 @@ public class EditorClientModule
         bind(ClientMessageBus.class).toProvider(MessageBusProvider.class);
         requestStaticInjection(DCTab.class);
         requestStaticInjection(DispatchCallback.class);
+
+        install(new CommonGinModule());
 
     }
 }

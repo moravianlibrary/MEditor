@@ -36,7 +36,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.visualization.client.VisualizationUtils;
 import com.google.gwt.visualization.client.visualizations.PieChart;
-import com.gwtplatform.dispatch.shared.DispatchAsync;
+import com.gwtplatform.dispatch.rpc.shared.DispatchAsync;
 import com.smartgwt.client.data.Record;
 import com.smartgwt.client.util.JSOHelper;
 import com.smartgwt.client.util.SC;

@@ -1207,7 +1207,9 @@ public class Constants {
         /** The TP. */
         TP,
         /** The MP. */
-        MP;
+        MP,
+        IL;
+
 
         /** The MAP. */
         public static Map<String, String> MAP = new HashMap<String, String>();
@@ -1230,6 +1232,7 @@ public class Constants {
             MAP.put(PAGE_TYPES.TC.toString(), "TableOfContents");
             MAP.put(PAGE_TYPES.TP.toString(), "TitlePage");
             MAP.put(PAGE_TYPES.MP.toString(), "Map");
+            MAP.put(PAGE_TYPES.IL.toString(), "Illustration");
         }
 
         /**
