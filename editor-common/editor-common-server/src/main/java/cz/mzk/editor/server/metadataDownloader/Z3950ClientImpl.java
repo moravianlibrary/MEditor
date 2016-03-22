@@ -50,28 +50,37 @@
 
 package cz.mzk.editor.server.metadataDownloader;
 
-import java.io.ByteArrayInputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.xml.parsers.ParserConfigurationException;
 
+import cz.mzk.editor.server.fedora.utils.BiblioModsUtils;
+import cz.mzk.editor.server.fedora.utils.Dom4jUtils;
+import cz.mzk.editor.server.util.XMLUtils;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfiguration.ServerConstants;
 import cz.mzk.editor.server.fedora.utils.DCUtils;
+import cz.mzk.editor.server.mods.ModsType;
+import cz.mzk.editor.server.mods.ModsCollection;
 import cz.mzk.editor.shared.rpc.DublinCore;
 import cz.mzk.editor.shared.rpc.MarcSpecificMetadata;
 import cz.mzk.editor.shared.rpc.MetadataBundle;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.marc4j.MarcReader;
 import org.marc4j.MarcXmlReader;
 import org.marc4j.marc.ControlField;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.Subfield;
 import org.marc4j.marc.VariableField;
+import org.xml.sax.SAXException;
 import org.yaz4j.Connection;
 import org.yaz4j.PrefixQuery;
 import org.yaz4j.Record;
@@ -85,14 +94,10 @@ import org.yaz4j.exception.ZoomException;
 public class Z3950ClientImpl
         implements Z3950Client {
 
-    /**
-     * The logger.
-     */
+    /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(Z3950ClientImpl.class);
 
-    /**
-     * The configuration.
-     */
+    /** The configuration. */
     private final EditorConfiguration configuration;
 
     private String profile = null;
@@ -106,7 +111,8 @@ public class Z3950ClientImpl
     /**
      * Instantiates a new z3950 client.
      *
-     * @param configuration the configuration
+     * @param configuration
+     *        the configuration
      */
     @Inject
     public Z3950ClientImpl(final EditorConfiguration configuration) {
@@ -158,9 +164,10 @@ public class Z3950ClientImpl
     /**
      * Search.
      *
-     * @param field the field
-     * @param what  the what
-     * @return the dublin core xml
+     * @param field
+     *        the field
+     * @param what
+     *        the what
      */
     @Override
     public ArrayList<MetadataBundle> search(Constants.SEARCH_FIELD field, String what) {
@@ -168,30 +175,40 @@ public class Z3950ClientImpl
         if (!isOk) {
             return null;
         }
-        Record record;
+        Record z3950Record;
         List<String> dcStrings = new ArrayList<>();
         List<MarcSpecificMetadata> marcMetadataList = new ArrayList<>();
-        ResultSet dcSet = search(field, what, false);
+        ModsCollection modsCollection = new ModsCollection();
+
         try {
+            ResultSet dcSet = search(field, what, false);
             for (int i = 0; i < dcSet.getHitCount(); i++) {
-                record = dcSet.getRecord(i);
-                if (record != null) {
-                    String dcString = new String(record.getContent(), "UTF8");
+                z3950Record = dcSet.getRecord(i);
+                if (z3950Record != null) {
+                    String dcString = new String(z3950Record.getContent(), "UTF8");
                     dcStrings.add(dcString);
                 }
             }
             ResultSet marcSet = search(field, what, true);
             for (int i = 0; i < marcSet.getHitCount(); i++) {
-                record = marcSet.getRecord(i);
-                byte[] b = record.get("xml; charset=windows-1250");
-                ByteArrayInputStream in = new ByteArrayInputStream(b);
-                MarcReader reader = new MarcXmlReader(in);
+                z3950Record = marcSet.getRecord(i);
+                byte[] marcXmlByteArray = z3950Record.get("xml");
+
+                Document modsStylesheet = Dom4jUtils.loadDocument(new File(configuration.getEditorHome() + MARC_TO_MODS_XSLT), true);
+                Document marcDocument = Dom4jUtils.loadDocument(new ByteArrayInputStream(marcXmlByteArray), true);
+                Document modsDocument = Dom4jUtils.transformDocument(marcDocument, modsStylesheet);
+                ModsType mods = BiblioModsUtils.getMods(XMLUtils.parseDocument(modsDocument.asXML(), true));
+                modsCollection.getMods().add(mods);
+
+                MarcReader reader = new MarcXmlReader(new ByteArrayInputStream(marcXmlByteArray));
                 while (reader.hasNext()) {
                     org.marc4j.marc.Record marcRecord = reader.next();
                     marcMetadataList.add(getMarcMetadata(marcRecord));
                 }
             }
-        } catch (ZoomException | UnsupportedEncodingException e) {
+        } catch (ZoomException | UnsupportedEncodingException | FileNotFoundException | DocumentException | SAXException | ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -199,7 +216,7 @@ public class Z3950ClientImpl
         for (int i = 0; i < dcStrings.size(); i++) {
             DublinCore dc = DCUtils.getDC(dcStrings.get(i));
             dc.removeTrailingSlash();
-            MetadataBundle bundle = new MetadataBundle(dc, null, marcMetadataList.get(i));
+            MetadataBundle bundle = new MetadataBundle(dc, BiblioModsUtils.toModsClient(modsCollection), marcMetadataList.get(i));
             retList.add(bundle);
         }
         connection.close();
