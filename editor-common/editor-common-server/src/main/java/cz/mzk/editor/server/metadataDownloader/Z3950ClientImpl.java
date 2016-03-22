@@ -50,28 +50,52 @@
 
 package cz.mzk.editor.server.metadataDownloader;
 
+<<<<<<< 1d29f455c561a0026a27a1df008d5cdc59fa0d2a
 import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+=======
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+>>>>>>> issue #50 fixed, z39.50 works
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.xml.parsers.ParserConfigurationException;
 
+<<<<<<< 1d29f455c561a0026a27a1df008d5cdc59fa0d2a
+=======
+import cz.mzk.editor.server.fedora.utils.BiblioModsUtils;
+import cz.mzk.editor.server.fedora.utils.Dom4jUtils;
+import cz.mzk.editor.server.util.XMLUtils;
+>>>>>>> issue #50 fixed, z39.50 works
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfiguration.ServerConstants;
 import cz.mzk.editor.server.fedora.utils.DCUtils;
+import cz.mzk.editor.server.mods.ModsType;
+import cz.mzk.editor.server.mods.ModsCollection;
 import cz.mzk.editor.shared.rpc.DublinCore;
 import cz.mzk.editor.shared.rpc.MarcSpecificMetadata;
 import cz.mzk.editor.shared.rpc.MetadataBundle;
+<<<<<<< 1d29f455c561a0026a27a1df008d5cdc59fa0d2a
+=======
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+>>>>>>> issue #50 fixed, z39.50 works
 import org.marc4j.MarcReader;
 import org.marc4j.MarcXmlReader;
 import org.marc4j.marc.ControlField;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.Subfield;
 import org.marc4j.marc.VariableField;
+<<<<<<< 1d29f455c561a0026a27a1df008d5cdc59fa0d2a
+=======
+import org.xml.sax.SAXException;
+>>>>>>> issue #50 fixed, z39.50 works
 import org.yaz4j.Connection;
 import org.yaz4j.PrefixQuery;
 import org.yaz4j.Record;
@@ -106,7 +130,12 @@ public class Z3950ClientImpl
     /**
      * Instantiates a new z3950 client.
      *
+<<<<<<< 1d29f455c561a0026a27a1df008d5cdc59fa0d2a
      * @param configuration the configuration
+=======
+     * @param configuration
+     *        the configuration
+>>>>>>> issue #50 fixed, z39.50 works
      */
     @Inject
     public Z3950ClientImpl(final EditorConfiguration configuration) {
@@ -158,9 +187,16 @@ public class Z3950ClientImpl
     /**
      * Search.
      *
+<<<<<<< 1d29f455c561a0026a27a1df008d5cdc59fa0d2a
      * @param field the field
      * @param what  the what
      * @return the dublin core xml
+=======
+     * @param field
+     *        the field
+     * @param what
+     *        the what
+>>>>>>> issue #50 fixed, z39.50 works
      */
     @Override
     public ArrayList<MetadataBundle> search(Constants.SEARCH_FIELD field, String what) {
@@ -168,6 +204,7 @@ public class Z3950ClientImpl
         if (!isOk) {
             return null;
         }
+<<<<<<< 1d29f455c561a0026a27a1df008d5cdc59fa0d2a
         Record record;
         List<String> dcStrings = new ArrayList<>();
         List<MarcSpecificMetadata> marcMetadataList = new ArrayList<>();
@@ -177,21 +214,53 @@ public class Z3950ClientImpl
                 record = dcSet.getRecord(i);
                 if (record != null) {
                     String dcString = new String(record.getContent(), "UTF8");
+=======
+        Record z3950Record;
+        List<String> dcStrings = new ArrayList<>();
+        List<MarcSpecificMetadata> marcMetadataList = new ArrayList<>();
+        ModsCollection modsCollection = new ModsCollection();
+
+        try {
+            ResultSet dcSet = search(field, what, false);
+            for (int i = 0; i < dcSet.getHitCount(); i++) {
+                z3950Record = dcSet.getRecord(i);
+                if (z3950Record != null) {
+                    String dcString = new String(z3950Record.getContent(), "UTF8");
+>>>>>>> issue #50 fixed, z39.50 works
                     dcStrings.add(dcString);
                 }
             }
             ResultSet marcSet = search(field, what, true);
             for (int i = 0; i < marcSet.getHitCount(); i++) {
+<<<<<<< 1d29f455c561a0026a27a1df008d5cdc59fa0d2a
                 record = marcSet.getRecord(i);
                 byte[] b = record.get("xml; charset=windows-1250");
                 ByteArrayInputStream in = new ByteArrayInputStream(b);
                 MarcReader reader = new MarcXmlReader(in);
+=======
+                z3950Record = marcSet.getRecord(i);
+                byte[] marcXmlByteArray = z3950Record.get("xml");
+
+                Document modsStylesheet = Dom4jUtils.loadDocument(new File(configuration.getEditorHome() + MARC_TO_MODS_XSLT), true);
+                Document marcDocument = Dom4jUtils.loadDocument(new ByteArrayInputStream(marcXmlByteArray), true);
+                Document modsDocument = Dom4jUtils.transformDocument(marcDocument, modsStylesheet);
+                ModsType mods = BiblioModsUtils.getMods(XMLUtils.parseDocument(modsDocument.asXML(), true));
+                modsCollection.getMods().add(mods);
+
+                MarcReader reader = new MarcXmlReader(new ByteArrayInputStream(marcXmlByteArray));
+>>>>>>> issue #50 fixed, z39.50 works
                 while (reader.hasNext()) {
                     org.marc4j.marc.Record marcRecord = reader.next();
                     marcMetadataList.add(getMarcMetadata(marcRecord));
                 }
             }
+<<<<<<< 1d29f455c561a0026a27a1df008d5cdc59fa0d2a
         } catch (ZoomException | UnsupportedEncodingException e) {
+=======
+        } catch (ZoomException | UnsupportedEncodingException | FileNotFoundException | DocumentException | SAXException | ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+>>>>>>> issue #50 fixed, z39.50 works
             e.printStackTrace();
         }
 
@@ -199,7 +268,11 @@ public class Z3950ClientImpl
         for (int i = 0; i < dcStrings.size(); i++) {
             DublinCore dc = DCUtils.getDC(dcStrings.get(i));
             dc.removeTrailingSlash();
+<<<<<<< 1d29f455c561a0026a27a1df008d5cdc59fa0d2a
             MetadataBundle bundle = new MetadataBundle(dc, null, marcMetadataList.get(i));
+=======
+            MetadataBundle bundle = new MetadataBundle(dc, BiblioModsUtils.toModsClient(modsCollection), marcMetadataList.get(i));
+>>>>>>> issue #50 fixed, z39.50 works
             retList.add(bundle);
         }
         connection.close();

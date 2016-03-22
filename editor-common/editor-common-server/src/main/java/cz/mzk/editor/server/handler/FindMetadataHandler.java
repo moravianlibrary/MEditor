@@ -124,6 +124,7 @@ public class FindMetadataHandler
         ArrayList<MetadataBundle> enrichedBundle = null;
         boolean isOai = action.getMethod().equals(Constants.SEARCH_METHOD.OAI);
         boolean isZ39 = action.getMethod().equals(Constants.SEARCH_METHOD.Z39_50);
+        boolean isXServices = action.getMethod().equals(Constants.SEARCH_METHOD.X_SERVICES);
 
         String sys = action.getId();
         if (isOai && sys != null && sys.length() == 10) {
@@ -149,7 +150,6 @@ public class FindMetadataHandler
             if (ClientUtils.toBoolean(configuration.getVsup())) {
                 return new FindMetadataResult(bundle);
             }
-            // co kdyz to je v Z39.50 a neni to v oai
             enrichedBundle = new ArrayList<MetadataBundle>(bundle.size());
             for (MetadataBundle bun : bundle) {
                 Map<String, String> properties = new HashMap<String, String>(3);
@@ -160,10 +160,17 @@ public class FindMetadataHandler
                 enrichedBundle.add(bun);
             }
         }
+<<<<<<< 1d29f455c561a0026a27a1df008d5cdc59fa0d2a
         if (action.getMethod().equals(Constants.SEARCH_METHOD.X_SERVICES)) {
             enrichedBundle = xServicesClient.search(action.getId(), action.getBase());
         }
         return new FindMetadataResult(action.getMethod().equals(Constants.SEARCH_METHOD.OAI) ? bundle : enrichedBundle);
+=======
+        if (isXServices) {
+            enrichedBundle = xServicesClient.search(action.getId(), action.getBase());
+        }
+        return new FindMetadataResult(isOai ? bundle : enrichedBundle);
+>>>>>>> issue #50 fixed, z39.50 works
     }
 
     /*
