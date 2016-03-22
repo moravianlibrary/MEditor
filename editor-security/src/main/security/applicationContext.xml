@@ -26,6 +26,7 @@
 		<custom-filter before="PRE_AUTH_FILTER" ref="janrainAuthenticationFilter" />
 		<custom-filter position="PRE_AUTH_FILTER" ref="shibbolethAuthenticationFilter" />
 		<custom-filter after="PRE_AUTH_FILTER" ref="ldapAuthenticationFilter" />
+		<!--comment out when using superDevMode-->
 		<custom-filter position="CHANNEL_FILTER" ref="channelProcessingFilter" />
 	</http>
 
