@@ -143,6 +143,9 @@ public class FindMetadataHandler
         }
         if (isZ39) {
             bundle = z39Client.search(action.getSearchType(), action.getId());
+            if(bundle == null) {
+                throw new NullPointerException("There is something wrong with z39.50 client. Please check your log for more information.");
+            }
             if (ClientUtils.toBoolean(configuration.getVsup())) {
                 return new FindMetadataResult(bundle);
             }
@@ -154,20 +157,12 @@ public class FindMetadataHandler
                 properties.put("oaiprefix", action.getPrefix());
                 properties.put("base", action.getBase());
                 properties.put("sysno", bun.getMarc().getSysno());
-                String completeQuery = StringUtils.doTheSubstitution(configuration.getOaiString(), properties);
-                ArrayList<MetadataBundle> foo = oaiClient.search(completeQuery, action.getBase());
-                if (!foo.isEmpty()) {
-                    enrichedBundle.add(foo.get(0));
-                }
+                enrichedBundle.add(bun);
             }
         }
-
         if (action.getMethod().equals(Constants.SEARCH_METHOD.X_SERVICES)) {
             enrichedBundle = xServicesClient.search(action.getId(), action.getBase());
         }
-
-
-
         return new FindMetadataResult(action.getMethod().equals(Constants.SEARCH_METHOD.OAI) ? bundle : enrichedBundle);
     }
 

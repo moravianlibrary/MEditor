@@ -81,6 +81,10 @@
 			<artifactId>marc4j</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.yaz4j</groupId>
+			<artifactId>yaz4j-any</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.jvnet.jaxb2_commons</groupId>
 			<artifactId>runtime</artifactId>
 		</dependency>

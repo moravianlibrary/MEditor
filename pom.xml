@@ -92,6 +92,8 @@
 		<gin.version>2.1.2</gin.version>
 		<akka.version>2.0</akka.version>
         <errai.version>3.2.1.Final</errai.version>
+		<yaz4j.version>1.5</yaz4j.version>
+		<marc4j.version>2.6.0</marc4j.version>
 
 		<warName>meditor</warName>
 		<generatedGwtpSources>target/generated-sources/apt</generatedGwtpSources>
@@ -183,6 +185,10 @@
 		<repository>
 			<id>spring-release</id>
 			<url>http://maven.springframework.org/release</url>
+		</repository>
+		<repository>
+			<id>indexdata</id>
+			<url>http://maven.indexdata.com/</url>
 		</repository>
 	</repositories>
 
@@ -374,8 +380,13 @@
 			<dependency>
 				<groupId>mzk.marc4j</groupId>
 				<artifactId>marc4j</artifactId>
-				<version>2.6.0</version>
-				<scope>runtime</scope>
+				<version>${marc4j.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.yaz4j</groupId>
+				<artifactId>yaz4j-any</artifactId>
+				<version>${yaz4j.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jvnet.jaxb2_commons</groupId>
