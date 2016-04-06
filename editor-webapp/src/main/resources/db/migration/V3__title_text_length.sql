@@ -1,0 +1,2 @@
+ALTER TABLE input_queue ALTER COLUMN name TYPE TEXT;
+ALTER TABLE digital_object ALTER COLUMN name TYPE TEXT;
