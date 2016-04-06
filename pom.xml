@@ -87,7 +87,7 @@
 		<!-- Versions -->
 		<gwt.version>2.6.1</gwt.version>
 		<gwtp.version>1.3.1</gwtp.version>
-		<smartGwt.version>5.0-p20151129</smartGwt.version>
+		<smartGwt.version>[5.0, 5.1)</smartGwt.version>
 		<guice.version>3.0</guice.version>
 		<gin.version>2.1.2</gin.version>
 		<akka.version>2.0</akka.version>

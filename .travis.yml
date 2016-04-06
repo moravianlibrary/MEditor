@@ -1,6 +1,11 @@
 language: java
-install: mvn clean install
 sudo: false
+jdk:
+- oraclejdk7
+
+install:
+- mvn com.isomorphic:isc-maven-plugin:install -Dproduct=SMARTGWT -Dlicense=LGPL -DbuildNumber=5.0p
+- mvn clean install -Pdev
 
 notifications:
   email: false
