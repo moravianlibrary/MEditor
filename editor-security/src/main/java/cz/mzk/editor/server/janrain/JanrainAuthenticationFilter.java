@@ -195,7 +195,11 @@ public class JanrainAuthenticationFilter
 
         if (configuration.isLocalhost()) {
             SecurityContextHolder.getContext().setAuthentication(authResult);
-            response.sendRedirect(response.encodeRedirectURL(URLS.MAIN_PAGE));
+            if (configuration.isSuperDevMode()) {
+                response.sendRedirect(response.encodeRedirectURL(URLS.MAIN_PAGE));
+            } else {
+                response.sendRedirect(response.encodeRedirectURL(URLS.MAIN_PAGE + "?gwt.codesvr=127.0.0.1:9997"));
+            }
         } else {
             super.successfulAuthentication(request, response, chain, authResult);
         }

@@ -86,6 +86,7 @@ public abstract class EditorClientConfiguration {
 
         public static final String OCR_ENABLED = "ocrEnabled";
 
+        public static final String SUPERDEVMODE = "superDevMode";
     }
 
     /**

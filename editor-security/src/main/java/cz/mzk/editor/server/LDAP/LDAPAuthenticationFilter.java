@@ -44,7 +44,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.server.EditorUserAuthentication;
 import cz.mzk.editor.server.HttpCookies;
@@ -127,7 +126,11 @@ public class LDAPAuthenticationFilter
 
         if (configuration.isLocalhost()) {
             SecurityContextHolder.getContext().setAuthentication(authResult);
-            response.sendRedirect(response.encodeRedirectURL(URLS.MAIN_PAGE));
+            if (configuration.isSuperDevMode()) {
+                response.sendRedirect(response.encodeRedirectURL(URLS.MAIN_PAGE));
+            } else {
+                response.sendRedirect(response.encodeRedirectURL(URLS.MAIN_PAGE + "?gwt.codesvr=127.0.0.1:9997"));
+            }
         } else {
             super.successfulAuthentication(request, response, chain, authResult);
         }

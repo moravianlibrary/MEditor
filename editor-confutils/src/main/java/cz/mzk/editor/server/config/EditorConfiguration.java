@@ -846,4 +846,8 @@ public abstract class EditorConfiguration {
     public int getConvertTimeout() {
         return getConfiguration().getInt(ServerConstants.CONVERT_TIMEOUT, 180);
     }
+
+    public boolean isSuperDevMode() {
+        return getConfiguration().getBoolean(EditorClientConfiguration.Constants.SUPERDEVMODE, false);
+    }
 }
