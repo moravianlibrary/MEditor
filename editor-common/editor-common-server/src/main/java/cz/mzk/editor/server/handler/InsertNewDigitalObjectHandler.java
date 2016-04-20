@@ -166,10 +166,13 @@ public class InsertNewDigitalObjectHandler
             } else {
         	doAfterIngest(action.getInputPath(), createObject);
             }
-     
-            // urn:nbn resolver
-//            notifyResolver(object);
-            
+
+            if (object.getUuid() != null && object.getUuid().contains(Constants.FEDORA_UUID_PREFIX)) {
+                pid = object.getUuid();
+            } else {
+                pid = Constants.FEDORA_UUID_PREFIX + object.getUuid();
+            }
+
             // process post-ingest hooks
             processPostIngestHooks(object);
 
