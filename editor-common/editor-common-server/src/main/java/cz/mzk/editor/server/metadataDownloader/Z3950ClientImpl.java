@@ -176,7 +176,7 @@ public class Z3950ClientImpl
             for (int i = 0; i < dcSet.getHitCount(); i++) {
                 record = dcSet.getRecord(i);
                 if (record != null) {
-                    String dcString = new String(record.getContent(), "windows-1250");
+                    String dcString = new String(record.getContent(), "UTF8");
                     dcStrings.add(dcString);
                 }
             }
