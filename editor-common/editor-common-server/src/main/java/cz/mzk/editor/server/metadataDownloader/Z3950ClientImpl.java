@@ -50,19 +50,12 @@
 
 package cz.mzk.editor.server.metadataDownloader;
 
+import java.io.ByteArrayInputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.Properties;
 
 import javax.inject.Inject;
-
-import com.k_int.IR.IRQuery;
-import com.k_int.IR.InformationFragment;
-import com.k_int.IR.SearchException;
-import com.k_int.IR.SearchTask;
-import com.k_int.IR.Searchable;
-import com.k_int.z3950.IRClient.Z3950Origin;
 
 import org.apache.log4j.Logger;
 
@@ -73,6 +66,17 @@ import cz.mzk.editor.server.fedora.utils.DCUtils;
 import cz.mzk.editor.shared.rpc.DublinCore;
 import cz.mzk.editor.shared.rpc.MarcSpecificMetadata;
 import cz.mzk.editor.shared.rpc.MetadataBundle;
+import org.marc4j.MarcReader;
+import org.marc4j.MarcXmlReader;
+import org.marc4j.marc.ControlField;
+import org.marc4j.marc.DataField;
+import org.marc4j.marc.Subfield;
+import org.marc4j.marc.VariableField;
+import org.yaz4j.Connection;
+import org.yaz4j.PrefixQuery;
+import org.yaz4j.Record;
+import org.yaz4j.ResultSet;
+import org.yaz4j.exception.ZoomException;
 
 /**
  * @author Jiri Kremser
@@ -81,10 +85,14 @@ import cz.mzk.editor.shared.rpc.MetadataBundle;
 public class Z3950ClientImpl
         implements Z3950Client {
 
-    /** The logger. */
+    /**
+     * The logger.
+     */
     private static final Logger LOGGER = Logger.getLogger(Z3950ClientImpl.class);
 
-    /** The configuration. */
+    /**
+     * The configuration.
+     */
     private final EditorConfiguration configuration;
 
     private String profile = null;
@@ -93,11 +101,12 @@ public class Z3950ClientImpl
     private String base = null;
     private int barLength = 0;
 
+    private Connection connection;
+
     /**
      * Instantiates a new z3950 client.
-     * 
-     * @param configuration
-     *        the configuration
+     *
+     * @param configuration the configuration
      */
     @Inject
     public Z3950ClientImpl(final EditorConfiguration configuration) {
@@ -105,12 +114,52 @@ public class Z3950ClientImpl
     }
 
     /**
+     * helper method for getting subfields of the marc record
+     *
+     * @param marcRecord      marc record
+     * @param dataFieldString String 'number' of marc data field
+     * @param subFieldString  Character of the marc data subfield
+     * @return String of the marc subfield
+     */
+    private String getMarcSubFieldData(org.marc4j.marc.Record marcRecord, String dataFieldString, Character subFieldString) {
+        DataField dataField = (DataField) marcRecord.getVariableField(dataFieldString);
+        Subfield subfield;
+        if (dataField != null) {
+            subfield = dataField.getSubfield(subFieldString);
+            return subfield.getData();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @param record marc record
+     * @return MarcSpecificMetadata of the record
+     */
+    private MarcSpecificMetadata getMarcMetadata(org.marc4j.marc.Record record) {
+        String data040a = getMarcSubFieldData(record, "040", 'a');
+        String data650a = getMarcSubFieldData(record, "650", 'a');
+        String data260a = getMarcSubFieldData(record, "260", 'a');
+        String data260b = getMarcSubFieldData(record, "260", 'b');
+        String data260c = getMarcSubFieldData(record, "260", 'c');
+        String data910b = getMarcSubFieldData(record, "910", 'b');
+
+        List<String> data080a = new ArrayList<>();
+        List<VariableField> data080List = record.getVariableFields("080");
+        for (VariableField field : data080List) {
+            Subfield subfield = ((DataField) field).getSubfield('a');
+            data080a.add(subfield.getData());
+        }
+
+        String sysno = ((ControlField) record.getVariableField("001")).getData();
+        return new MarcSpecificMetadata(sysno, base, data040a, data080a, data650a, data260a, data260b, data260c, data910b);
+    }
+
+    /**
      * Search.
-     * 
-     * @param field
-     *        the field
-     * @param what
-     *        the what
+     *
+     * @param field the field
+     * @param what  the what
      * @return the dublin core xml
      */
     @Override
@@ -119,78 +168,45 @@ public class Z3950ClientImpl
         if (!isOk) {
             return null;
         }
-        List<String> dcStrings = search(field, what, false);
-        List<String> marcStrings = search(field, what, true);
-        List<String> sysnos = new ArrayList<String>(marcStrings.size());
-        if (!marcStrings.isEmpty()) {
-            for (String marc : marcStrings) {
-                sysnos.add(getSysno(marc));
+        Record record;
+        List<String> dcStrings = new ArrayList<>();
+        List<MarcSpecificMetadata> marcMetadataList = new ArrayList<>();
+        ResultSet dcSet = search(field, what, false);
+        try {
+            for (int i = 0; i < dcSet.getHitCount(); i++) {
+                record = dcSet.getRecord(i);
+                if (record != null) {
+                    String dcString = new String(record.getContent(), "UTF8");
+                    dcStrings.add(dcString);
+                }
             }
+            ResultSet marcSet = search(field, what, true);
+            for (int i = 0; i < marcSet.getHitCount(); i++) {
+                record = marcSet.getRecord(i);
+                byte[] b = record.get("xml; charset=windows-1250");
+                ByteArrayInputStream in = new ByteArrayInputStream(b);
+                MarcReader reader = new MarcXmlReader(in);
+                while (reader.hasNext()) {
+                    org.marc4j.marc.Record marcRecord = reader.next();
+                    marcMetadataList.add(getMarcMetadata(marcRecord));
+                }
+            }
+        } catch (ZoomException | UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
-        ArrayList<MetadataBundle> retList = new ArrayList<MetadataBundle>();
+
+        ArrayList<MetadataBundle> retList = new ArrayList<>();
         for (int i = 0; i < dcStrings.size(); i++) {
             DublinCore dc = DCUtils.getDC(dcStrings.get(i));
             dc.removeTrailingSlash();
-            MetadataBundle bundle =
-                    new MetadataBundle(dc, null, new MarcSpecificMetadata(sysnos.get(i),
-                                                                          null,
-                                                                          null,
-                                                                          null,
-                                                                          null,
-                                                                          null,
-                                                                          null,
-                                                                          null,
-                                                                          null));
+            MetadataBundle bundle = new MetadataBundle(dc, null, marcMetadataList.get(i));
             retList.add(bundle);
         }
-        //        try {
-        //            String marc = marcStrings.get(0);
-        //            ByteArrayOutputStream out = new ByteArrayOutputStream();
-        //            NumberFormat nf = new DecimalFormat("00000");
-        //            ByteArrayInputStream in =
-        //                    new ByteArrayInputStream((nf.format((marc.length() - 7)) + marc.substring(12)).getBytes("UTF-8"));
-        //            MarcWriter writer = new MarcXmlWriter(out);
-        //            MarcReader reader = new MarcStreamReader(in);
-        //            while (reader.hasNext()) {
-        //                Record r = reader.next();
-        //                System.out.println(r.getLeader().getRecordLength());
-        //                writer.write(r);
-        //            }
-        //            String xml = new String(out.toByteArray(), "UTF-8");
-        //        } catch (UnsupportedEncodingException e) {
-        //            // TODO Auto-generated catch block
-        //            LOGGER.error(e.getMessage());
-        //            e.printStackTrace();
-        //        }
+        connection.close();
         return retList;
     }
 
-    /**
-     * @param marc
-     * @return
-     */
-    private String getSysno(String marc) {
-        return marc.split("\n")[1].substring(4, 13);
-    }
-
-    private List<String> search(Constants.SEARCH_FIELD field, String what, boolean marc) {
-
-        Properties props = new Properties();
-        props.put("ServiceHost", host);
-        props.put("ServicePort", port);
-        props.put("service_short_name", "meditor");
-        props.put("service_long_name", "meditor");
-        props.put("default_record_syntax", marc ? MARC_RECORD_SYNTAX : DC_RECORD_SYNTAX);
-
-        //        props.put("charset", "1250");
-        props.put("default_element_set_name", "F");
-        Searchable s = new Z3950Origin();
-        s.init(props);
-
-        IRQuery e = new IRQuery();
-        e.collections.add(base);
-        e.hints.put("record_syntax", marc ? MARC_RECORD_SYNTAX : DC_RECORD_SYNTAX);
-        //        e.hints.put("record_syntax", "usmarc");
+    private ResultSet search(Constants.SEARCH_FIELD field, String what, boolean marc) {
         String query = "@attrset bib-1 ";
         if (field != null) {
             switch (field) {
@@ -211,39 +227,16 @@ public class Z3950ClientImpl
                 query += "@attr 1=12 "; // sysno
             }
         }
-        e.setQueryModel(new com.k_int.IR.QueryModels.PrefixString(query + "\"" + what + "\""));
-        LOGGER.debug("QUERY: " + e.getQueryModel().toString());
-        List<String> returnList = new ArrayList<String>();
+        ResultSet resultSet = null;
+        connection.setSyntax(marc ? MARC_RECORD_SYNTAX : DC_RECORD_SYNTAX);
         try {
-            SearchTask st = s.createTask(e, null, null/* all_observers */);
-            int status = st.evaluate(150000);
-            Enumeration rs_enum = st.getTaskResultSet().elements();
-
-            while (rs_enum.hasMoreElements()) {
-                InformationFragment f = (InformationFragment) rs_enum.nextElement();
-                returnList.add(f.toString());
-                LOGGER.info(f.toString());
-            }
-            st.destroyTask();
-        } catch (SearchException se) {
-            se.printStackTrace();
-        } catch (com.k_int.IR.TimeoutExceededException tee) {
-            tee.printStackTrace();
-        } catch (Throwable ex) {
-            ex.printStackTrace();
+            connection.connect();
+            PrefixQuery prefixQuery = new PrefixQuery(query + "\"" + what + "\"");
+            resultSet = connection.search(prefixQuery);
+        } catch (ZoomException e) {
+            e.printStackTrace();
         }
-        s.destroy();
-        return returnList;
-    }
-
-    /**
-     * The main method.
-     * 
-     * @param args
-     *        the arguments
-     */
-    public static void main(String args[]) {
-
+        return resultSet;
     }
 
     private boolean init() {
@@ -292,6 +285,13 @@ public class Z3950ClientImpl
             } else {
                 barLength = EditorConfiguration.ServerConstants.Z3950_DEFAULT_BAR_LENGTH[profileIndex];
             }
+        }
+        try {
+            connection = new Connection(host, Integer.parseInt(port));
+            connection.setDatabaseName(base);
+        } catch (UnsatisfiedLinkError e) {
+            LOGGER.error("You don't have yaz4j library on your class path. Please refer to installation at https://github.com/indexdata/yaz4j");
+            return false;
         }
         return true;
     }

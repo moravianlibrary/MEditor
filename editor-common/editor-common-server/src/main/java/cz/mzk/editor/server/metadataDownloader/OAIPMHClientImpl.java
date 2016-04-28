@@ -67,6 +67,7 @@ import cz.mzk.editor.shared.rpc.MetadataBundle;
  * @author Jiri Kremser
  * @version 12.11.2011
  */
+@SuppressWarnings("Duplicates")
 public class OAIPMHClientImpl
         implements OAIPMHClient {
 
