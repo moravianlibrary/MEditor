@@ -27,6 +27,7 @@
 
 package cz.mzk.editor.server.metadataDownloader;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import cz.mzk.editor.client.util.Constants;
@@ -65,6 +66,8 @@ public interface Z3950Client {
     String DC_RECORD_SYNTAX = "xml";
 
     String MARC_RECORD_SYNTAX = "usmarc";
+
+    String MARC_TO_MODS_XSLT = File.separator + "xml" + File.separator + "MARC21slim2MODS3.xsl";
 
     ArrayList<MetadataBundle> search(Constants.SEARCH_FIELD field, String what);
 
