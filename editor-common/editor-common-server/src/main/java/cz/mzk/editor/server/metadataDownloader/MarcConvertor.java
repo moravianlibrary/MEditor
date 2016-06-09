@@ -24,10 +24,9 @@ public class MarcConvertor {
     private static Document marc2dcXsl;
     private static Document marc2modsXsl;
 
-
-    String MARC_TO_MODS_XSLT = File.separator + "MARC21slim2MODS3.xsl";
-    String MARC_TO_DC_XSLT = File.separator + "MARC21slim2OAIDC.xsl";
-    String MARC_UTILS = File.separator + "MARC21slimUtils.xsl";
+    String MARC_TO_MODS_XSLT = File.separator + "xml" + File.separator + "MARC21slim2MODS3.xsl";
+    String MARC_TO_DC_XSLT = File.separator + "xml" + File.separator + "MARC21slim2OAIDC.xsl";
+    String MARC_UTILS = File.separator + "xml" + File.separator + "MARC21slimUtils.xsl";
     private final XPath dcXPath = Dom4jUtils.createXPath("//oai_dc:dc");
     public static final String WORKING_DIR = System.getProperty("user.home") + File.separator + ".meditor";
 
