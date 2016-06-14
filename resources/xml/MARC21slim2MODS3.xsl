@@ -8,6 +8,7 @@
     <!-- Maintenance note: For each revision, change the content of <mods:recordInfo><mods:recordOrigin> to reflect the new revision number.
 	MARC21slim2MODS3-4 (Revision 1.76) 20120201
 
+REvision 1.78 - issue #74 field 910, subfield b, shelfLocator is not separated by ','
 REvision 1.77.NDK - Added full qualification mods: elements
 Revision 1.76.NDK - Field 015 as CCNB
 Revision 1.76 - Fixed 242 - 2012/02/01 tmee
@@ -6094,23 +6095,9 @@ Revision 1.02 - Added Log Comment  2003/03/24 19:37:42  ckeith
     <xsl:template name="createShelfLocatorsFor910">
         <xsl:param name="list" />
         <xsl:param name="delimiter" />
-        <xsl:variable name="newlist">
-            <xsl:choose>
-                <xsl:when test="contains($list, $delimiter)"><xsl:value-of select="normalize-space($list)" /></xsl:when>
-                <xsl:otherwise><xsl:value-of select="concat(normalize-space($list), $delimiter)"/></xsl:otherwise>
-            </xsl:choose>
-        </xsl:variable>
-        <xsl:variable name="first" select="substring-before($newlist, $delimiter)" />
-        <xsl:variable name="remaining" select="substring-after($newlist, $delimiter)" />
         <mods:shelfLocator>
-            <xsl:value-of select="$first" />
+            <xsl:value-of select="normalize-space($list)" />
         </mods:shelfLocator>
-        <xsl:if test="$remaining">
-            <xsl:call-template name="createShelfLocatorsFor910">
-                <xsl:with-param name="list" select="$remaining" />
-                <xsl:with-param name="delimiter"><xsl:value-of select="$delimiter"/></xsl:with-param>
-            </xsl:call-template>
-        </xsl:if>
     </xsl:template>
 
     <xsl:template name="buildSpaces">
