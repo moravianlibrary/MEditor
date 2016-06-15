@@ -286,7 +286,7 @@ public class InputQueueTree
 
     /**
      * Instantiates a new side nav input tree.
-     * 
+     *
      * @param dispatcher
      *        the dispatcher
      * @param lang
@@ -349,6 +349,16 @@ public class InputQueueTree
                         id = id.substring(0, id.indexOf("/"));
                     }
 
+                    MenuItem copyId = new MenuItem(lang.copyFolderName(), "icons/16/url.png");
+                    final String finalId = id;
+                    copyId.addClickHandler(new ClickHandler() {
+
+                        @Override
+                        public void onClick(MenuItemClickEvent event) {
+                            copyTextToClipboard(finalId);
+                        }
+                    });
+
                     MenuItem quartz = new MenuItem(lang.addToScheduler(), "icons/16/clock.png");
                     quartz.addClickHandler(new ClickHandler() {
 
@@ -391,15 +401,15 @@ public class InputQueueTree
 
                         });
                         if (canLongProcess) {
-                            editMenu.setItems(createItem, ingestInfo, quartz);
+                            editMenu.setItems(createItem, copyId, ingestInfo, quartz);
                         } else {
-                            editMenu.setItems(createItem, ingestInfo);
+                            editMenu.setItems(createItem, copyId, ingestInfo);
                         }
                     } else {
                         if (canLongProcess) {
-                            editMenu.setItems(createItem, quartz);
+                            editMenu.setItems(createItem, copyId, quartz);
                         } else {
-                            editMenu.setItems(createItem);
+                            editMenu.setItems(createItem, copyId);
                         }
                     }
 
@@ -452,6 +462,33 @@ public class InputQueueTree
         setFields(field1, nameField);
         setDataSource(new InputTreeGwtRPCDS(dispatcher, lang));
     }
+
+    private native void copyTextToClipboard(String text) /*-{
+        //http://stackoverflow.com/a/30810322/1303387
+        var textArea = document.createElement("textarea");
+        textArea.style.position = 'fixed';
+        textArea.style.top = 0;
+        textArea.style.left = 0;
+        textArea.style.width = '2em';
+        textArea.style.height = '2em';
+        textArea.style.padding = 0;
+        textArea.style.border = 'none';
+        textArea.style.outline = 'none';
+        textArea.style.boxShadow = 'none';
+        textArea.style.background = 'transparent';
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Copying text command was ' + msg);
+        } catch (err) {
+            console.log('Oops, unable to copy');
+        }
+        document.body.removeChild(textArea);
+    }-*/;
 
     private static void refreshTree() {
         final List<String> openedNodes = new ArrayList<String>();
