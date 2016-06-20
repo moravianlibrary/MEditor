@@ -84,7 +84,7 @@ public class FindMetadataHandler
 
     /**
      * Instantiates a new put recently modified handler.
-     * 
+     *
      * @param configuration
      *        the configuration
      */
@@ -109,7 +109,7 @@ public class FindMetadataHandler
     @Override
     public FindMetadataResult execute(final FindMetadataAction action, final ExecutionContext context)
             throws ActionException {
-            if (LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Processing action: FindMetadataAction: for id (" + action.getSearchType() + ") "
                     + action.getId());
         }
@@ -124,6 +124,7 @@ public class FindMetadataHandler
         ArrayList<MetadataBundle> enrichedBundle = null;
         boolean isOai = action.getMethod().equals(Constants.SEARCH_METHOD.OAI);
         boolean isZ39 = action.getMethod().equals(Constants.SEARCH_METHOD.Z39_50);
+        boolean isXServices = action.getMethod().equals(Constants.SEARCH_METHOD.X_SERVICES);
 
         String sys = action.getId();
         if (isOai && sys != null && sys.length() == 10) {
@@ -149,7 +150,6 @@ public class FindMetadataHandler
             if (ClientUtils.toBoolean(configuration.getVsup())) {
                 return new FindMetadataResult(bundle);
             }
-            // co kdyz to je v Z39.50 a neni to v oai
             enrichedBundle = new ArrayList<MetadataBundle>(bundle.size());
             for (MetadataBundle bun : bundle) {
                 Map<String, String> properties = new HashMap<String, String>(3);
@@ -160,10 +160,10 @@ public class FindMetadataHandler
                 enrichedBundle.add(bun);
             }
         }
-        if (action.getMethod().equals(Constants.SEARCH_METHOD.X_SERVICES)) {
+        if (isXServices) {
             enrichedBundle = xServicesClient.search(action.getId(), action.getBase());
         }
-        return new FindMetadataResult(action.getMethod().equals(Constants.SEARCH_METHOD.OAI) ? bundle : enrichedBundle);
+        return new FindMetadataResult(isOai ? bundle : enrichedBundle);
     }
 
     /*
