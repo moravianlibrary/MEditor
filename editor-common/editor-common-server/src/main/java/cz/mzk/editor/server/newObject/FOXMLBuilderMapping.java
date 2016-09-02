@@ -68,6 +68,7 @@ public class FOXMLBuilderMapping {
         //MAP.put(DigitalObjectModel.IMAGE_UNIT, MonographUnitBuilder.class);
         MAP.put(DigitalObjectModel.TRACK, TrackBuilder.class);
         MAP.put(DigitalObjectModel.SOUNDRECORDING, SoundRecordingBuilder.class);
+        MAP.put(DigitalObjectModel.SHEETMUSIC, MonographBuilder.class);
     }
 
     @SuppressWarnings("unchecked")
