@@ -51,6 +51,7 @@ import static cz.mzk.editor.shared.domain.DigitalObjectModel.SOUNDRECORDING;
 import static cz.mzk.editor.shared.domain.DigitalObjectModel.TRACK;
 import static cz.mzk.editor.shared.domain.DigitalObjectModel.SOUND_UNIT;
 import static cz.mzk.editor.shared.domain.DigitalObjectModel.GRAPHIC;
+import static cz.mzk.editor.shared.domain.DigitalObjectModel.SHEETMUSIC;
 import static cz.mzk.editor.shared.domain.FedoraRelationship.containsTrack;
 import static cz.mzk.editor.shared.domain.FedoraRelationship.hasIntCompPart;
 import static cz.mzk.editor.shared.domain.FedoraRelationship.hasItem;
@@ -107,6 +108,10 @@ public class NamedGraphModel
         putRelationship(MONOGRAPHUNIT, hasIntCompPart, INTERNALPART);
         putRelationship(INTERNALPART, isOnPage, PAGE);
         putRelationship(ARTICLE, isOnPage, PAGE);
+
+        putRelationship(SHEETMUSIC, hasPage, PAGE);
+        putRelationship(SHEETMUSIC, hasIntCompPart, INTERNALPART);
+        putRelationship(SHEETMUSIC, hasUnit, MONOGRAPHUNIT);
 
         /** The PERIODICAL. */
         putRelationship(PERIODICAL, hasPage, PAGE);
