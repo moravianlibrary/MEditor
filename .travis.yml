@@ -1,11 +1,20 @@
+sudo: required
 language: java
 jdk: oraclejdk7
+services:
+  - docker
 
-before_install:
+install:
   - mvn com.isomorphic:isc-maven-plugin:install -Dproduct=SMARTGWT -Dlicense=LGPL -DbuildNumber=5.0p -DbuildDate=2015-11-29
   - mkdir ~/.meditor && cp -r resources/xml/ ~/.meditor
-install: mvn clean install
-sudo: false
+script:
+  - mvn clean install
+  - cp target/meditor.war dockerfile/meditor/
+  - docker build -t moravianlibrary/meditor dockerfile/meditor
+
+after_success:
+  - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+  - docker push moravianlibrary/meditor
 
 notifications:
   email: false
@@ -14,10 +23,3 @@ notifications:
       on_success: never
       on_failure: change
       on_start: never
-
-deploy:
-  skip_cleanup: true
-  provider: script
-  script: >-
-            curl --ftp-create-dirs -T target/meditor.war -u $FTP_USER:$FTP_PASSWORD ftp://ftp-devel.mzk.cz/meditor/master/;
-            curl -H "Content-Type: application/json" --data '{"docker_tag": "latest"}' -X POST https://registry.hub.docker.com/u/moravianlibrary/meditor/trigger/45687579-deca-4b2c-99ce-c14a03b07a00/
