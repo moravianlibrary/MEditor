@@ -5,7 +5,7 @@ MAINTAINER Martin Rumanek <martin@rumanek.cz>
 ENV REFRESHED_AT 2015-07-14
 
 ## install packages
-RUN apt-get -y  update && apt-get -y install unzip curl libtiff-tools imagemagick sox ffmpeg libsox-fmt-mp3 
+RUN apt-get -y update > /dev/null && apt-get -y install unzip curl libtiff-tools imagemagick sox ffmpeg libsox-fmt-mp3 > /dev/null
 
 # run tomcat
 RUN curl -sL --no-verbose https://archive.apache.org/dist/tomcat/tomcat-8/v8.0.26/bin/apache-tomcat-8.0.26.tar.gz -o /tmp/tomcat.tar.gz && \
@@ -19,13 +19,13 @@ RUN tar xzf /tmp/tomcat.tar.gz --directory=/usr/local/ && mv /usr/local/apache-t
 ENV PATH  $CATALINA_HOME/bin:$JAVA_HOME/bin:$PATH
 
 
-RUN curl -sL --no-verbose https://github.com/moravianlibrary/MEditor/archive/master.zip -o /tmp/meditor.zip 
-RUN curl -sL  http://ftp-devel.mzk.cz/meditor/master/meditor.war -o $CATALINA_HOME/webapps/meditor.war
+RUN curl -sL --no-verbose https://github.com/moravianlibrary/MEditor/archive/master.zip -o /tmp/meditor.zip
+ADD meditor.war $CATALINA_HOME/webapps/meditor.war
 RUN curl -sL https://jdbc.postgresql.org/download/postgresql-9.4-1201.jdbc41.jar -o $CATALINA_HOME/lib/postgresql-9.4-1201.jdbc41.jar
-RUN unzip /tmp/meditor.zip -d /tmp/meditor/
+RUN unzip -qq /tmp/meditor.zip -d /tmp/meditor/
 
 #in archive is duplicated adore-djatoka-1.1 (so overwrite)
-RUN unzip -o /tmp/meditor/MEditor-master/resources/djatoka/dist/djatoka.war -d $CATALINA_HOME/webapps/djatoka
+RUN unzip -qq -o /tmp/meditor/MEditor-master/resources/djatoka/dist/djatoka.war -d $CATALINA_HOME/webapps/djatoka
 
 
 RUN mkdir -p /root/.meditor
@@ -62,4 +62,3 @@ CMD ["catalina.sh", "run"]
 
 # default conf
 ENV hostanme=localhost
-
