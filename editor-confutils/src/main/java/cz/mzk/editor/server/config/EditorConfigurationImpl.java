@@ -32,6 +32,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import java.util.Iterator;
 import java.util.Properties;
 
 import com.google.inject.Singleton;
@@ -116,18 +117,17 @@ public class EditorConfigurationImpl
             }
         }
 
-        CompositeConfiguration constconf = new CompositeConfiguration();
-        PropertiesConfiguration file = null;
+        CompositeConfiguration compositeConfiguration = new CompositeConfiguration();
+        PropertiesConfiguration propertiesConfiguration = null;
         try {
-            file = new PropertiesConfiguration(confFile);
+            propertiesConfiguration = new PropertiesConfiguration(confFile);
+            propertiesConfiguration.setReloadingStrategy(new FileChangedReloadingStrategy());
         } catch (ConfigurationException e) {
             LOGGER.error(e.getMessage(), e);
-            new RuntimeException("cannot read configuration");
         }
-        file.setReloadingStrategy(new FileChangedReloadingStrategy());
-        constconf.addConfiguration(file);
-        constconf.setProperty(ServerConstants.EDITOR_HOME, WORKING_DIR);
-        this.configuration = constconf;
+        compositeConfiguration.addConfiguration(propertiesConfiguration);
+        compositeConfiguration.setProperty(ServerConstants.EDITOR_HOME, WORKING_DIR);
+        configuration = compositeConfiguration;
 
         String hostname =
                 configuration.getString(EditorClientConfiguration.Constants.HOSTNAME, "editor.mzk.cz");
@@ -142,9 +142,21 @@ public class EditorConfigurationImpl
                 throw new RuntimeException("cannot create directory '" + imagesDir.getAbsolutePath() + "'");
             }
         }
-        constconf.setProperty(ServerConstants.IMAGES_LOCATION, ServerConstants.DEFAULT_IMAGES_LOCATION
+        compositeConfiguration.setProperty(ServerConstants.IMAGES_LOCATION, ServerConstants.DEFAULT_IMAGES_LOCATION
                 + hostname + File.separator);
-        constconf.addConfiguration(new EnvironmentConfiguration());
+
+        EnvironmentConfiguration environmentConfiguration = new EnvironmentConfiguration();
+        PropertiesConfiguration propertiesConfigurationEnvironment = new PropertiesConfiguration();
+        environmentConfiguration.setDelimiterParsingDisabled(true);
+        String key, value;
+        for (Iterator it = environmentConfiguration.getKeys(); it.hasNext();) {
+            key = (String)it.next();
+            value = environmentConfiguration.getString(key);
+            key = key.replaceAll("_", ".");
+            key = key.replaceAll("\\.\\.", "__");
+            propertiesConfigurationEnvironment.addProperty(key, value);
+        }
+        compositeConfiguration.addConfiguration(propertiesConfigurationEnvironment);
     }
 
     /*
