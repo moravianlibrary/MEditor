@@ -1,18 +1,10 @@
 #mvn
 target
 
-#eclipse
-.settings
-.classpath
-.project
-*.launch
-
 #idea
 .idea
 *.iml
 
-META-INF
-.gwt
-*.swp
 .errai
-.class
+*.war
+*.class
