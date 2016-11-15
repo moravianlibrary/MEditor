@@ -1,6 +1,0 @@
-PGPASSWORD=${POSTGRES_PASSWORD}
-
-0 0 1 * * root pg_dump -h meditorPostgres -U ${POSTGRES_USER} > /backup/backup-monthly.tmp && mv /backup/backup-monthly.tmp /backup/backup-monthly.sql
-0 0 * * * root pg_dump -h meditorPostgres -U ${POSTGRES_USER} > /backup/backup-daily.tmp && mv /backup/backup-daily.tmp /backup/backup-daily.sql
-0 0 * * 0 root pg_dump -h meditorPostgres -U ${POSTGRES_USER} > /backup/backup-weekly.tmp && mv /backup/backup-weekly.tmp /backup/backup-weekly.sql
-
