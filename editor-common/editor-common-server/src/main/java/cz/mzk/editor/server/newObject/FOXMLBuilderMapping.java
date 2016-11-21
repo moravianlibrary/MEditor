@@ -57,6 +57,7 @@ public class FOXMLBuilderMapping {
         MAP.put(DigitalObjectModel.MAP, MonographBuilder.class);
         MAP.put(DigitalObjectModel.MANUSCRIPT, MonographBuilder.class);
         MAP.put(DigitalObjectModel.ARCHIVE, MonographBuilder.class);
+        MAP.put(DigitalObjectModel.SHEETMUSIC, MonographBuilder.class);
         MAP.put(DigitalObjectModel.PERIODICAL, PeriodicalBuilder.class);
         MAP.put(DigitalObjectModel.INTERNALPART, IntPartBuilder.class);
         MAP.put(DigitalObjectModel.PAGE, PageBuilder.class);
