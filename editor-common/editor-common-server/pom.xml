@@ -159,7 +159,7 @@
           </execution>
         </executions>
         <configuration>
-          <scalaVersion>2.10.1</scalaVersion>
+          <scalaVersion>2.12.1</scalaVersion>
           <excludes>
             <exclude>**/*.java</exclude>
           </excludes>
@@ -264,6 +264,9 @@
                             <packageName>com.abby.recognitionserver3</packageName>
                             <sourceDestDir>${generatedSources}</sourceDestDir>
                             <target>2.1</target>
+							<vmArgs>
+								<vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
+							</vmArgs>
                         </configuration>
                         <phase>generate-sources</phase>
                     </execution>
@@ -283,6 +286,9 @@
                             <packageName>org.fedora.api</packageName>
                             <sourceDestDir>${generatedSources}</sourceDestDir>
                             <target>2.1</target>
+							<vmArgs>
+								<vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
+							</vmArgs>
                         </configuration>
                         <phase>generate-sources</phase>
                     </execution>

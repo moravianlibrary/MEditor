@@ -95,7 +95,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<scalaVersion>2.9.1-1</scalaVersion>
+					<scalaVersion>2.12.1</scalaVersion>
 				</configuration>
 			</plugin>
 			<plugin>
