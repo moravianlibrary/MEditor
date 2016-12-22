@@ -248,11 +248,11 @@ public class FindMetadataPresenter
                                                                  bundle.getMarc().getSysno(),
                                                                  inputPath,
                                                                  bundle));
-                placeManager.revealRelativePlace(new PlaceRequest(NameTokens.CREATE)
+                placeManager.revealRelativePlace(new PlaceRequest.Builder().nameToken(NameTokens.CREATE)
                         .with(Constants.ATTR_MODEL, model)
                         .with(Constants.URL_PARAM_SYSNO, bundle.getMarc().getSysno())
                         .with(Constants.URL_PARAM_PATH, inputPath)
-                        .with(Constants.URL_PARAM_BASE, bundle.getMarc().getBase()));
+                        .with(Constants.URL_PARAM_BASE, bundle.getMarc().getBase()).build());
             }
         });
         getView().getWithoutMetadata().addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
@@ -260,10 +260,10 @@ public class FindMetadataPresenter
             @Override
             public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
                 getEventBus().fireEvent(new CreateStructureEvent(model, sysno, inputPath, null));
-                placeManager.revealRelativePlace(new PlaceRequest(NameTokens.CREATE)
+                placeManager.revealRelativePlace(new PlaceRequest.Builder().nameToken(NameTokens.CREATE)
                         .with(Constants.ATTR_MODEL, model).with(Constants.URL_PARAM_SYSNO, sysno)
                         .with(Constants.URL_PARAM_PATH, inputPath)
-                        .with(Constants.URL_PARAM_BASE, getView().getOaiBase().getValueAsString()));
+                        .with(Constants.URL_PARAM_BASE, getView().getOaiBase().getValueAsString()).build());
             }
         });
         getView().getResults().addCellClickHandler(new CellClickHandler() {

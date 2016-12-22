@@ -288,8 +288,8 @@ public class HomePresenter
 
     private void evaluateUuid() {
         if (getView().getForm().validate())
-            placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
-                    .with(Constants.URL_PARAM_UUID, (String) getView().getUuid().getValue()));
+            placeManager.revealRelativePlace(new PlaceRequest.Builder().nameToken(NameTokens.MODIFY)
+                    .with(Constants.URL_PARAM_UUID, (String) getView().getUuid().getValue()).build());
     }
 
     /*

@@ -116,7 +116,7 @@ public class AdminPresenter
 
     /**
      * Instantiates a new app presenter.
-     * 
+     *
      * @param eventBus
      *        the event bus
      * @param view
@@ -166,7 +166,7 @@ public class AdminPresenter
             @Override
             public void onMenuButtonClicked(MenuButtonClickedEvent event) {
                 if (event.isToOpenPresenter())
-                    placeManager.revealRelativePlace(new PlaceRequest(event.getMenuButtonType()));
+                    placeManager.revealRelativePlace(new PlaceRequest.Builder().nameToken(event.getMenuButtonType()).build());
             }
         });
 

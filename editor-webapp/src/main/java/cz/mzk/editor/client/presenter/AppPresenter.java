@@ -184,10 +184,10 @@ public class AppPresenter
                                  public void onOpenFirstDigitalObject(OpenFirstDigitalObjectEvent event) {
                                      StoredItem storedItem = event.getStoredItem();
                                      if (storedItem != null) {
-                                         placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
+                                         placeManager.revealRelativePlace(new PlaceRequest.Builder().nameToken(NameTokens.MODIFY)
                                                  .with(Constants.URL_PARAM_UUID, event.getUuid())
                                                  .with(Constants.ATTR_FILE_NAME, storedItem.getFileName())
-                                                 .with(Constants.ATTR_MODEL, storedItem.getModel().getValue()));
+                                                 .with(Constants.ATTR_MODEL, storedItem.getModel().getValue()).build());
                                      } else {
                                          openObject(event.getUuid());
                                      }
@@ -256,7 +256,7 @@ public class AppPresenter
 
                                 @Override
                                 public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                                    placeManager.revealRelativePlace(new PlaceRequest(NameTokens.ADMIN_HOME));
+                                    placeManager.revealRelativePlace(new PlaceRequest.Builder().nameToken(NameTokens.ADMIN_HOME).build());
                                 }
                             });
 
@@ -301,8 +301,8 @@ public class AppPresenter
     }
 
     private void openObject(String uuid) {
-        placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID,
-                                                                                  uuid));
+        placeManager.revealRelativePlace(new PlaceRequest.Builder().nameToken(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID,
+                                                                                  uuid).build());
     }
 
     /*

@@ -355,8 +355,8 @@ public class ModifyPresenter
             @Override
             public void onClick(MenuItemClickEvent event) {
                 String uuidToEdit = tileGrid.getSelection()[0].getAttribute(Constants.ATTR_UUID);
-                placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
-                        .with(Constants.URL_PARAM_UUID, uuidToEdit));
+                placeManager.revealRelativePlace(new PlaceRequest.Builder().nameToken(NameTokens.MODIFY)
+                        .with(Constants.URL_PARAM_UUID, uuidToEdit).build());
             }
         });
         if (!ModifyView.ID_SEL_ALL.equals(items[2].getAttributeAsObject(ModifyView.ID_NAME))) {
@@ -695,9 +695,8 @@ public class ModifyPresenter
      */
     @Override
     public void onRefresh(String uuid) {
-        placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID,
-                                                                                  uuid)
-                .with(Constants.URL_PARAM_REFRESH, "yes"));
+        placeManager.revealRelativePlace(new PlaceRequest.Builder().nameToken(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID, uuid)
+                .with(Constants.URL_PARAM_REFRESH, "yes").build());
     }
 
     @Override
@@ -770,14 +769,14 @@ public class ModifyPresenter
     @Override
     public void openAnotherObject(String uuid, StoredItem storedItem) {
         if (storedItem != null) {
-            placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
+            placeManager.revealRelativePlace(new PlaceRequest.Builder().nameToken(NameTokens.MODIFY)
                     .with(Constants.URL_PARAM_UUID, uuid)
                     .with(Constants.ATTR_FILE_NAME, storedItem.getFileName())
                     .with(Constants.ATTR_MODEL, storedItem.getModel().getValue())
-                    .with(Constants.ATTR_ID, String.valueOf(storedItem.getId())));
+                    .with(Constants.ATTR_ID, String.valueOf(storedItem.getId())).build());
         } else {
-            placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
-                    .with(Constants.URL_PARAM_UUID, uuid));
+            placeManager.revealRelativePlace(new PlaceRequest.Builder().nameToken(NameTokens.MODIFY)
+                    .with(Constants.URL_PARAM_UUID, uuid).build());
         }
     }
 

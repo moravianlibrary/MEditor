@@ -359,8 +359,8 @@ public class CreateObjectMenuPresenter
      */
     @Override
     public void revealItem(String uuid) {
-        placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID,
-                                                                                  uuid));
+        placeManager.revealRelativePlace(new PlaceRequest.Builder().nameToken(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID,
+                                                                                  uuid).build());
     }
 
     private void afterTypeChanged(String currentModel) {

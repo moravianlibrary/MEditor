@@ -62,8 +62,8 @@ public class MEditor
                 && (Location.getPath() == null || "/meditor/".equals(Location.getPath()))) {
 
             injector.getPlaceManager()
-                    .revealPlace(new PlaceRequest(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID, Location
-                            .getQueryString().substring(Location.getQueryString().indexOf("uuid:"))));
+                    .revealPlace(new PlaceRequest.Builder().nameToken(NameTokens.MODIFY).with(Constants.URL_PARAM_UUID, Location
+                            .getQueryString().substring(Location.getQueryString().indexOf("uuid:"))).build());
         } else {
             injector.getPlaceManager().revealCurrentPlace();
         }

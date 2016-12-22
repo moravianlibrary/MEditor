@@ -1525,8 +1525,8 @@ public class CreateStructurePresenter
             @Override
             public void execute(Boolean value) {
                 if (value) {
-                    placeManager.revealRelativePlace(new PlaceRequest(NameTokens.MODIFY)
-                            .with(Constants.URL_PARAM_UUID, pid));
+                    placeManager.revealRelativePlace(new PlaceRequest.Builder().nameToken(NameTokens.MODIFY)
+                            .with(Constants.URL_PARAM_UUID, pid).build());
                 }
             }
         });
