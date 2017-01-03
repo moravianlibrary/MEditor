@@ -85,9 +85,9 @@
 
 	<properties>
 		<!-- Versions -->
-		<gwt.version>2.6.1</gwt.version>
+		<gwt.version>2.8.0</gwt.version>
 		<gwtp.version>1.5.3</gwtp.version>
-		<smartGwt.version>[5.0, 5.1)</smartGwt.version>
+		<smartGwt.version>[6.0, 6.1)</smartGwt.version>
 		<guice.version>3.0</guice.version>
 		<gin.version>2.1.2</gin.version>
 		<akka.version>2.0</akka.version>
@@ -318,9 +318,9 @@
 				<version>3.1.6</version>
 			</dependency>
 			<dependency>
-				<groupId>dom4j</groupId>
+				<groupId>org.dom4j</groupId>
 				<artifactId>dom4j</artifactId>
-				<version>1.6.1</version>
+				<version>2.0.0</version>
 			</dependency>
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
@@ -330,7 +330,7 @@
             <dependency>
 				<groupId>jaxen</groupId>
 				<artifactId>jaxen</artifactId>
-				<version>1.1.3</version>
+				<version>1.1.6</version>
 				<exclusions>
 					<exclusion>
 						<groupId>maven-plugins</groupId>
@@ -532,6 +532,13 @@
                 <groupId>org.jboss.errai</groupId>
                 <artifactId>errai-common</artifactId>
                 <version>${errai.version}</version>
+				<exclusions>
+					<!-- damn dom4j https://issues.jboss.org/browse/ERRAI-983 -->
+					<exclusion>
+						<groupId>dom4j</groupId>
+						<artifactId>dom4j</artifactId>
+					</exclusion>
+				</exclusions>
             </dependency>
 
             <dependency>

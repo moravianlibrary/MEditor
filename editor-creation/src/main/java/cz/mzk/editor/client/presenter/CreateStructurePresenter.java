@@ -435,7 +435,6 @@ public class CreateStructurePresenter
     protected void onReset() {
         super.onReset();
         processImages();
-        RevealContentEvent.fire(this, Constants.TYPE_MEDIT_LEFT_CONTENT, leftPresenter);
 
         leftPresenter.getView().setInputTree(dispatcher, placeManager);
         leftPresenter.getView().getSectionStack().collapseSection(0);
@@ -1396,6 +1395,7 @@ public class CreateStructurePresenter
     @Override
     protected void revealInParent() {
         RevealContentEvent.fire(this, Constants.TYPE_MEDIT_MAIN_CONTENT, this);
+        RevealContentEvent.fire(this, Constants.TYPE_MEDIT_LEFT_CONTENT, leftPresenter);
     }
 
     @ProxyEvent
