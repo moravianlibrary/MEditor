@@ -70,11 +70,9 @@ public class SoundUnitBuilder extends FoxmlBuilder {
     protected void decorateRelsExtStream() {
         super.decorateRelsExtStream();
 
-        if (!getConfiguration().getImageServerInternal()) {
-            Element description = FoxmlUtils.findDescriptionElement(getRelsExtXmlContent());
-            Element url = description.addElement(new QName("tiles-url", Namespaces.kramerius));
-            url.addText(getImageUrl());
-        }
+        Element description = FoxmlUtils.findDescriptionElement(getRelsExtXmlContent());
+        Element url = description.addElement(new QName("tiles-url", Namespaces.kramerius));
+        url.addText(getImageUrl());
     }
 
     @Override

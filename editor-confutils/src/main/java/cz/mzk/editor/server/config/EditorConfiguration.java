@@ -55,9 +55,6 @@ public abstract class EditorConfiguration {
         /** The Constant INPUT_QUEUE. */
         public static final String INPUT_QUEUE = "inputQueue";
 
-        /** The Constant IMAGE_SERVER_INTERNAL. */
-        public static final String IMAGE_SERVER_INTERNAL = "imageServer.internal";
-
         /** The Constant IMAGE_SERVER_URL. */
         public static final String IMAGE_SERVER_URL = "imageServer.url";
 
@@ -359,9 +356,6 @@ public abstract class EditorConfiguration {
         return getConfiguration().getString(ServerConstants.INPUT_QUEUE);
     }
 
-    public boolean getImageServerInternal() {
-        return getConfiguration().getBoolean(ServerConstants.IMAGE_SERVER_INTERNAL, false);
-    }
 
     /**
      * Gets the image server url.

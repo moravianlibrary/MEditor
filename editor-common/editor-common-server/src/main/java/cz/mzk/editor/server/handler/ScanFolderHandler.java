@@ -228,7 +228,7 @@ public class ScanFolderHandler
             throw new ActionException(e);
         }
 
-        if (toAdd.size() > 10 && !configuration.getImageServerInternal()) {
+        if (toAdd.size() > 10) {
             removeOldImages();
         }
 

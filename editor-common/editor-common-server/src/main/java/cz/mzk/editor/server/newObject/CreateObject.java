@@ -375,7 +375,6 @@ public class CreateObject {
                         .getModel(), child.getModel()), child.getName()));
             }
         }
-        boolean internal = config.getImageServerInternal();
         String imageUrl = null;
         String newFilePath = null;
 
@@ -392,24 +391,20 @@ public class CreateObject {
             if (!isSysno(sysno)) {
                 imageUrl =
                         url + "meditor" + getPathFromNonSysno(sysno)
-                                + (internal ? node.getPath() : node.getUuid());
-                if (!internal) {
-                    newFilePath =
-                            addSlash(config.getImageServerUnknown()) + getPathFromNonSysno(sysno)
-                                    + node.getUuid();
-                }
+                                + (node.getUuid());
+                newFilePath =
+                        addSlash(config.getImageServerUnknown()) + getPathFromNonSysno(sysno)
+                                + node.getUuid();
             } else {
                 String basePath = "";
                 if (base != null && !"".equals(base)) {
                     basePath = base.toLowerCase() + "/";
                 }
                 imageUrl =
-                        url + basePath + getSysnoPath(sysno) + (internal ? node.getPath() : node.getUuid());
-                if (!internal) {
-                    newFilePath =
+                        url + basePath + getSysnoPath(sysno) + (node.getUuid());
+                newFilePath =
                             addSlash(config.getImageServerKnown()) + basePath + getSysnoPath(sysno)
                                     + node.getUuid();
-                }
             }
 
             builder.setImageUrl(imageUrl);
@@ -470,49 +465,47 @@ public class CreateObject {
         if (success) ingestedObjects.add(node.getUuid());
 
         if ((isPage || isSoundUnit) && success) {
-            if (!internal) {
-                // TODO: StringBuffer
-                boolean copySuccess;
-                String newImagePath = null;
-                try {
-                    newImagePath = imageResolverDAO.getNewImageFilePath(node.getPath());
-                    if (newImagePath == null) {
-                        throw new CreateObjectException("Unkown file path for " + node.getPath());
-                    } else if (!newImagePath.endsWith(Constants.JPEG_2000_EXTENSION)) {
-                        newImagePath = newImagePath.concat(Constants.JPEG_2000_EXTENSION);
-                    }
-
-                    copySuccess =
-                            internal ? true : IOUtils.copyFile(newImagePath, newFilePath
-                                    + Constants.JPEG_2000_EXTENSION);
-
-                    if (copySuccess && LOGGER.isInfoEnabled()) {
-                        LOGGER.info("image " + newImagePath + "  was copied to  " + newFilePath
-                                + Constants.JPEG_2000_EXTENSION);
-                    }
-                } catch (IOException e) {
-                    LOGGER.error(e.getMessage());
-                    e.printStackTrace();
-                    throw new CreateObjectException(e.getMessage(), e);
-                } catch (DatabaseException e) {
-                    LOGGER.error(e.getMessage());
-                    e.printStackTrace();
-                    throw new CreateObjectException(e.getMessage(), e);
-                }
-            }
-
-            if (isPage) {
-                String ocrPath = node.getAditionalInfoOrOcr();
-                if (ocrPath != null && !"".equals(ocrPath)) {
-                    insertManagedDatastream(DATASTREAM_ID.TEXT_OCR, node.getUuid(), ocrPath, true, "text/plain");
+            // TODO: StringBuffer
+            boolean copySuccess;
+            String newImagePath = null;
+            try {
+                newImagePath = imageResolverDAO.getNewImageFilePath(node.getPath());
+                if (newImagePath == null) {
+                    throw new CreateObjectException("Unkown file path for " + node.getPath());
+                } else if (!newImagePath.endsWith(Constants.JPEG_2000_EXTENSION)) {
+                    newImagePath = newImagePath.concat(Constants.JPEG_2000_EXTENSION);
                 }
 
-                String altoPath = node.getPartNumberOrAlto();
-                if (altoPath != null && !"".equals(altoPath)) {
-                    insertManagedDatastream(DATASTREAM_ID.ALTO, node.getUuid(), altoPath, true, "text/xml");
+                copySuccess = IOUtils.copyFile(newImagePath, newFilePath
+                        + Constants.JPEG_2000_EXTENSION);
+
+                if (copySuccess && LOGGER.isInfoEnabled()) {
+                    LOGGER.info("image " + newImagePath + "  was copied to  " + newFilePath
+                            + Constants.JPEG_2000_EXTENSION);
                 }
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+                throw new CreateObjectException(e.getMessage(), e);
+            } catch (DatabaseException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+                throw new CreateObjectException(e.getMessage(), e);
             }
         }
+
+        if (isPage) {
+            String ocrPath = node.getAditionalInfoOrOcr();
+            if (ocrPath != null && !"".equals(ocrPath)) {
+                insertManagedDatastream(DATASTREAM_ID.TEXT_OCR, node.getUuid(), ocrPath, true, "text/plain");
+            }
+
+            String altoPath = node.getPartNumberOrAlto();
+            if (altoPath != null && !"".equals(altoPath)) {
+                insertManagedDatastream(DATASTREAM_ID.ALTO, node.getUuid(), altoPath, true, "text/xml");
+            }
+        }
+
 
         if (isTrack && success) {
             boolean copySuccessWav;
@@ -821,13 +814,12 @@ public class CreateObject {
         String unknown = config.getImageServerUnknown();
         String known = config.getImageServerKnown();
         String url = config.getImageServerUrl();
-        boolean internal = config.getImageServerInternal();
         if (url == null || "".equals(url)) {
             String errorMsg = "URL of the imageserver has not been set in the configuration.";
             LOGGER.error(errorMsg);
             throw new CreateObjectException(errorMsg);
         }
-        if (!internal && (unknown == null || "".equals(unknown) || known == null || "".equals(known))) {
+        if (unknown == null || "".equals(unknown) || known == null || "".equals(known)) {
             String errorMsg =
                     "Error, one of folloving compulsory options have not been set ["
                             + EditorConfiguration.ServerConstants.IMAGE_SERVER_KNOWN + " ,"
@@ -836,18 +828,16 @@ public class CreateObject {
             throw new CreateObjectException(errorMsg);
         }
 
-        if (internal) {
-            imagesDir = new File(config.getEditorHome() + '/' + ".images");
-        } else {
-            String basePath = "";
-            if (base != null && !"".equals(base)) {
-                basePath = base.toLowerCase() + "/";
-            }
-            imagesDir =
-                    new File(isSysno(sysno) ? config.getImageServerKnown() + '/' + basePath
-                            + getSysnoPath(sysno) : config.getImageServerUnknown()
-                            + getPathFromNonSysno(sysno));
+
+        String basePath = "";
+        if (base != null && !"".equals(base)) {
+            basePath = base.toLowerCase() + "/";
         }
+        imagesDir =
+                new File(isSysno(sysno) ? config.getImageServerKnown() + '/' + basePath
+                        + getSysnoPath(sysno) : config.getImageServerUnknown()
+                        + getPathFromNonSysno(sysno));
+
         mkdirIfPathNotExist(imagesDir);
 
 

@@ -1476,21 +1476,8 @@ public class CreateStructurePresenter
                                    @Override
                                    public void callback(final InsertNewDigitalObjectResult result) {
                                        if (result.isIngestSuccess()) {
-                                           if (!result.isReindexSuccess() || !result.isDeepZoomSuccess()) {
-                                               String error;
-                                               if (!result.isReindexSuccess() && !result.isDeepZoomSuccess()) {
-                                                   error = lang.reindexFail() + " " + lang.deepZoomFail();
-                                               } else if (!result.isReindexSuccess()) {
-                                                   error = lang.reindexFail();
-                                               } else {
-                                                   /**
-                                                    * (internal image server is
-                                                    * enabled)
-                                                    */
-                                                   error = lang.deepZoomFail();
-                                               }
-
-                                               SC.warn(error, new BooleanCallback() {
+                                           if (!result.isReindexSuccess()) {
+                                               SC.warn(lang.reindexFail(), new BooleanCallback() {
 
                                                    @Override
                                                    public void execute(Boolean value) {
