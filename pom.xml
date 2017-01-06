@@ -285,6 +285,11 @@
 						<groupId>com.google.gwt</groupId>
 						<artifactId>gwt-dev</artifactId>
 					</exclusion>
+					<!-- evil depdendency javax.ws.rs:jsr311-api:jar:1.1.1:compile -->
+					<exclusion>
+						<groupId>com.gwtplatform</groupId>
+						<artifactId>gwtp-dispatch-rest-shared</artifactId>
+					</exclusion>
 				</exclusions>
 			</dependency>
 			<dependency>
@@ -325,7 +330,7 @@
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-client</artifactId>
-                <version>3.0.14.Final</version>
+                <version>3.1.0.Final</version>
             </dependency>
             <dependency>
 				<groupId>jaxen</groupId>
