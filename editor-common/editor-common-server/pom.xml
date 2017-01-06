@@ -108,36 +108,44 @@
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
 		</dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-common</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-tools</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>net.databinder.dispatch</groupId>
-      <artifactId>dispatch-core_2.10</artifactId>
-      <version>0.11.0</version>
-    </dependency>
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.googlecode.flyway</groupId>
-            <artifactId>flyway-core</artifactId>
-            <version>2.1.1</version>
-        </dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.errai</groupId>
+			<artifactId>errai-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.errai</groupId>
+			<artifactId>errai-bus</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.errai</groupId>
+			<artifactId>errai-tools</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.databinder.dispatch</groupId>
+			<artifactId>dispatch-core_2.10</artifactId>
+			<version>0.11.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.flyway</groupId>
+			<artifactId>flyway-core</artifactId>
+			<version>2.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-library</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.scala-lang.modules</groupId>
+			<artifactId>scala-xml_2.12.0-M5</artifactId>
+		</dependency>
 
 
 	</dependencies>

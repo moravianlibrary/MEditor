@@ -90,7 +90,7 @@
 		<smartGwt.version>[6.0, 6.1)</smartGwt.version>
 		<guice.version>3.0</guice.version>
 		<gin.version>2.1.2</gin.version>
-		<akka.version>2.0</akka.version>
+		<akka.version>2.4.16</akka.version>
         <errai.version>3.2.1.Final</errai.version>
 		<yaz4j.version>1.5</yaz4j.version>
 		<marc4j.version>2.6.0</marc4j.version>
@@ -189,6 +189,11 @@
 		<repository>
 			<id>indexdata</id>
 			<url>http://maven.indexdata.com/</url>
+		</repository>
+		<repository>
+			<id>repo.akka.io</id>
+			<name>Akka Maven Repo</name>
+			<url>http://repo.akka.io/repository/</url>
 		</repository>
 	</repositories>
 
@@ -423,7 +428,6 @@
 				<artifactId>pdfbox</artifactId>
 				<version>2.0.4</version>
 			</dependency>
-
 			<dependency>
 				<groupId>com.foxtrottechnologies</groupId>
 				<artifactId>javadjvu</artifactId>
@@ -446,20 +450,50 @@
 			</dependency>
 			<dependency>
 				<groupId>com.typesafe.akka</groupId>
-				<artifactId>akka-actor</artifactId>
+				<artifactId>akka-actor_2.12</artifactId>
 				<version>${akka.version}</version>
+				<exclusions>
+					<exclusion>
+						<!-- make sure wrong scala version is not pulled in -->
+						<groupId>org.scala-lang</groupId>
+						<artifactId>scala-library</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>com.typesafe.akka</groupId>
-				<artifactId>akka-kernel</artifactId>
+				<artifactId>akka-kernel_2.12</artifactId>
 				<version>${akka.version}</version>
+				<exclusions>
+					<exclusion>
+						<!-- make sure wrong scala version is not pulled in -->
+						<groupId>org.scala-lang</groupId>
+						<artifactId>scala-library</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>com.typesafe.akka</groupId>
-				<artifactId>akka-remote</artifactId>
+				<artifactId>akka-remote_2.12</artifactId>
 				<version>${akka.version}</version>
+				<exclusions>
+					<exclusion>
+						<!-- make sure wrong scala version is not pulled in -->
+						<groupId>org.scala-lang</groupId>
+						<artifactId>scala-library</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
-
+			<dependency>
+				<groupId>org.scala-lang</groupId>
+				<artifactId>scala-library</artifactId>
+				<version>2.12.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.scala-lang.modules</groupId>
+				<artifactId>scala-xml_2.12.0-M5</artifactId>
+				<version>1.0.5</version>
+			</dependency>
 			<!-- LDAP -->
 			<dependency>
 				<groupId>org.springframework.ldap</groupId>
@@ -683,15 +717,6 @@
                 </plugin>
 			</plugins>
 		</pluginManagement>
-
-		<!-- <plugins> <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-enforcer-plugin</artifactId> 
-			<executions> <execution> <goals> <goal>enforce</goal> </goals> <configuration> 
-			<rules> <bannedDependencies> <searchTransitive>true</searchTransitive> <excludes> 
-			<exclude>commons-logging</exclude> <exclude>log4j:log4j</exclude> <exclude>org.slf4j:slf4j-jcl</exclude> 
-			<exclude>org.slf4j:slf4j-jdk14</exclude> <exclude>org.slf4j:slf4j-log4j12</exclude> 
-			<exclude>org.slf4j:slf4j-log4j13</exclude> <exclude>org.slf4j:slf4j-nop</exclude> 
-			<exclude>org.slf4j:slf4j-simple</exclude> </excludes> </bannedDependencies> 
-			</rules> </configuration> </execution> </executions> </plugin> </plugins> -->
 	</build>
 </project>
 

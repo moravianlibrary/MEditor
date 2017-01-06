@@ -1,15 +1,13 @@
 package cz.mzk.editor.server.convert
 
-import akka.actor.{ Actor, ActorSystem, Props, ActorRef, Address, AddressFromURIString }
+import akka.actor.{Actor, ActorRef, ActorSystem, Address, AddressFromURIString, Props}
 import akka.kernel.Bootable
 import akka.event.Logging
-import akka.routing.{ RoundRobinRouter, RemoteRouterConfig }
-//import akka.routing._
-import akka.dispatch.ExecutionContext
+import akka.routing.RoundRobinPool
+import akka.remote.routing.RemoteRouterConfig
+
 import scala.sys.process.Process
 import com.typesafe.config.ConfigFactory
-import java.util.concurrent.Executors
-import scala.collection.JavaConversions._
 import java.util.UUID.randomUUID
 
 trait ConvertMsg
@@ -61,11 +59,13 @@ akka {
     log.info("Deploy")
     // 195.113.155.50 -> editor-devel.mzk.cz
     // 195.113.155.46 -> editor.mzk.cz
-    val worker1 = system.actorFor("akka://Workers@195.113.155.50:2552/user/worker")
-    val worker2 = system.actorFor("akka://Workers@195.113.155.46:2552/user/worker")
-    val routees = Vector[ActorRef](worker1, worker2)
+    //val worker1 = system.actorFor("akka://Workers@195.113.155.50:2552/user/worker")
+    //val worker2 = system.actorFor("akka://Workers@195.113.155.46:2552/user/worker")
+    //val routees = Vector[ActorRef](worker1, worker2)
 
-    val router = system.actorOf(Props[Worker].withRouter(RoundRobinRouter(routees = routees)))
+
+    //val router = system.actorOf(Props[Worker].withRouter(RoundRobinRouter(routees = routees)))
+    val router = system.actorOf(RoundRobinPool(2).props(Props[Worker]))
     val master = system.actorOf(Props[Master])
 
     val inputPrefix = "/home/meditor/input/monograph/test/"

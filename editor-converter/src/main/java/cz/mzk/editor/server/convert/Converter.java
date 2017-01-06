@@ -36,12 +36,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Inject;
 
+import akka.routing.RoundRobinPool;
 import cz.mzk.editor.server.config.EditorConfiguration;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
-import akka.routing.RoundRobinRouter;
 
 /**
  * @author Jiri Kremser
@@ -80,8 +80,9 @@ public class Converter {
             // perhaps throw some ConvertException and convert the images in the old fashioned way
             throw new IllegalStateException("there are no akka worker nodes set in the config");
         }
-        router = system.actorOf(new Props(Worker.class).withRouter(RoundRobinRouter.create(routees)));
-        master = system.actorOf(new Props(Master.class));
+//        router = system.actorOf(Props.create(Worker.class).withRouter(RoundRobinRouter.create(routees)));
+        router = system.actorOf(new RoundRobinPool(2).props(Props.create(Worker.class)));
+        master = system.actorOf(Props.create(Master.class));
         someoneIsIn = true;
     }
 
