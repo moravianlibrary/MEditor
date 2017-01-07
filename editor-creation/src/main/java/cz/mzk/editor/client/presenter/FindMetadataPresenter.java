@@ -293,10 +293,16 @@ public class FindMetadataPresenter
      */
     @Override
     protected void onReset() {
-        RevealContentEvent.fire(this, Constants.TYPE_MEDIT_LEFT_CONTENT, leftPresenter);
-        leftPresenter.getView().setInputTree(dispatcher, placeManager);
         getView().getNext().setDisabled(true);
     }
+
+    @Override
+    protected void onReveal() {
+        leftPresenter.getView().setInputTree(dispatcher, placeManager);
+        RevealContentEvent.fire(this, Constants.TYPE_MEDIT_LEFT_CONTENT, leftPresenter);
+    }
+
+
 
     /*
      * (non-Javadoc) n
