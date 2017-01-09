@@ -138,22 +138,6 @@
 	</build>
 	<profiles>
 		<profile>
-			<id>default-filter</id>
-			<activation>
-				<property>
-					<name>!env</name>
-				</property>
-			</activation>
-			<build>
-				<filters>
-					<filter>
-						${basedir}/../src/main/filters/default.properties
-					</filter>
-				</filters>
-			</build>
-		</profile>
-
-		<profile>
 			<id>default</id>
 			<activation>
 				<property>
@@ -264,103 +248,6 @@
                     </plugin>
 
 				</plugins>
-			</build>
-		</profile>
-
-        <!-- Deployment profiles -->
-		<profile>
-			<id>mzk-devel</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>mzk-devel</value>
-				</property>
-			</activation>
-			<build>
-				<filters>
-					<filter>
-						${basedir}/../src/main/filters/mzk-devel.properties
-					</filter>
-				</filters>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.tomcat.maven</groupId>
-                        <artifactId>tomcat7-maven-plugin</artifactId>
-                        <configuration>
-                            <url>http://localhost:8080/manager/text</url>
-                            <username>tomcat</username>
-                            <password>tomcat</password>
-                            <warFile>
-                                ${basedir}/../target/${warName}.war
-                            </warFile>
-                            <path>/meditor</path>
-                        </configuration>
-                    </plugin>
-                </plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>mzk</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>mzk</value>
-				</property>
-			</activation>
-			<build>
-				<filters>
-					<filter>
-						${basedir}/../src/main/filters/mzk.properties
-					</filter>
-				</filters>
-			</build>
-		</profile>
-	    <profile>
-			<id>vsup</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>vsup</value>
-				</property>
-			</activation>
-			<build>
-				<filters>
-					<filter>
-						${basedir}/../src/main/filters/vsup.properties
-					</filter>
-				</filters>
-			</build>
-		</profile>
-	    <profile>
-			<id>cuni</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>cuni</value>
-				</property>
-			</activation>
-			<build>
-				<filters>
-					<filter>
-						${basedir}/../src/main/filters/cuni.properties
-					</filter>
-				</filters>
-			</build>
-		</profile>
-	    <profile>
-			<id>ntk</id>
-			<activation>
-				<property>
-					<name>env</name>
-					<value>ntk</value>
-				</property>
-			</activation>
-			<build>
-				<filters>
-					<filter>
-						${basedir}/../src/main/filters/ntk.properties
-					</filter>
-				</filters>
 			</build>
 		</profile>
 
