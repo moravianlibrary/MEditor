@@ -32,6 +32,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import java.util.Iterator;
 import java.util.Properties;
 
 import com.google.inject.Singleton;
@@ -144,7 +145,14 @@ public class EditorConfigurationImpl
         }
         constconf.setProperty(ServerConstants.IMAGES_LOCATION, ServerConstants.DEFAULT_IMAGES_LOCATION
                 + hostname + File.separator);
-        constconf.addConfiguration(new EnvironmentConfiguration());
+        EnvironmentConfiguration environmentConfiguration = new EnvironmentConfiguration();
+        for (Iterator it = environmentConfiguration.getKeys(); it.hasNext(); ) {
+            String key = (String) it.next();
+            String value = environmentConfiguration.getString(key);
+            key = key.replaceAll("_", ".");
+            key = key.replaceAll("\\.\\.", "__");
+            constconf.addProperty(key, value);
+        }
     }
 
     /*
