@@ -43,7 +43,6 @@ import java.io.OutputStream;
 import java.net.URL;
 
 import java.util.Iterator;
-import java.util.List;
 
 import javax.swing.JPanel;
 
@@ -59,9 +58,10 @@ import com.lizardtech.djvu.DjVuPage;
 import com.lizardtech.djvubean.DjVuImage;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
 
 import cz.mzk.editor.server.util.IOUtils;
+import org.apache.pdfbox.rendering.ImageType;
+import org.apache.pdfbox.rendering.PDFRenderer;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -81,7 +81,7 @@ public class KrameriusImageSupport {
 
     /**
      * Read image.
-     * 
+     *
      * @param uuid
      *        the uuid
      * @param stream
@@ -109,7 +109,7 @@ public class KrameriusImageSupport {
 
     /**
      * Read image.
-     * 
+     *
      * @param url
      *        the url
      * @param type
@@ -145,18 +145,12 @@ public class KrameriusImageSupport {
             } else
                 return null;
         } else if (type.equals(ImageMimeType.PDF)) {
-            PDDocument document = null;
-            try {
-                document = PDDocument.load(url.openStream());
+            try (PDDocument document = PDDocument.load(url.openStream());) {
+
+                PDFRenderer pdfRenderer = new PDFRenderer(document);
                 int resolution = 96;
-                List<?> pages = document.getDocumentCatalog().getAllPages();
-                PDPage pdPage = (PDPage) pages.get(page);
-                BufferedImage image = pdPage.convertToImage(BufferedImage.TYPE_INT_RGB, resolution);
+                BufferedImage image = pdfRenderer.renderImageWithDPI(page, resolution, ImageType.RGB);
                 return image;
-            } finally {
-                if (document != null) {
-                    document.close();
-                }
             }
         } else
             throw new IllegalArgumentException("unsupported mimetype '" + type.getValue() + "'");

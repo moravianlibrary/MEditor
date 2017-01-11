@@ -36,15 +36,16 @@ import com.gwtplatform.dispatch.shared.ActionException;
 import org.apache.log4j.Logger;
 
 import org.apache.pdfbox.cos.COSDocument;
+import org.apache.pdfbox.io.RandomAccessBufferedFileInputStream;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.util.PDFTextStripper;
 
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.GetOcrFromPdfAction;
 import cz.mzk.editor.shared.rpc.action.GetOcrFromPdfResult;
+import org.apache.pdfbox.text.PDFTextStripper;
 
 /**
  * @author Matous Jobanek
@@ -88,7 +89,7 @@ public class GetOcrFromPdfHandler
         PDDocument pdDoc = null;
         String parsedText;
         try {
-            parser = new PDFParser(new FileInputStream(pdfFile));
+            parser = new PDFParser(new RandomAccessBufferedFileInputStream(new FileInputStream(pdfFile)));
         } catch (Exception e) {
             LOGGER.error("Unable to open PDF Parser.: " + e);
             e.printStackTrace();

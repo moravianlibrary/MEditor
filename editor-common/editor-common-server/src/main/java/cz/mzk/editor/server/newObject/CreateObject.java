@@ -24,19 +24,28 @@
 
 package cz.mzk.editor.server.newObject;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import java.nio.charset.Charset;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 
 import com.google.inject.name.Named;
 
@@ -44,6 +53,8 @@ import org.apache.log4j.Logger;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 
+import org.apache.pdfbox.rendering.ImageType;
+import org.apache.pdfbox.rendering.PDFRenderer;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.DOMReader;
@@ -64,6 +75,8 @@ import cz.mzk.editor.server.util.RESTHelper;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.NamedGraphModel;
 import cz.mzk.editor.shared.rpc.NewDigitalObject;
+import org.jboss.resteasy.client.jaxrs.BasicAuthentication;
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 
 // TODO: Auto-generated Javadoc
 
@@ -256,7 +269,7 @@ public class CreateObject {
                 document = PDDocument.load(new File(newPdfPath));
                 int numberOfPages = document.getNumberOfPages();
                 LOGGER.warn(newPdfPath + ": Count of pages is 0");
-                if (numberOfPages > 0 && node.getPageIndex() > numberOfPages - 1)
+                if (numberOfPages > 0 && node.getPageIndex() > numberOfPages)
                     throw new CreateObjectException("The number of page: " + node.getPageIndex()
                             + " to be used for thumbnail is bigger than count of pages in the file: "
                             + numberOfPages);
@@ -591,57 +604,44 @@ public class CreateObject {
      * @param pathWithoutExtension the path without extension
      * @param thumbPageNum         the thumb page num
      * @param uuid                 the uuid
-     * @param pageWidth            the page width
+     * @param width            the image width
      * @throws CreateObjectException the create object exception
      */
     private void createThumbPrewFromPdf(DATASTREAM_ID dsId,
                                         String pathWithoutExtension,
                                         int thumbPageNum,
                                         String uuid,
-                                        int pageWidth) throws CreateObjectException {
-        try {
-            LOGGER.debug("Create thumbnail - convert " + pathWithoutExtension + Constants.PDF_EXTENSION
-                    + "[" + (thumbPageNum - 1) + "] -thumbnail x" + pageWidth + " "
-                    + pathWithoutExtension + ".jpg");
-            Process p =
-                    Runtime.getRuntime().exec("convert " + pathWithoutExtension + Constants.PDF_EXTENSION
-                            + "[" + (thumbPageNum - 1) + "] -thumbnail x" + pageWidth + " "
-                            + pathWithoutExtension + ".jpg");
+                                        int width) throws CreateObjectException {
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+             PDDocument document = PDDocument.load(Files.newInputStream(
+                     Paths.get(pathWithoutExtension + Constants.PDF_EXTENSION)));
+        ) {
+            long startTime = System.currentTimeMillis();
+            // convert pdf to image
+            PDFRenderer pdfRenderer = new PDFRenderer(document);
+            BufferedImage imageFull = pdfRenderer.renderImageWithDPI(thumbPageNum - 1, 72, ImageType.RGB);
 
-            int pNum;
-            if ((pNum = p.waitFor()) == 0) {
-                p.getInputStream().close();
-                File thumb = new File(pathWithoutExtension + ".jpg");
-                if (thumb.exists() && thumb.length() > 0) {
-                    insertManagedDatastream(dsId, uuid, pathWithoutExtension + ".jpg", true, "image/jpeg");
-                } else {
-                    throw new CreateObjectException("After the conversion of the pdf file: "
-                            + pathWithoutExtension + Constants.PDF_EXTENSION + " the image had zero size.");
-                }
-            } else {
-                p.getInputStream().close();
-                LOGGER.error("ERROR " + pNum + " : during the conversion of the pdf file: "
-                        + pathWithoutExtension + Constants.PDF_EXTENSION + " the proces returned "
-                        + IOUtils.readAsString(p.getErrorStream(), Charset.defaultCharset(), true));
-                throw new CreateObjectException("Unable to run the convert proces on the pdf file: "
-                        + pathWithoutExtension + Constants.PDF_EXTENSION);
-            }
+            // resize image
+            int height = (int)(imageFull.getHeight() * (double)width/imageFull.getWidth());
+            BufferedImage preview = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            Graphics2D gPreview = preview.createGraphics();
+            gPreview.drawImage(imageFull, 0, 0, width, height, null);
+            gPreview.dispose();
+            ImageIO.write(preview, "jpeg", outputStream);
+            LOGGER.debug("Duration of " + pathWithoutExtension + Constants.PDF_EXTENSION + "conversion was " + (System.currentTimeMillis() - startTime) + "ms");
 
+            // upload
+            Client client = new ResteasyClientBuilder().register(new BasicAuthentication(config.getFedoraLogin(),
+                    config.getFedoraPassword())).build();
+            String prepUrl = "/objects/" + (uuid.contains("uuid:") ? uuid : "uuid:".concat(uuid)) + "/datastreams/"
+                     + dsId.getValue() + "?controlGroup=M&versionable=true&dsState=A&mimeType=image/jpeg";
+            WebTarget target = client.target(config.getFedoraHost().concat(prepUrl));
+            target.request().post(Entity.entity(outputStream.toByteArray(), MediaType.APPLICATION_OCTET_STREAM_TYPE));
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
-            e.printStackTrace();
             throw new CreateObjectException("Unable to run the convert proces on the pdf file: "
                     + pathWithoutExtension + Constants.PDF_EXTENSION);
 
-        } catch (InterruptedException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-            throw new CreateObjectException("Unable to run the convert proces on the pdf file: "
-                    + pathWithoutExtension + Constants.PDF_EXTENSION);
-
-        } finally {
-            File thumb = new File(pathWithoutExtension + ".jpg");
-            if (thumb.exists()) thumb.delete();
         }
     }
 
@@ -657,7 +657,6 @@ public class CreateObject {
         try {
             doc = fedoraAccess.getRelsExt(parrent.getUuid());
         } catch (IOException e) {
-            LOGGER.error(e.getMessage());
             e.printStackTrace();
             throw new CreateObjectException("Unable to append " + child.getName() + " (" + child.getUuid()
                     + ") to parrent named " + parrent.getName() + " (" + parrent.getUuid() + ")!");
