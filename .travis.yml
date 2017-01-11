@@ -2,7 +2,7 @@ language: java
 jdk: 
   - oraclejdk8
 before_install:
-  - mvn com.isomorphic:isc-maven-plugin:install -Dproduct=SMARTGWT -Dlicense=LGPL -DbuildNumber=6.0p -DbuildDate=2016-12-21
+  - mvn com.isomorphic:isc-maven-plugin:install -Dproduct=SMARTGWT -Dlicense=LGPL -DbuildNumber=6.0p -DbuildDate=2017-01-11
   - mvn clean -q
   - mkdir ~/.meditor && cp -r resources/xml/ ~/.meditor
 install: mvn install -q
