@@ -148,7 +148,7 @@ public class EditorConfigurationImpl
         EnvironmentConfiguration environmentConfiguration = new EnvironmentConfiguration();
         for (Iterator it = environmentConfiguration.getKeys(); it.hasNext(); ) {
             String key = (String) it.next();
-            String value = environmentConfiguration.getString(key);
+            Object value = environmentConfiguration.getProperty(key);
             key = key.replaceAll("_", ".");
             key = key.replaceAll("\\.\\.", "__");
             constconf.addProperty(key, value);
