@@ -96,21 +96,21 @@
         <div class="tab-content">
             <c:if test="${openIdEnabled}">
                 <div class="tab-pane active" id="tab1">
-                    <form name="f" action="../meditor/j_spring_security_check" method="POST">
+                    <form name="f" action="../../meditor/login" method="POST">
                         <div id="janrainEngageEmbed"></div>
                     </form>
                 </div>
             </c:if>
                 <div class="tab-pane" id="tab2">
-                    <form name="f" action="../meditor/j_spring_security_check" method="POST">
+                    <form name="f" action="../../meditor/login" method="POST">
                         <table id="ldap">
                             <tr>
                                 <td>Login:</td>
-                                <td><input type="text" name="j_username" value=""/></td>
+                                <td><input type="text" name="username" value=""/></td>
                             </tr>
                             <tr>
                                 <td>Password:</td>
-                                <td><input type="password" name="j_password"/></td>
+                                <td><input type="password" name="password"/></td>
                             </tr>
                             <tr>
                                 <td colspan="2"><input name="submit" type="submit" value="Login"/></td>

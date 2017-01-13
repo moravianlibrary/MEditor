@@ -136,7 +136,7 @@ public class ShibbolethAuthenticationFilter
 
         if (session != null || getAllowSessionCreation()) {
             request.getSession()
-                    .setAttribute(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_LAST_USERNAME_KEY,
+                    .setAttribute(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY,
                                   username);
         }
     }
