@@ -73,9 +73,7 @@
 		<module>editor-editation</module>
 		<module>editor-creation</module>
 		<module>editor-user</module>
-		<module>editor-request</module>
 		<module>editor-webapp</module>
-		<module>editor-administration</module>
 		<module>editor-security</module>
 	</modules>
 
@@ -155,22 +153,12 @@
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
-				<artifactId>editor-request</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
 				<artifactId>editor-common-client</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>editor-common-server</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>editor-administration</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

@@ -42,7 +42,6 @@ import com.gwtplatform.mvp.shared.proxy.PlaceRequest;
 import com.gwtplatform.mvp.client.proxy.Proxy;
 import com.gwtplatform.mvp.client.proxy.RevealContentEvent;
 import com.gwtplatform.mvp.client.proxy.RevealContentHandler;
-import com.smartgwt.client.types.Cursor;
 import com.smartgwt.client.widgets.HTMLFlow;
 import com.smartgwt.client.widgets.form.fields.TextItem;
 
@@ -246,20 +245,6 @@ public class AppPresenter
                 @Override
                 public void callback(GetLoggedUserResult result) {
                     getView().getUsername().setContents(HtmlCode.bold(result.getName()));
-                    getView().getEditUsers().setContents(lang.userMgmt());
-                    getView().getEditUsers().setCursor(Cursor.HAND);
-                    getView().getEditUsers().setWidth(180);
-                    getView().getEditUsers().setHeight(15);
-                    getView().getEditUsers().setStyleName("pseudolink");
-                    getView().getEditUsers()
-                            .addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
-
-                                @Override
-                                public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
-                                    placeManager.revealRelativePlace(new PlaceRequest.Builder().nameToken(NameTokens.ADMIN_HOME).build());
-                                }
-                            });
-
                 }
             });
         }

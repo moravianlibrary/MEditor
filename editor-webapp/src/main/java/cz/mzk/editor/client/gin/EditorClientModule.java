@@ -44,41 +44,24 @@ import cz.mzk.editor.client.config.EditorClientConfiguration;
 import cz.mzk.editor.client.config.EditorClientConfigurationImpl;
 import cz.mzk.editor.client.dispatcher.CachingDispatchAsync;
 import cz.mzk.editor.client.dispatcher.DispatchCallback;
-import cz.mzk.editor.client.presenter.AdminHomePresenter;
-import cz.mzk.editor.client.presenter.AdminMenuPresenter;
-import cz.mzk.editor.client.presenter.AdminPresenter;
 import cz.mzk.editor.client.presenter.AppPresenter;
 import cz.mzk.editor.client.presenter.CreateObjectMenuPresenter;
 import cz.mzk.editor.client.presenter.CreateStructurePresenter;
 import cz.mzk.editor.client.presenter.DigitalObjectMenuPresenter;
 import cz.mzk.editor.client.presenter.EditorRootPresenter;
 import cz.mzk.editor.client.presenter.FindMetadataPresenter;
-import cz.mzk.editor.client.presenter.HistoryPresenter;
 import cz.mzk.editor.client.presenter.HomePresenter;
 import cz.mzk.editor.client.presenter.ModifyPresenter;
-import cz.mzk.editor.client.presenter.MyAcountPresenter;
-import cz.mzk.editor.client.presenter.StatisticsPresenter;
-import cz.mzk.editor.client.presenter.StoredAndLocksPresenter;
-import cz.mzk.editor.client.presenter.UserPresenter;
-import cz.mzk.editor.client.view.AdminHomeView;
-import cz.mzk.editor.client.view.AdminMenuView;
-import cz.mzk.editor.client.view.AdminView;
 import cz.mzk.editor.client.view.AppView;
 import cz.mzk.editor.client.view.CreateObjectMenuView;
 import cz.mzk.editor.client.view.CreateStructureView;
 import cz.mzk.editor.client.view.DigitalObjectMenuView;
 import cz.mzk.editor.client.view.EditorRootView;
 import cz.mzk.editor.client.view.FindMetadataView;
-import cz.mzk.editor.client.view.HistoryView;
 import cz.mzk.editor.client.view.HomeView;
 import cz.mzk.editor.client.view.ModifyView;
-import cz.mzk.editor.client.view.MyAcountView;
-import cz.mzk.editor.client.view.StatisticsView;
-import cz.mzk.editor.client.view.StoredAndLocksView;
-import cz.mzk.editor.client.view.UserView;
 import cz.mzk.editor.client.view.other.DCTab;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
-import org.jboss.errai.bus.client.api.messaging.MessageBus;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -135,41 +118,6 @@ public class EditorClientModule
                       CreateObjectMenuPresenter.MyView.class,
                       CreateObjectMenuView.class,
                       CreateObjectMenuPresenter.MyProxy.class);
-
-        //        Admin
-        bindPresenter(AdminPresenter.class,
-                      AdminPresenter.MyView.class,
-                      AdminView.class,
-                      AdminPresenter.MyProxy.class);
-        bindPresenter(AdminHomePresenter.class,
-                      AdminHomePresenter.MyView.class,
-                      AdminHomeView.class,
-                      AdminHomePresenter.MyProxy.class);
-        bindPresenter(AdminMenuPresenter.class,
-                      AdminMenuPresenter.MyView.class,
-                      AdminMenuView.class,
-                      AdminMenuPresenter.MyProxy.class);
-        bindPresenter(HistoryPresenter.class,
-                      HistoryPresenter.MyView.class,
-                      HistoryView.class,
-                      HistoryPresenter.MyProxy.class);
-        bindPresenter(UserPresenter.class,
-                      UserPresenter.MyView.class,
-                      UserView.class,
-                      UserPresenter.MyProxy.class);
-        bindPresenter(StoredAndLocksPresenter.class,
-                      StoredAndLocksPresenter.MyView.class,
-                      StoredAndLocksView.class,
-                      StoredAndLocksPresenter.MyProxy.class);
-        bindPresenter(MyAcountPresenter.class,
-                      MyAcountPresenter.MyView.class,
-                      MyAcountView.class,
-                      MyAcountPresenter.MyProxy.class);
-        bindPresenter(StatisticsPresenter.class,
-                      StatisticsPresenter.MyView.class,
-                      StatisticsView.class,
-                      StatisticsPresenter.MyProxy.class);
-
         bindPresenter(EditorRootPresenter.class,
                       EditorRootPresenter.MyView.class,
                       EditorRootView.class,

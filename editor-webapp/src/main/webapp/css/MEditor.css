@@ -8,7 +8,7 @@
 	background-color: white;
 	border: 1px solid red;
 	padding: 4px;
-	font-family: sans-serif "
+	font-family: sans-serif;
 }
 
 /** Xml syntax highliter */
@@ -178,10 +178,7 @@ a:hover {
 }
 
 .metadata-attributes {
-	margin-left: 25px;
-	margin-right: 25px;
-	margin-top: 5px;
-	margin-bottom: 5px;
+	margin: 5px 25px;
 }
 
 .metadata-sectionstack-topmargin {
@@ -230,24 +227,6 @@ html>body .gwt-PopupPanel {
 	background: #d0e4f6;
 }
 
-.gwt-DecoratedPopupPanel .popupTopCenter {
-	background: url(images/hborder.png) repeat-x;
-}
-
-.gwt-DecoratedPopupPanel .popupBottomCenter {
-	background: url(images/hborder.png) repeat-x 0px -4px;
-	-background: url(images/hborder_ie6.png) repeat-x 0px -4px;
-}
-
-.gwt-DecoratedPopupPanel .popupMiddleLeft {
-	background: url(images/vborder.png) repeat-y;
-}
-
-.gwt-DecoratedPopupPanel .popupMiddleRight {
-	background: url(images/vborder.png) repeat-y -4px 0px;
-	-background: url(images/vborder_ie6.png) repeat-y -4px 0px;
-}
-
 .gwt-DecoratedPopupPanel .popupTopLeftInner {
 	width: 5px;
 	height: 5px;
@@ -270,26 +249,6 @@ html>body .gwt-PopupPanel {
 	width: 8px;
 	height: 8px;
 	zoom: 1;
-}
-
-.gwt-DecoratedPopupPanel .popupTopLeft {
-	background: url(images/corner.png) no-repeat 0px -10px;
-	-background: url(images/corner_ie6.png) no-repeat 0px -10px;
-}
-
-.gwt-DecoratedPopupPanel .popupTopRight {
-	background: url(images/corner.png) no-repeat -5px -10px;
-	-background: url(images/corner_ie6.png) no-repeat -5px -10px;
-}
-
-.gwt-DecoratedPopupPanel .popupBottomLeft {
-	background: url(images/corner.png) no-repeat 0px -15px;
-	-background: url(images/corner_ie6.png) no-repeat 0px -15px;
-}
-
-.gwt-DecoratedPopupPanel .popupBottomRight {
-	background: url(images/corner.png) no-repeat -5px -15px;
-	-background: url(images/corner_ie6.png) no-repeat -5px -15px;
 }
 
 html>body .gwt-DecoratedPopupPanel {
@@ -321,22 +280,22 @@ html>body .gwt-DecoratedPopupPanel {
 }
 
 .langSelectionCZ {
-	background: url(./flags.gif) 0 0 no-repeat;
+	background: url(../images/flags.gif) 0 0 no-repeat;
 	margin-right: 10px;
 }
 
 .langSelectionCZ:hover {
-	background: url(./flags.gif) 0 -18px no-repeat;
+	background: url(../images/flags.gif) 0 -18px no-repeat;
 	margin-right: 10px;
 }
 
 .langSelectionEN {
-	background: url(./flags.gif) 0 -18px no-repeat;
+	background: url(../images/flags.gif) 0 -18px no-repeat;
 	margin-right: 10px;
 }
 
 .langSelectionEN:hover {
-	background: url(./flags.gif) 0 0 no-repeat;
+	background: url(../images/flags.gif) 0 0 no-repeat;
 	margin-right: 10px;
 }
 
@@ -373,8 +332,7 @@ html>body .gwt-DecoratedPopupPanel {
 
 body {
 	overflow: hidden;
-	margin: 6px;
-	margin-left: 4px;
+	margin: 6px 6px 6px 4px;
 }
 
 #loading {
@@ -437,7 +395,7 @@ body {
     text-shadow: 0px 1px 1px rgba(213, 213, 213, 0.3);
     color: #283442;
     transition: all 0.2s linear;
-    font-weight: 550;
+    font-weight: 500;
 }
 .a-btn-icon-right{
     position: absolute;
@@ -505,7 +463,7 @@ body {
     text-shadow: 0px 1px 1px rgba(53, 53, 53, 0.3);
     color: #FFFFFF;
     transition: all 0.2s linear;
-    font-weight: 550;
+    font-weight: 500;
 }
 
 .a-btn-icon-right-selected{
@@ -526,10 +484,10 @@ body {
     left: 50%;
     top: 50%;
     margin: -20px 0px 0px -20px;
-    background: transparent url(images/other/button_menu_selected.png) no-repeat 50% 55%;
+    background: transparent url(../images/other/button_menu_selected.png) no-repeat 50% 55%;
     transition: all 0.3s linear;
 }
 
 .stuccoBkgnd{
-	background: url("images/other/stucco.png") repeat scroll left top rgb(249, 249, 249);
+	background: url("../images/other/stucco.png") repeat scroll left top rgb(249, 249, 249);
 }

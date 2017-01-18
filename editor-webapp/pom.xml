@@ -33,17 +33,7 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>editor-request</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
 			<artifactId>editor-common-server</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>editor-administration</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -197,7 +187,6 @@
 								<configuration>
 									<modules>
 										<module>cz.mzk.editor.MEditor</module>
-										<module>cz.mzk.editor.RequestForAdding</module>
 									</modules>
 								</configuration>
 								<id>gwt-goals</id>
@@ -212,7 +201,6 @@
 								</goals>
 								<configuration>
 									<module>cz.mzk.editor.MEditor</module>
-									<module>cz.mzk.editor.RequestForAdding</module>
 								</configuration>
 							</execution>
 						</executions>
@@ -288,7 +276,6 @@
 								<configuration>
 									<modules>
 										<module>cz.mzk.editor.MEditorDev</module>
-										<module>cz.mzk.editor.RequestForAddingDev</module>
 									</modules>
 								</configuration>
 								<id>gwt-goals</id>
@@ -303,7 +290,6 @@
 								</goals>
 								<configuration>
 									<module>cz.mzk.editor.MEditorDev</module>
-									<!--<module>cz.mzk.editor.RequestForAddingDev</module>-->
 								</configuration>
 							</execution>
 						</executions>

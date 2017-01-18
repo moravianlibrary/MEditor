@@ -14,7 +14,6 @@
 	<security:http pattern="/css/**" security="none" />
 	<security:http pattern="/js/**" security="none" />
 	<security:http pattern="/favicon.ico" security="none" />
-	<security:http pattern="/request4Adding/**" security="none" />
 	<security:http pattern="/Shibboleth.sso/Login" security="none" />
 	<security:http pattern="/viewer/**" security="none" />
 		

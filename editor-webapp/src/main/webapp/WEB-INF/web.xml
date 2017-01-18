@@ -40,20 +40,6 @@
         <listener-class>cz.mzk.editor.server.FlywayListener</listener-class>
     </listener>
 
-
-	<!-- request 4 adding servlet -->
-	<servlet>
-		<servlet-name>request4adding</servlet-name>
-		<servlet-class>cz.mzk.editor.server.RequestForAddingServiceImpl</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>request4adding</servlet-name>
-		<url-pattern>/request4Adding/ask</url-pattern>
-	</servlet-mapping>
-
-
-
 	<!-- Remote logging agent for gwt-log -->
 	<servlet>
 		<servlet-name>remoteLoggerServiceImpl</servlet-name>
