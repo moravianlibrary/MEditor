@@ -69,12 +69,6 @@ public class QuartzScheduleJobsHandler
             throws ActionException {
 
         LOGGER.debug("Processing action: QuartzScheduleJobsAction");
-        ServerUtils.checkExpiredSession();
-
-        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.LONG_RUNNING_PROCESS)) {
-            LOGGER.warn("Bad authorization in " + this.getClass().toString());
-            throw new ActionException("Bad authorization in " + this.getClass().toString());
-        }
 
         if (action.getKillItem() != null) {
             JobKey key =

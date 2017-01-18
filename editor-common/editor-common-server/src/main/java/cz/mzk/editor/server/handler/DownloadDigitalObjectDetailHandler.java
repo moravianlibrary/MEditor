@@ -56,7 +56,6 @@ public class DownloadDigitalObjectDetailHandler
                                                      ExecutionContext context) throws ActionException {
 
         LOGGER.debug("Processing action: DownloadDigitalObjectDetailAction " + action.getDetail().getUuid());
-        ServerUtils.checkExpiredSession();
 
         if (action == null || action.getDetail() == null) throw new NullPointerException("getDetail()");
 

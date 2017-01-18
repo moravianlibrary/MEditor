@@ -95,7 +95,6 @@ public class GetUserRolesRightsIdentitiesHandler
                                                       final ExecutionContext context) throws ActionException {
 
         LOGGER.debug("Processing action: GetUserRolesAndIdentitiesAction " + action.getUserId());
-        ServerUtils.checkExpiredSession();
 
         if (action.getUserId() == null) return null;
         boolean getAll = true;

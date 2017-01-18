@@ -68,7 +68,6 @@ public class GetOcrFromPdfHandler
             throws ActionException {
 
         LOGGER.debug("Processing action: GetOcrFromPdfAction " + action.getUuid());
-        ServerUtils.checkExpiredSession();
 
         return new GetOcrFromPdfResult(pdftoText(conf.getImagesPath() + File.separator + action.getUuid()
                 + Constants.PDF_EXTENSION));

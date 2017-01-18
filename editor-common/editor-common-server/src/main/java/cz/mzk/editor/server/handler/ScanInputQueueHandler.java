@@ -108,7 +108,6 @@ public class ScanInputQueueHandler
     public ScanInputQueueResult execute(final ScanInputQueueAction action, final ExecutionContext context)
             throws ActionException {
 
-        ServerUtils.checkExpiredSession();
 
         // parse input
         final String id = action.getId() == null ? "" : action.getId();

@@ -68,12 +68,6 @@ public class PutRemoveRolesHandler
             throws ActionException {
 
         LOGGER.debug("Processing action: PutRemoveRolesResult");
-        ServerUtils.checkExpiredSession();
-
-        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.EDIT_ROLES)) {
-            LOGGER.warn("Bad authorization in " + this.getClass().toString());
-            throw new ActionException("Bad authorization in " + this.getClass().toString());
-        }
 
         Map<String, List<String>> notRemoved =
                 new HashMap<String, List<String>>(action.getRoleItems().size());

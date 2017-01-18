@@ -82,7 +82,6 @@ public class GetAllRolesHandler
             throws ActionException {
 
         LOGGER.debug("Processing action: GetAllRolesResult");
-        ServerUtils.checkExpiredSession();
 
         try {
             return new GetAllRolesResult(userDAO.getRoles());

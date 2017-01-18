@@ -84,7 +84,6 @@ public class GetRelationshipsHandler
             throws ActionException {
         this.action = action;
         LOGGER.debug("Processing action: GetRelationshipsAction " + action.getUuid());
-        ServerUtils.checkExpiredSession();
 
         uuidList = new ArrayList<String>();
         sharedPages = new ArrayList<String>();

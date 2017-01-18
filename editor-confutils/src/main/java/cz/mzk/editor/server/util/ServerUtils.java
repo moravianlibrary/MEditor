@@ -116,49 +116,6 @@ public class ServerUtils {
         return getEditorUserAuthentication(httpSessionProvider.get());
     }
 
-    public static Long checkExpiredSessionAndGetId(Provider<HttpSession> httpSessionProvider)
-            throws ActionException {
-        checkExpiredSession();
-        try {
-            return daoUtils.getUserId(true);
-        } catch (DatabaseException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-            throw new ActionException(e);
-        } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-            throw new ActionException(e);
-        }
-    }
-
-    private static void checkExpiredSession(HttpSession session) throws ActionException {
-        EditorUserAuthentication authentication = getEditorUserAuthentication(session);
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ActionException(Constants.SESSION_EXPIRED_FLAG + URLS.ROOT()
-                    + (URLS.LOCALHOST() ? URLS.LOGIN_LOCAL_PAGE : URLS.LOGIN_PAGE));
-        }
-    }
-
-    public static void checkExpiredSession() throws ActionException {
-        checkExpiredSession(httpSessionProvider.get());
-    }
-
-    public static boolean checkUserRightOrAll(EDITOR_RIGHTS right) {
-
-        return checkUserRight(EDITOR_RIGHTS.ALL) || checkUserRight(right);
-    }
-
-    public static boolean checkUserRight(EDITOR_RIGHTS right) {
-        try {
-            return daoUtils.hasUserRight(right);
-        } catch (DatabaseException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-            return false;
-        }
-    }
-
     private static List<Field> getAllFields(Class<?> clazz) {
         if (clazz == null || clazz.getName().contains("java.util.List")
                 || clazz.getName().contains("java.lang.String")) {

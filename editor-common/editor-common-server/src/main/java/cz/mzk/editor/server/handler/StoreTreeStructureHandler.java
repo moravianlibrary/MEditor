@@ -96,7 +96,6 @@ public class StoreTreeStructureHandler
                     + ((action.getId() == null && action.getBundle() != null) ? (" for object: " + action
                             .getBundle().getInfo().getInputPath()) : ""));
         }
-        ServerUtils.checkExpiredSession();
 
         switch (action.getVerb()) {
             case PUT:

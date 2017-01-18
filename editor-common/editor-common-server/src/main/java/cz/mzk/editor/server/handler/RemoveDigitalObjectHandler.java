@@ -162,12 +162,6 @@ public class RemoveDigitalObjectHandler
                                              final ExecutionContext context) throws ActionException {
 
         LOGGER.debug("Processing action: RemoveDigitalObjectAction " + action.getUuid());
-        ServerUtils.checkExpiredSession();
-
-        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.DELETE)) {
-            LOGGER.warn("Bad authorization in " + this.getClass().toString());
-            throw new ActionException("Bad authorization in " + this.getClass().toString());
-        }
 
         removedDigitalObjects = new ArrayList<RemovedDigitalObject>();
         List<String> uuidNotToRemove = action.getUuidNotToRemove();

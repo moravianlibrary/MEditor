@@ -68,7 +68,6 @@ public class UnlockDigitalObjectHandler
             throws ActionException {
 
         LOGGER.debug("Processing action: UnlockDigitalObject: " + action.getUuid());
-        ServerUtils.checkExpiredSession();
 
         String uuid = action.getUuid();
 

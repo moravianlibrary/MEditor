@@ -63,7 +63,6 @@ public class GetDOModelHandler
             throws ActionException {
 
         LOGGER.debug("Processing action: GetDOModelAction " + action.getUuid());
-        ServerUtils.checkExpiredSession();
 
         // parse input
         String uuid = action.getUuid();

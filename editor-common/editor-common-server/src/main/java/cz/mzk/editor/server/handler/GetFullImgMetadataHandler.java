@@ -73,7 +73,6 @@ public class GetFullImgMetadataHandler
             throws ActionException {
 
         LOGGER.debug("Processing action: GetFullImgMetadataAction " + action.getUuid());
-        ServerUtils.checkExpiredSession();
 
         HttpServletRequest httpServletRequest = requestProvider.get();
 

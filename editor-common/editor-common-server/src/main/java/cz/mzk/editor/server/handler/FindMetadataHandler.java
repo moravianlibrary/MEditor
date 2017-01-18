@@ -113,12 +113,6 @@ public class FindMetadataHandler
             LOGGER.debug("Processing action: FindMetadataAction: for id (" + action.getSearchType() + ") "
                     + action.getId());
         }
-        ServerUtils.checkExpiredSession();
-
-        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.FIND_METADATA)) {
-            LOGGER.warn("Bad authorization in " + this.getClass().toString());
-            throw new ActionException("Bad authorization in " + this.getClass().toString());
-        }
 
         ArrayList<MetadataBundle> bundle = null;
         ArrayList<MetadataBundle> enrichedBundle = null;

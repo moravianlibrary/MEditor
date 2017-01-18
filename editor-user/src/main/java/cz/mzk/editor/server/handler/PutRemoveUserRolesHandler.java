@@ -76,12 +76,6 @@ public class PutRemoveUserRolesHandler
                                             final ExecutionContext context) throws ActionException {
 
         LOGGER.debug("Processing action: PutRemoveUserRolesAction");
-        ServerUtils.checkExpiredSession();
-
-        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.EDIT_USERS)) {
-            LOGGER.warn("Bad authorization in " + this.getClass().toString());
-            throw new ActionException("Bad authorization in " + this.getClass().toString());
-        }
 
         if (action.getRoleItems() == null) throw new NullPointerException("getRoleItems()");
 

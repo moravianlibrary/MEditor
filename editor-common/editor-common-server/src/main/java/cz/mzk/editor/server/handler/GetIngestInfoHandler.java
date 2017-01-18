@@ -60,7 +60,6 @@ public class GetIngestInfoHandler
             throws ActionException {
 
         LOGGER.debug("Processing action: GetIngestInfoAction " + action.getPath());
-        ServerUtils.checkExpiredSession();
 
         try {
             return new GetIngestInfoResult(inputQueueDAO.getIngestInfo(action.getPath()));

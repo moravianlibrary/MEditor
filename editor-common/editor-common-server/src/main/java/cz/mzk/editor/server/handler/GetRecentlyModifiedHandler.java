@@ -109,7 +109,6 @@ public class GetRecentlyModifiedHandler
     public GetRecentlyModifiedResult execute(final GetRecentlyModifiedAction action,
                                              final ExecutionContext context) throws ActionException {
         LOGGER.debug("Processing action: GetRecentlyModified");
-        ServerUtils.checkExpiredSession();
 
         HttpSession session = httpSessionProvider.get();
         Injector injector = (Injector) session.getServletContext().getAttribute(Injector.class.getName());

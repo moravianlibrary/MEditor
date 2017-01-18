@@ -76,7 +76,6 @@ public class PutRecentlyModifiedHandler
                                              final ExecutionContext context) throws ActionException {
 
         LOGGER.debug("Processing action: PutRecentlyModifiedAction " + action.getItem().getUuid());
-        ServerUtils.checkExpiredSession();
 
         if (action.getItem() == null) throw new NullPointerException("getItem()");
         if (action.getItem().getUuid() == null || "".equals(action.getItem().getUuid()))

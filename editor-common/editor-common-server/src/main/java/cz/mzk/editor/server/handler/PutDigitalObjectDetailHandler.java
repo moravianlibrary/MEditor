@@ -109,12 +109,6 @@ public class PutDigitalObjectDetailHandler
                                                 final ExecutionContext context) throws ActionException {
 
         LOGGER.debug("Processing action: PutDigitalObjectDetailAction " + action.getDetail().getUuid());
-        ServerUtils.checkExpiredSession();
-
-        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.PUBLISH)) {
-            LOGGER.warn("Bad authorization in " + this.getClass().toString());
-            throw new ActionException("Bad authorization in " + this.getClass().toString());
-        }
 
         if (action == null || action.getDetail() == null) throw new NullPointerException("getDetail()");
 

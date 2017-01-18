@@ -83,12 +83,6 @@ public class RemoveUserIdentityHandler
                                             final ExecutionContext context) throws ActionException {
 
         LOGGER.debug("Processing action: RemoveUserIdentityAction " + action.getUserIdentity());
-        ServerUtils.checkExpiredSession();
-
-        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.EDIT_USERS)) {
-            LOGGER.warn("Bad authorization in " + this.getClass().toString());
-            throw new ActionException("Bad authorization in " + this.getClass().toString());
-        }
 
         if (action.getUserIdentity() == null) throw new NullPointerException("getUserIdentity()");
         for (String identity : action.getUserIdentity().getIdentities()) {

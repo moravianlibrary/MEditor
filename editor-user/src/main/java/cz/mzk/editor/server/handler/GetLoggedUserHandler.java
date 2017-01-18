@@ -86,7 +86,6 @@ public class GetLoggedUserHandler
             throws ActionException {
 
         LOGGER.debug("Processing action: GetLoggedUserAction");
-        ServerUtils.checkExpiredSession();
 
         try {
             return new GetLoggedUserResult(userDAO.getName(daoUtils.getUserId(true)),

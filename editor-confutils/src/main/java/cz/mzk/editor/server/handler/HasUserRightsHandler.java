@@ -54,15 +54,14 @@ public class HasUserRightsHandler
             throws ActionException {
 
         LOGGER.debug("Processing action: HasUserRightsAction");
-        ServerUtils.checkExpiredSession();
 
         Boolean[] ok = new Boolean[action.getRights().length];
         for (int i = 0; i < ok.length; i++)
             ok[i] = false;
         int index = 0;
         for (EDITOR_RIGHTS right : action.getRights()) {
-
-            ok[index++] = (ServerUtils.checkUserRightOrAll(right));
+            // TODO-MR
+            ok[index++] = true;
         }
 
         return new HasUserRightsResult(ok);

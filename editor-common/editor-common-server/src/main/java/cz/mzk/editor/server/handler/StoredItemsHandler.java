@@ -89,7 +89,6 @@ public class StoredItemsHandler
             throws ActionException {
 
         LOGGER.debug("Processing action: StoredItemsAction " + action.getStoredItem().getFileName());
-        ServerUtils.checkExpiredSession();
 
         long userId = 0;
         try {

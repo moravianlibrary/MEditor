@@ -94,7 +94,6 @@ public class LogoutHandler
             throws ActionException {
 
         LOGGER.debug("Processing action: LogoutAction");
-        ServerUtils.checkExpiredSession();
 
         EditorUserAuthentication authentication = ServerUtils.getEditorUserAuthentication();
 

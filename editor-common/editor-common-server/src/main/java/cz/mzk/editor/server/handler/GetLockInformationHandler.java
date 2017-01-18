@@ -76,7 +76,6 @@ public class GetLockInformationHandler
             throws ActionException {
 
         LOGGER.debug("Processing action: GetLockInformationAction " + action.getUuid());
-        ServerUtils.checkExpiredSession();
 
         String uuid = action.getUuid();
 

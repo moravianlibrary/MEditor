@@ -88,12 +88,6 @@ public class GetAllRequestItemsHandler
     public GetAllRequestItemsResult execute(final GetAllRequestItemsAction action,
                                             final ExecutionContext context) throws ActionException {
         LOGGER.debug("Processing action: GetAllRequestItemsAction");
-        ServerUtils.checkExpiredSession();
-
-        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.EDIT_USERS)) {
-            LOGGER.warn("Bad authorization in " + this.getClass().toString());
-            throw new ActionException("Bad authorization in " + this.getClass().toString());
-        }
 
         try {
             return new GetAllRequestItemsResult(requestDAO.getAllRequests());

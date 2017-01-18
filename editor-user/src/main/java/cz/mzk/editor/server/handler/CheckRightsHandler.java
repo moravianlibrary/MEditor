@@ -64,7 +64,6 @@ public class CheckRightsHandler
             throws ActionException {
 
         LOGGER.debug("Processing action: CheckRightsAction");
-        ServerUtils.checkExpiredSession();
 
         Map<String, List<String>> rightsRefByRole = null;
         Map<String, List<String>> rightsRefByUser = null;

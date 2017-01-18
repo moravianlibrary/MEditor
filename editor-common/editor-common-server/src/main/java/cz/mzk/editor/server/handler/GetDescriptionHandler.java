@@ -75,7 +75,6 @@ public class GetDescriptionHandler
             throws ActionException {
 
         LOGGER.debug("Processing action: GetDescriptionAction " + action.getUuid());
-        ServerUtils.checkExpiredSession();
 
         if (action.getUuid() == null || "".equals(action.getUuid()))
             throw new NullPointerException("getUuid()");

@@ -67,12 +67,6 @@ public class PutUserInfoHandler
             throws ActionException {
 
         LOGGER.debug("Processing action: PutUserInfoAction " + action.getUser().getId());
-        ServerUtils.checkExpiredSession();
-
-        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.EDIT_USERS)) {
-            LOGGER.warn("Bad authorization in " + this.getClass().toString());
-            throw new ActionException("Bad authorization in " + this.getClass().toString());
-        }
 
         if (action.getUser() == null) throw new NullPointerException("getUser()");
 

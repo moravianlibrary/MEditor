@@ -75,7 +75,6 @@ public class FindAltoOcrFilesHandler
             throws ActionException {
 
         LOGGER.debug("Processing action: FindAltoOcrFilesHandler");
-        ServerUtils.checkExpiredSession();
 
         String oldJpgFsPath = null;
 

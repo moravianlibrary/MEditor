@@ -81,12 +81,6 @@ public class PutDescriptionHandler
             throws ActionException {
 
         LOGGER.debug("Processing action: PutDescriptionAction " + action.getUuid());
-        ServerUtils.checkExpiredSession();
-
-        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.PUBLISH)) {
-            LOGGER.warn("Bad authorization in " + this.getClass().toString());
-            throw new ActionException("Bad authorization in " + this.getClass().toString());
-        }
 
         if (action.getUuid() == null || "".equals(action.getUuid()))
             throw new NullPointerException("getUuid()");

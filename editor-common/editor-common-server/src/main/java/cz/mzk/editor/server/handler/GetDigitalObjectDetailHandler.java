@@ -123,12 +123,6 @@ public class GetDigitalObjectDetailHandler
                                                 final ExecutionContext context) throws ActionException {
 
         LOGGER.debug("Processing action: GetDigitalObjectDetailAction " + action.getUuid());
-        ServerUtils.checkExpiredSession();
-
-        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.OPEN_OBJECT)) {
-            LOGGER.warn("Bad authorization in " + this.getClass().toString());
-            throw new ActionException("Bad authorization in " + this.getClass().toString());
-        }
 
         // parse input
         String uuid = action.getUuid();

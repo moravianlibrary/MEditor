@@ -83,12 +83,6 @@ public class PutUserIdentityHandler
             throws ActionException {
 
         LOGGER.debug("Processing action: PutUserIdentityAction " + action.getIdentity());
-        ServerUtils.checkExpiredSession();
-
-        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.EDIT_USERS)) {
-            LOGGER.warn("Bad authorization in " + this.getClass().toString());
-            throw new ActionException("Bad authorization in " + this.getClass().toString());
-        }
 
         if (action.getIdentity() == null) throw new NullPointerException("getIdentity()");
         if (action.getIdentity().getUserId() == null || "".equals(action.getIdentity().getUserId()))

@@ -76,12 +76,6 @@ public class RemoveRequestItemHandler
                                            final ExecutionContext context) throws ActionException {
 
         LOGGER.debug("Processing action: RemoveRequestItemAction " + action.getId());
-        ServerUtils.checkExpiredSession();
-
-        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.EDIT_USERS)) {
-            LOGGER.warn("Bad authorization in " + this.getClass().toString());
-            throw new ActionException("Bad authorization in " + this.getClass().toString());
-        }
 
         if (action.getId() == null) throw new NullPointerException("getId()");
 

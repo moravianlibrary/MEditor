@@ -72,7 +72,6 @@ public class FindAltoOcrFilesBatchHandler
             throws ActionException {
 
         LOGGER.debug("Processing action: FindAltoOcrFilesBatchAction");
-        ServerUtils.checkExpiredSession();
 
         Map<String, String> altoFileNames = new HashMap<String, String>();
         Map<String, String> ocrFileNames = new HashMap<String, String>();

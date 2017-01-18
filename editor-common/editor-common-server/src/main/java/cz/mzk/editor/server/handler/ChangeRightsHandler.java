@@ -80,7 +80,6 @@ public class ChangeRightsHandler
 
         LOGGER.debug("Processing action: ChangeRightsAction " + action.getParentUuid() + " "
                 + action.getRight());
-        ServerUtils.checkExpiredSession();
 
         if (action.isForChildren()) {
             setChildrenRights(action.getParentUuid(), action.getRight());

@@ -94,10 +94,6 @@ public class ConvertToJPEG2000Handler
         final ImageItem item = action.getItem();
         LOGGER.debug("Processing action: ConvertToJPEG2000Action " + action.getItem());
 
-        if (context != null) {
-            ServerUtils.checkExpiredSession();
-        }
-
         if (item != null && item.getMimeType() != null &&
                 (item.getMimeType().equals(Constants.AUDIO_MIMETYPES.WAV_MIMETYPE.getMimeType()) ||
                         (item.getMimeType().equals(Constants.AUDIO_MIMETYPES.MP3_MIMETYPE.getMimeType())))) {

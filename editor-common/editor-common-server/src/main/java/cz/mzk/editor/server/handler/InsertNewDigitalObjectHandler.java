@@ -109,12 +109,6 @@ public class InsertNewDigitalObjectHandler
             throws ActionException {
 
         LOGGER.debug("Processing action: InsertNewDigitalObjectAction " + action.getObject().getUuid());
-        ServerUtils.checkExpiredSession();
-
-        if (!ServerUtils.checkUserRightOrAll(EDITOR_RIGHTS.CREATE_NEW_OBJECTS)) {
-            LOGGER.warn("Bad authorization in " + this.getClass().toString());
-            throw new ActionException("Bad authorization in " + this.getClass().toString());
-        }
 
         NewDigitalObject object = existTransformer(action.getObject());
         if (LOGGER.isInfoEnabled()) {

@@ -87,7 +87,7 @@ public class CheckAvailabilityHandler
             }
             LOGGER.debug("Processing action: CheckAvailability: " + serverName);
         }
-        ServerUtils.checkExpiredSession();
+
 
         String url = null;
         String usr = "";

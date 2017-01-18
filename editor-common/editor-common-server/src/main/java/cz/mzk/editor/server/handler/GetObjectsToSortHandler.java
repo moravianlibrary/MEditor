@@ -95,7 +95,6 @@ public class GetObjectsToSortHandler
             throws ActionException {
 
         LOGGER.debug("Processing action: GetObjectsToSortResult " + action.getUuid());
-        ServerUtils.checkExpiredSession();
 
         DigitalObjectRelationships digObjRel = new DigitalObjectRelationships(action.getUuid());
         getChildren(digObjRel);
