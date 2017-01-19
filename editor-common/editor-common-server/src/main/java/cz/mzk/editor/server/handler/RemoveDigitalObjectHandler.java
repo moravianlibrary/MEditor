@@ -43,6 +43,7 @@ import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.mzk.editor.server.UserProvider;
 import org.apache.log4j.Logger;
 
 import org.w3c.dom.Document;
@@ -94,6 +95,9 @@ public class RemoveDigitalObjectHandler
     /** The digital object dao. */
     @Inject
     private DigitalObjectDAO digitalObjectDAO;
+
+    @Inject
+    private UserProvider userProvider;
 
     private static final class RemovedDigitalObject {
 
@@ -310,7 +314,7 @@ public class RemoveDigitalObjectHandler
     private void disableInDB(RemovedDigitalObject removedDO, DigitalObjectModel model) {
         try {
             digitalObjectDAO.deleteDigitalObject(removedDO.getUuid(), model.getValue(), removedDO.getFoxml()
-                    .getLabel(), topDigitalObjectUuid);
+                    .getLabel(), topDigitalObjectUuid, userProvider.getUserId());
         } catch (Exception e) {
             LOGGER.error("Problem with database: " + e.getMessage());
             e.printStackTrace();

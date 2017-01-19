@@ -101,10 +101,6 @@ public abstract class AbstractDAO {
     @Resource(name = JNDI_DB_POOL_ID)
     private DataSource pool;
 
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
-
     /**
      * Inits the connection.
      * 
@@ -331,43 +327,6 @@ public abstract class AbstractDAO {
             if (closeCon) closeConnection();
         }
         return userId;
-    }
-
-    /**
-     * Gets the user id.
-     * 
-     * @param closeCon
-     *        the close con
-     * @return the user id
-     * @throws DatabaseException
-     *         the database exception
-     * @throws SQLException
-     */
-    @Deprecated
-    protected Long getUserId(boolean closeCon) throws DatabaseException, SQLException {
-        SecurityContext secContext =
-                (SecurityContext) httpSessionProvider.get().getAttribute("SPRING_SECURITY_CONTEXT");
-        EditorUserAuthentication authentication = null;
-        if (secContext != null) authentication = (EditorUserAuthentication) secContext.getAuthentication();
-        if (authentication != null) {
-            return getUsersId((String) authentication.getPrincipal(),
-                              authentication.getIdentityType(),
-                              closeCon);
-        } else {
-            throw new DatabaseException(Constants.SESSION_EXPIRED_FLAG + URLS.ROOT()
-                    + (URLS.LOCALHOST() ? URLS.LOGIN_LOCAL_PAGE : URLS.LOGIN_PAGE));
-        }
-    }
-
-    /**
-     * Format date to seconds, the format: dd.MM.yyyy HH:mm:ss.
-     * 
-     * @param date
-     *        the date
-     * @return the string
-     */
-    protected String formatDateToSeconds(java.sql.Date date) {
-        return FORMATTER_TO_SECONDS.format(date);
     }
 
     /**

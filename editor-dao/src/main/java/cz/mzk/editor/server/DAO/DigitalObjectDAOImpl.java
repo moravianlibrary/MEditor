@@ -78,7 +78,7 @@ public class DigitalObjectDAOImpl
      * {@inheritDoc}
      */
     @Override
-    public boolean deleteDigitalObject(String uuid, String model, String name, String topObjectUuid)
+    public boolean deleteDigitalObject(String uuid, String model, String name, String topObjectUuid, Long userId)
             throws DatabaseException {
         PreparedStatement deleteSt = null;
         boolean successful = false;
@@ -96,7 +96,7 @@ public class DigitalObjectDAOImpl
 
                 if (deleteSt.executeUpdate() == 1) {
                     LOGGER.debug("DB has been updated: The digital object: " + uuid + " has been disabled.");
-                    if (insertCrudActionWithTopObject(getUserId(false),
+                    if (insertCrudActionWithTopObject(userId,
                                                       Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT,
                                                       "digital_object_uuid",
                                                       uuid,
@@ -130,7 +130,7 @@ public class DigitalObjectDAOImpl
                                           String name,
                                           String input_queue_directory_path,
                                           String top_digital_object_uuid,
-                                          boolean state) throws DatabaseException {
+                                          boolean state, Long userId) throws DatabaseException {
         String pid =
                 (uuid.startsWith(Constants.FEDORA_UUID_PREFIX)) ? uuid : Constants.FEDORA_UUID_PREFIX
                         .concat(uuid);
@@ -149,7 +149,7 @@ public class DigitalObjectDAOImpl
             if (daoUtils.checkDigitalObject(pid, model, name, null, DAOUtilsImpl
                     .directoryPathToRightFormat(input_queue_directory_path), state, false))
 
-                if (insertCrudActionWithTopObject(getUserId(false),
+                if (insertCrudActionWithTopObject(userId,
                                                   Constants.TABLE_CRUD_DO_ACTION_WITH_TOP_OBJECT,
                                                   "digital_object_uuid",
                                                   pid,
@@ -259,15 +259,15 @@ public class DigitalObjectDAOImpl
                                        List<String> lowerObj,
                                        String model,
                                        String name,
-                                       String input_queue_directory_path) throws DatabaseException {
+                                       String input_queue_directory_path, Long userId) throws DatabaseException {
 
         boolean successful = false;
         if (insertNewDigitalObject(newUuid,
-                                   model,
-                                   name,
-                                   DAOUtilsImpl.directoryPathToRightFormat(input_queue_directory_path),
-                                   newUuid,
-                                   true)) {
+                model,
+                name,
+                DAOUtilsImpl.directoryPathToRightFormat(input_queue_directory_path),
+                newUuid,
+                true, userId)) {
 
             try {
                 getConnection().setAutoCommit(false);
@@ -347,12 +347,13 @@ public class DigitalObjectDAOImpl
 
     }
 
-    public void insertDOCrudAction(String tableName,
+    public void insertDOCrudAction(Long userId,
+                                   String tableName,
                                    String fkNameCol,
                                    Object foreignKey,
                                    CRUD_ACTION_TYPES type) throws DatabaseException {
         try {
-            insertCrudAction(tableName, fkNameCol, foreignKey, type, true);
+            insertCrudAction(userId, tableName, fkNameCol, foreignKey, type, true);
         } catch (SQLException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();

@@ -37,15 +37,14 @@ import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.mzk.editor.server.UserProvider;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
-import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.UserIdentity;
 import cz.mzk.editor.shared.rpc.action.GetUserRolesRightsIdentitiesAction;
 import cz.mzk.editor.shared.rpc.action.GetUserRolesRightsIdentitiesResult;
@@ -71,6 +70,9 @@ public class RemoveUserIdentityHandler
     @Inject
     private EditorConfiguration configuration;
 
+    @Inject
+    private UserProvider userProvider;
+
     /*
      * (non-Javadoc)
      * @see
@@ -90,7 +92,7 @@ public class RemoveUserIdentityHandler
                 UserIdentity userIdentity = action.getUserIdentity();
                 userIdentity.getIdentities().removeAll(userIdentity.getIdentities());
                 userIdentity.getIdentities().add(identity);
-                userDAO.addRemoveUserIdentity(action.getUserIdentity(), false);
+                userDAO.addRemoveUserIdentity(action.getUserIdentity(), false, userProvider.getUserId());
             } catch (NumberFormatException e) {
                 throw new ActionException(e);
             } catch (DatabaseException e) {

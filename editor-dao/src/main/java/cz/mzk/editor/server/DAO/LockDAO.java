@@ -40,10 +40,11 @@ public interface LockDAO {
      * @param description
      *        the lock-description
      * @param insert
+     * @param userId
      * @return whether locking was successful
      * @throws DatabaseException
      */
-    boolean lockDigitalObject(String uuid, String description, boolean insert) throws DatabaseException;
+    boolean lockDigitalObject(String uuid, String description, boolean insert, Long userId) throws DatabaseException;
 
     /**
      * Gets the id of a owner of the lock

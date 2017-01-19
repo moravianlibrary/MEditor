@@ -35,6 +35,7 @@ import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.mzk.editor.server.UserProvider;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.server.DAO.DAOUtils;
@@ -60,18 +61,22 @@ public class GetLoggedUserHandler
     /** The dao utils. */
     private final DAOUtils daoUtils;
 
+
+    private UserProvider userProvider;
+
     /**
      * Instantiates a new gets the recently modified handler.
      * 
      * @param userDAO
      *        the user dao
-     * @param httpSessionProvider
-     *        the http session provider
+     * @param daoUtils
+     *        daoUtils
      */
     @Inject
-    public GetLoggedUserHandler(final UserDAO userDAO, final DAOUtils daoUtils) {
+    public GetLoggedUserHandler(final UserDAO userDAO, final DAOUtils daoUtils, final UserProvider userProvider) {
         this.userDAO = userDAO;
         this.daoUtils = daoUtils;
+        this.userProvider = userProvider;
     }
 
     /*
@@ -88,13 +93,9 @@ public class GetLoggedUserHandler
         LOGGER.debug("Processing action: GetLoggedUserAction");
 
         try {
-            return new GetLoggedUserResult(userDAO.getName(daoUtils.getUserId(true)),
-                                           daoUtils.getUserId(true));
+            return new GetLoggedUserResult(userDAO.getName(userProvider.getUserId()),
+                                           userProvider.getUserId());
         } catch (DatabaseException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-            throw new ActionException(e);
-        } catch (SQLException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
             throw new ActionException(e);

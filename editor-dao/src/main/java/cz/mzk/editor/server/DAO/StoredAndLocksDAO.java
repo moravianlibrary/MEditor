@@ -65,10 +65,11 @@ public interface StoredAndLocksDAO {
      * 
      * @param id
      *        the id
+     * @param userId
      * @return true, if successful
      * @throws DatabaseException
      */
-    boolean deleteStoredWorkingCopyItem(Long id) throws DatabaseException;
+    boolean deleteStoredWorkingCopyItem(Long id, Long userId) throws DatabaseException;
 
     /**
      * Gets the all saved tree structures.
@@ -86,33 +87,36 @@ public interface StoredAndLocksDAO {
      * 
      * @param id
      *        the id
+     * @param userId
      * @return true, if successful
      * @throws DatabaseException
      *         the database exception
      */
-    boolean removeSavedStructure(long id) throws DatabaseException;
+    boolean removeSavedStructure(long id, Long userId) throws DatabaseException;
 
     /**
      * Unlock digital object.
      * 
      * @param uuid
      *        the uuid
+     * @param userId
      * @return true, if successful
      * @throws DatabaseException
      *         the database exception
      */
-    boolean unlockDigitalObject(String uuid) throws DatabaseException;
+    boolean unlockDigitalObject(String uuid, Long userId) throws DatabaseException;
 
     /**
      * Gets the lock id.
      * 
      * @param uuid
      *        the uuid
+     * @param userId
      * @return the lock id
      * @throws DatabaseException
      *         the database exception
      */
-    Long getLockId(String uuid) throws DatabaseException;
+    Long getLockId(String uuid, Long userId) throws DatabaseException;
 
     /**
      * Gets the all active locks.

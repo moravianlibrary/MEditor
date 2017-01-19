@@ -34,12 +34,11 @@ import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.mzk.editor.server.UserProvider;
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.UserDAO;
-import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.PutUserIdentityAction;
 import cz.mzk.editor.shared.rpc.action.PutUserIdentityResult;
 
@@ -57,6 +56,9 @@ public class PutUserIdentityHandler
     /** The user dao. */
     @Inject
     private UserDAO userDAO;
+
+    @Inject
+    private UserProvider userProvider;
 
     /**
      * Instantiates a new put recently modified handler.
@@ -92,7 +94,7 @@ public class PutUserIdentityHandler
         boolean succ = false;
         try {
             try {
-                succ = userDAO.addRemoveUserIdentity(action.getIdentity(), true);
+                succ = userDAO.addRemoveUserIdentity(action.getIdentity(), true, userProvider.getUserId());
             } catch (UnsupportedDataTypeException e) {
                 throw new ActionException(e);
             }

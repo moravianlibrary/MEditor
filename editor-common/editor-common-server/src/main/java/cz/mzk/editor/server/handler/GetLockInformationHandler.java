@@ -32,6 +32,7 @@ import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.mzk.editor.server.UserProvider;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.server.DAO.DAOUtils;
@@ -67,6 +68,9 @@ public class GetLockInformationHandler
     @Inject
     private DAOUtils daoUtils;
 
+    @Inject
+    private UserProvider userProvider;
+
     /**
      * {@inheritDoc}
      */
@@ -79,18 +83,7 @@ public class GetLockInformationHandler
 
         String uuid = action.getUuid();
 
-        long usersId = 0;
-        try {
-            usersId = daoUtils.getUserId(true);
-        } catch (DatabaseException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-            throw new ActionException(e);
-        } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-            throw new ActionException(e);
-        }
+        long usersId = userProvider.getUserId();
 
         long lockOwnerId = 0;
         try {

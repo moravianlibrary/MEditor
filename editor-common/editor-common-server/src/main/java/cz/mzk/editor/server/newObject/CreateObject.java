@@ -51,6 +51,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.google.inject.name.Named;
 
+import cz.mzk.editor.server.UserProvider;
 import org.apache.log4j.Logger;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -155,21 +156,24 @@ public class CreateObject {
      */
     private final List<String> ingestedObjects;
 
+    private Long userId;
+
     /**
      * Instantiates a new creates the object.
-     *
-     * @param inputDirPath     the input dir path
+     *  @param inputDirPath     the input dir path
      * @param config           the config
      * @param digitalObjectDAO the digital object dao
      * @param imageResolverDAO the image resolver dao
      * @param fedoraAccess     the fedora access
+     * @param userProvider
      */
     @Inject
     public CreateObject(String inputDirPath,
                         final EditorConfiguration config,
                         final DigitalObjectDAO digitalObjectDAO,
                         final ImageResolverDAO imageResolverDAO,
-                        final @Named("securedFedoraAccess") FedoraAccess fedoraAccess) {
+                        final @Named("securedFedoraAccess") FedoraAccess fedoraAccess,
+                        UserProvider userProvider) {
         this.inputDirPath = inputDirPath;
         this.processedPages = new HashMap<String, String>();
         this.processedTracks = new HashMap<String, String>();
@@ -178,6 +182,7 @@ public class CreateObject {
         this.config = config;
         this.digitalObjectDAO = digitalObjectDAO;
         this.imageResolverDAO = imageResolverDAO;
+        this.userId = userProvider.getUserId();
     }
 
     /**
@@ -212,7 +217,9 @@ public class CreateObject {
                         node.getName(),
                         inputDirPath,
                         node.getUuid(),
-                        false);
+                        false,
+                        userId
+                        );
             } catch (DatabaseException e) {
                 LOGGER.error("DB ERROR!!!: " + e.getMessage() + ": " + e);
                 e.printStackTrace();
@@ -336,7 +343,7 @@ public class CreateObject {
                             node.getName(),
                             inputDirPath,
                             node.getUuid(),
-                            false);
+                            false, userId);
                 } catch (DatabaseException e) {
                     LOGGER.error("DB ERROR!!!: " + e.getMessage() + ": " + e);
                     e.printStackTrace();

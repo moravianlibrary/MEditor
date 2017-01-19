@@ -99,7 +99,7 @@ public class RecentlyModifiedItemDAOImpl
      * {@inheritDoc}
      */
     @Override
-    public boolean put(RecentlyModifiedItem toPut) throws DatabaseException {
+    public boolean put(RecentlyModifiedItem toPut, Long userId) throws DatabaseException {
         if (toPut == null) throw new NullPointerException("toPut");
         if (toPut.getUuid() == null || "".equals(toPut.getUuid()))
             throw new NullPointerException("toPut.getUuid()");
@@ -123,7 +123,7 @@ public class RecentlyModifiedItemDAOImpl
 
             if (successful)
                 successful =
-                        insertCrudAction(getUserId(false),
+                        insertCrudAction(userId,
                                          Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION,
                                          "digital_object_uuid",
                                          toPut.getUuid(),

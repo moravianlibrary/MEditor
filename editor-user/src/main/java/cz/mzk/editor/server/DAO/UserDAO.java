@@ -102,28 +102,20 @@ public interface UserDAO {
     String getName(Long key) throws DatabaseException;
 
     /**
-     * Gets the name.
-     * 
-     * @return the name
-     * @throws DatabaseException
-     *         the database exception
-     */
-    String getName() throws DatabaseException;
-
-    /**
      * Adds the remove user identity.
      * 
      * @param userIdentity
      *        the user identity
      * @param add
      *        the add
+     * @param userId
      * @return true, if successful
      * @throws DatabaseException
      *         the database exception
      * @throws UnsupportedDataTypeException
      *         the unsupported data type exception
      */
-    boolean addRemoveUserIdentity(UserIdentity userIdentity, boolean add) throws DatabaseException,
+    boolean addRemoveUserIdentity(UserIdentity userIdentity, boolean add, Long userId) throws DatabaseException,
             UnsupportedDataTypeException;
 
     /**
@@ -133,13 +125,14 @@ public interface UserDAO {
      *        the role item
      * @param add
      *        the add
+     * @param userId
      * @return true, if successful
      * @throws DatabaseException
      *         the database exception
      * @throws UnsupportedDataTypeException
      *         the unsupported data type exception
      */
-    boolean addRemoveUserRoleItem(RoleItem roleItem, boolean add) throws DatabaseException,
+    boolean addRemoveUserRoleItem(RoleItem roleItem, boolean add, Long userId) throws DatabaseException,
             UnsupportedDataTypeException;
 
     /**
@@ -276,11 +269,12 @@ public interface UserDAO {
      * 
      * @param user
      *        the user
+     * @param userId
      * @return true, if successful
      * @throws DatabaseException
      *         the database exception
      */
-    Long insertUpdatetUser(UserInfoItem user) throws DatabaseException;
+    Long insertUpdatetUser(UserInfoItem user, Long userId) throws DatabaseException;
 
     /**
      * Gets the users.
@@ -297,8 +291,9 @@ public interface UserDAO {
      * @return the user
      * @throws DatabaseException
      *         the database exception
+     * @param userId
      */
-    UserInfoItem getUser() throws DatabaseException;
+    UserInfoItem getUser(Long userId) throws DatabaseException;
 
     /**
      * Removes the role item.
@@ -342,9 +337,10 @@ public interface UserDAO {
      * 
      * @param right
      *        the right
+     * @param UserProvider
      * @return true, if successful
      * @throws DatabaseException
      *         the database exception
      */
-    boolean hasUserRight(EDITOR_RIGHTS right) throws DatabaseException;
+    boolean hasUserRight(EDITOR_RIGHTS right, Long UserProvider) throws DatabaseException;
 }

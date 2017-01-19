@@ -108,13 +108,8 @@ public class StoredAndLocksDAOImpl
         List<StoredItem> storedItems = new ArrayList<StoredItem>();
 
         try {
-            Long editorUserId = userId;
-            if (editorUserId == null) {
-                editorUserId = getUserId(false);
-            }
-
             selectSt = getConnection().prepareStatement(SELECT_STORED_WORKING_COPY_ITEMS_BY_USER);
-            selectSt.setLong(1, editorUserId);
+            selectSt.setLong(1, userId);
 
             ResultSet rs = selectSt.executeQuery();
 
@@ -123,7 +118,7 @@ public class StoredAndLocksDAOImpl
                 String uuid = rs.getString("digital_object_uuid");
                 DigitalObjectModel model = DigitalObjectModel.parseString(rs.getString("model"));
                 String description = rs.getString("description");
-                java.util.Date date = rs.getDate("timestamp");
+                Date date = rs.getDate("timestamp");
                 String storedDate = FORMATTER_TO_SECONDS.format(date);
                 long id = rs.getLong("id");
 
@@ -146,7 +141,7 @@ public class StoredAndLocksDAOImpl
      * @throws DatabaseException
      */
     @Override
-    public boolean deleteStoredWorkingCopyItem(Long id) throws DatabaseException {
+    public boolean deleteStoredWorkingCopyItem(Long id, Long userId) throws DatabaseException {
         PreparedStatement deleteSt = null;
         boolean successful = false;
 
@@ -162,7 +157,7 @@ public class StoredAndLocksDAOImpl
 
             if (deleteSt.executeUpdate() == 1) {
                 LOGGER.debug("DB has been updated: The edited stored object: " + id + " has been disabled.");
-                if (insertCrudAction(getUserId(false),
+                if (insertCrudAction(userId,
                                      Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION,
                                      "saved_edited_object_id",
                                      id,
@@ -192,13 +187,8 @@ public class StoredAndLocksDAOImpl
         PreparedStatement selectSt = null;
         ArrayList<TreeStructureInfo> retList = new ArrayList<TreeStructureInfo>();
         try {
-            Long editorUserId = userId;
-            if (editorUserId == null) {
-                editorUserId = getUserId(false);
-            }
-
             selectSt = getConnection().prepareStatement(SELECT_INFOS_BY_USER);
-            selectSt.setLong(1, editorUserId);
+            selectSt.setLong(1, userId);
 
         } catch (SQLException e) {
             LOGGER.error("Could not get select infos statement", e);
@@ -228,7 +218,7 @@ public class StoredAndLocksDAOImpl
      * {@inheritDoc}
      */
     @Override
-    public boolean removeSavedStructure(long id) throws DatabaseException {
+    public boolean removeSavedStructure(long id, Long userId) throws DatabaseException {
         PreparedStatement deleteSt = null, disableSt = null;
         boolean successful = false;
         try {
@@ -247,7 +237,7 @@ public class StoredAndLocksDAOImpl
             if (disableSt.executeUpdate() == 1) {
                 LOGGER.debug("DB has been updated: The tree structure info: " + id + " has been disabled.");
                 boolean success =
-                        insertCrudAction(getUserId(false),
+                        insertCrudAction(userId,
                                          Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION,
                                          "tree_structure_id",
                                          id,
@@ -278,10 +268,10 @@ public class StoredAndLocksDAOImpl
      * {@inheritDoc}
      */
     @Override
-    public boolean unlockDigitalObject(String uuid) throws DatabaseException {
+    public boolean unlockDigitalObject(String uuid, Long userId) throws DatabaseException {
         PreparedStatement deleteSt = null;
         boolean successful = false;
-        Long id = getLockId(uuid);
+        Long id = getLockId(uuid, userId);
         if (id != null) {
             try {
                 getConnection().setAutoCommit(false);
@@ -294,7 +284,7 @@ public class StoredAndLocksDAOImpl
 
                 if (deleteSt.executeUpdate() > 0) {
                     successful =
-                            insertCrudAction(getUserId(false),
+                            insertCrudAction(userId,
                                              Constants.TABLE_CRUD_LOCK_ACTION,
                                              "lock_id",
                                              id,
@@ -323,12 +313,12 @@ public class StoredAndLocksDAOImpl
     }
 
     @Override
-    public Long getLockId(String uuid) throws DatabaseException {
+    public Long getLockId(String uuid, Long userId) throws DatabaseException {
         PreparedStatement selectSt = null;
         Long id = null;
         try {
             selectSt = getConnection().prepareStatement(SELECT_ID_OF_LOCK);
-            selectSt.setLong(1, getUserId(false));
+            selectSt.setLong(1, userId);
             selectSt.setString(2, uuid);
         } catch (SQLException e) {
             LOGGER.error("Could not get select statement", e);
@@ -352,13 +342,8 @@ public class StoredAndLocksDAOImpl
         ArrayList<ActiveLockItem> items = new ArrayList<ActiveLockItem>();
         PreparedStatement selSt = null;
         try {
-            Long editorUserId = userId;
-            if (editorUserId == null) {
-                editorUserId = getUserId(false);
-            }
-
             selSt = getConnection().prepareStatement(SELECT_ALL_ACTIVE_LOCK_ITEMS);
-            selSt.setLong(1, editorUserId);
+            selSt.setLong(1, userId);
 
             ResultSet rs = selSt.executeQuery();
 

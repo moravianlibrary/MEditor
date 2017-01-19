@@ -131,14 +131,14 @@ public class DescriptionDAOImpl
      * {@inheritDoc}
      */
     @Override
-    public String getUserDescription(String digital_object_uuid) throws DatabaseException {
+    public String getUserDescription(String digital_object_uuid, Long userId) throws DatabaseException {
 
         PreparedStatement selSt = null;
         String desc = null;
         try {
             selSt = getConnection().prepareStatement(DESCRIPTION_SELECT_DESC_STATEMENT);
             selSt.setString(1, digital_object_uuid);
-            selSt.setLong(2, getUserId(false));
+            selSt.setLong(2, userId);
             ResultSet rs = selSt.executeQuery();
             if (rs.next()) {
                 desc = rs.getString("description");
@@ -159,10 +159,10 @@ public class DescriptionDAOImpl
      * {@inheritDoc}
      */
     @Override
-    public boolean checkUserDescription(String digital_object_uuid, String description)
+    public boolean checkUserDescription(String digital_object_uuid, String description, Long userId)
             throws DatabaseException {
 
-        String desc = getUserDescription(digital_object_uuid);
+        String desc = getUserDescription(digital_object_uuid, userId);
         boolean successful = false;
         PreparedStatement updateSt = null;
 
@@ -173,11 +173,10 @@ public class DescriptionDAOImpl
         }
 
         try {
-            Long editor_user_id = getUserId(false);
             if (desc == null) {
-                successful = daoUtils.insertDescription(editor_user_id, digital_object_uuid, description);
+                successful = daoUtils.insertDescription(userId, digital_object_uuid, description);
                 if (successful)
-                    insertCrudAction(editor_user_id,
+                    insertCrudAction(userId,
                                      Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION,
                                      "digital_object_uuid",
                                      digital_object_uuid,
@@ -188,14 +187,14 @@ public class DescriptionDAOImpl
                 updateSt = getConnection().prepareStatement(DESCRIPTION_UPDATE_DESC_STATEMENT);
                 updateSt.setString(1, description);
                 updateSt.setString(2, digital_object_uuid);
-                updateSt.setLong(3, editor_user_id);
+                updateSt.setLong(3, userId);
                 int updated = updateSt.executeUpdate();
 
                 if (updated == 1) {
-                    LOGGER.debug("DB has been updated: The user's: " + editor_user_id
+                    LOGGER.debug("DB has been updated: The user's: " + userId
                             + " description of object: " + digital_object_uuid + " has been updated.");
 
-                    insertCrudAction(editor_user_id,
+                    insertCrudAction(userId,
                                      Constants.TABLE_CRUD_DIGITAL_OBJECT_ACTION,
                                      "digital_object_uuid",
                                      digital_object_uuid,

@@ -34,11 +34,11 @@ import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.mzk.editor.server.UserProvider;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.LockDAO;
-import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.LockInfo;
 import cz.mzk.editor.shared.rpc.action.GetLockInformationAction;
 import cz.mzk.editor.shared.rpc.action.LockDigitalObjectAction;
@@ -66,6 +66,9 @@ public class LockDigitalObjectHandler
     /** The http session provider. */
     @Inject
     private Provider<HttpSession> httpSessionProvider;
+
+    @Inject
+    private UserProvider userProvider;
 
     /** Instantiate a new lock digital object handler **/
     @Inject
@@ -99,14 +102,14 @@ public class LockDigitalObjectHandler
 
             if (lockInfo.getLockOwner() == null) {
 
-                successful = locksDAO.lockDigitalObject(uuid, description, true);
+                successful = locksDAO.lockDigitalObject(uuid, description, true, userProvider.getUserId());
                 LOGGER.debug("Processing action: LockDigitalObject: " + uuid + " has been successful="
                         + successful);
                 return new LockDigitalObjectResult(lockInfo);
 
             } else {
                 if ("".equals(lockInfo.getLockOwner())) {
-                    successful = locksDAO.lockDigitalObject(uuid, description, false);
+                    successful = locksDAO.lockDigitalObject(uuid, description, false, userProvider.getUserId());
                     LOGGER.debug("Processing action: LockDigitalObject: " + uuid + " has been successful="
                             + successful);
                     return new LockDigitalObjectResult(lockInfo);

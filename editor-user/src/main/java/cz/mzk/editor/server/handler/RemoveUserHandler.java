@@ -33,6 +33,7 @@ import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.mzk.editor.server.UserProvider;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
@@ -55,6 +56,9 @@ public class RemoveUserHandler
     /** The recently modified dao. */
     @Inject
     private UserDAO userDAO;
+
+    @Inject
+    private UserProvider userProvider;
 
     /**
      * Instantiates a new put recently modified handler.

@@ -285,13 +285,13 @@ public class UserDAOImpl
     }
 
     @Override
-    public UserInfoItem getUser() throws DatabaseException {
+    public UserInfoItem getUser(Long userId) throws DatabaseException {
         PreparedStatement selectSt = null;
         UserInfoItem user = new UserInfoItem();
 
         try {
             selectSt = getConnection().prepareStatement(SELECT_USER_STATEMENT);
-            selectSt.setLong(1, getUserId(false));
+            selectSt.setLong(1, userId);
             ResultSet rs = selectSt.executeQuery();
             if (rs.next()) {
                 if (!Constants.DEFAULT_SYSTEM_USERS.isDefaultSysUser(rs.getLong("id"))) {
@@ -331,7 +331,7 @@ public class UserDAOImpl
                 //                TODO unlock locked DO
 
                 boolean crudSucc =
-                        insertEditUserActionItem(getUserId(false),
+                        insertEditUserActionItem(userId,
                                                  userId,
                                                  "The user account has been disabled",
                                                  CRUD_ACTION_TYPES.DELETE,
@@ -361,7 +361,7 @@ public class UserDAOImpl
      * {@inheritDoc}
      */
     @Override
-    public Long insertUpdatetUser(UserInfoItem user) throws DatabaseException {
+    public Long insertUpdatetUser(UserInfoItem user, Long userId) throws DatabaseException {
         if (user == null) throw new NullPointerException("user");
         if (user.getSurname() == null || "".equals(user.getSurname()))
             throw new NullPointerException("user.getSurname()");
@@ -408,7 +408,7 @@ public class UserDAOImpl
 
             if (id != null) {
                 boolean crudSucc =
-                        insertEditUserActionItem(getUserId(false),
+                        insertEditUserActionItem(userId,
                                                  id,
                                                  user.getId() == null ? "New user has been added"
                                                          : "User has been updated",
@@ -761,7 +761,7 @@ public class UserDAOImpl
      * {@inheritDoc}
      */
     @Override
-    public boolean addRemoveUserIdentity(UserIdentity userIdentity, boolean add) throws DatabaseException,
+    public boolean addRemoveUserIdentity(UserIdentity userIdentity, boolean add, Long userId) throws DatabaseException,
             UnsupportedDataTypeException {
         if (userIdentity == null) throw new NullPointerException("identity");
         if (userIdentity.getIdentities() == null || userIdentity.getIdentities().get(0) == null
@@ -807,7 +807,7 @@ public class UserDAOImpl
                         + (add ? "added to" : "removed from") + " the user: " + userIdentity.getUserId());
 
                 boolean crudSucc =
-                        insertEditUserActionItem(getUserId(false),
+                        insertEditUserActionItem(userId,
                                                  userIdentity.getUserId(),
                                                  "An identity has been " + (add ? "added." : "removed."),
                                                  CRUD_ACTION_TYPES.UPDATE,
@@ -840,7 +840,7 @@ public class UserDAOImpl
      * {@inheritDoc}
      */
     @Override
-    public boolean addRemoveUserRoleItem(RoleItem roleItem, boolean add) throws DatabaseException,
+    public boolean addRemoveUserRoleItem(RoleItem roleItem, boolean add, Long userId) throws DatabaseException,
             UnsupportedDataTypeException {
 
         if (roleItem == null) throw new NullPointerException("role");
@@ -871,7 +871,7 @@ public class UserDAOImpl
                         + (add ? "added to" : "removed from") + " the user: " + roleItem.getUserId());
 
                 boolean crudSucc =
-                        insertEditUserActionItem(getUserId(false), roleItem.getUserId(), "The role has been "
+                        insertEditUserActionItem(userId, roleItem.getUserId(), "The role has been "
                                 + (add ? "added." : "removed."), CRUD_ACTION_TYPES.UPDATE, false);
 
                 if (crudSucc) {
@@ -1078,7 +1078,7 @@ public class UserDAOImpl
                         + (add ? "added to" : "removed from") + " the user: " + userId);
 
                 boolean crudSucc =
-                        insertEditUserActionItem(getUserId(false), userId, "The right has been "
+                        insertEditUserActionItem(userId, userId, "The right has been "
                                 + (add ? "added." : "removed."), CRUD_ACTION_TYPES.UPDATE, false);
 
                 if (crudSucc) {
@@ -1158,23 +1158,8 @@ public class UserDAOImpl
         return daoUtils.getName(key);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public String getName() throws DatabaseException {
-        try {
-            return daoUtils.getName(getUserId(true));
-        } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Override
-    public boolean hasUserRight(EDITOR_RIGHTS right) throws DatabaseException {
-
-        return daoUtils.hasUserRight(right);
+    public boolean hasUserRight(EDITOR_RIGHTS right, Long userId) throws DatabaseException {
+        return daoUtils.hasUserRight(userId, right);
     }
 }

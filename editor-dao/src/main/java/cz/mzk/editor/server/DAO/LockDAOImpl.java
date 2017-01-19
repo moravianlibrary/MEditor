@@ -113,7 +113,7 @@ public class LockDAOImpl
      * {@inheritDoc}
      */
     @Override
-    public boolean lockDigitalObject(String uuid, String description, boolean insert)
+    public boolean lockDigitalObject(String uuid, String description, boolean insert, Long userId)
             throws DatabaseException {
 
         PreparedStatement updateSt = null;
@@ -142,7 +142,7 @@ public class LockDAOImpl
                 updateSt.setString(2, description != null ? description : "");
                 updateSt.setBoolean(3, true);
             } else {
-                lockId = storedAndLocksDAO.getLockId(uuid);
+                lockId = storedAndLocksDAO.getLockId(uuid, userId);
                 updateSt = getConnection().prepareStatement(UPDATE_DIGITAL_OBJECTS_TIMESTAMP_DESCRIPTION);
                 updateSt.setString(1, description != null ? description : "");
                 updateSt.setLong(2, lockId);
@@ -159,7 +159,7 @@ public class LockDAOImpl
                 }
                 if (lockId != null) {
                     successful =
-                            (insertCrudAction(getUserId(false),
+                            (insertCrudAction(userId,
                                               Constants.TABLE_CRUD_LOCK_ACTION,
                                               "lock_id",
                                               lockId,

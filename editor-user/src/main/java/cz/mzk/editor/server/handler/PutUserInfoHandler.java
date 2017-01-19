@@ -33,12 +33,11 @@ import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.mzk.editor.server.UserProvider;
 import org.apache.log4j.Logger;
 
-import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.UserDAO;
-import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.PutUserInfoAction;
 import cz.mzk.editor.shared.rpc.action.PutUserInfoResult;
 
@@ -54,6 +53,9 @@ public class PutUserInfoHandler
 
     @Inject
     private UserDAO userDAO;
+
+    @Inject
+    private UserProvider userProvider;
 
     /*
      * (non-Javadoc)
@@ -72,7 +74,7 @@ public class PutUserInfoHandler
 
         Long id = new Long(-1);
         try {
-            id = userDAO.insertUpdatetUser(action.getUser());
+            id = userDAO.insertUpdatetUser(action.getUser(), userProvider.getUserId());
         } catch (DatabaseException e) {
             throw new ActionException(e);
         }

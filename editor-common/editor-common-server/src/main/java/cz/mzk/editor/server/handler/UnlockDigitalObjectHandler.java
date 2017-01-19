@@ -30,11 +30,11 @@ import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.mzk.editor.server.UserProvider;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.StoredAndLocksDAO;
-import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.UnlockDigitalObjectAction;
 import cz.mzk.editor.shared.rpc.action.UnlockDigitalObjectResult;
 
@@ -54,6 +54,9 @@ public class UnlockDigitalObjectHandler
     @Inject
     private StoredAndLocksDAO storedAndLocksDAO;
 
+    @Inject
+    private UserProvider userProvider;
+
     /** Instantiate a new unlock digital object handler **/
     @Inject
     public UnlockDigitalObjectHandler() {
@@ -72,7 +75,7 @@ public class UnlockDigitalObjectHandler
         String uuid = action.getUuid();
 
         try {
-            return new UnlockDigitalObjectResult(storedAndLocksDAO.unlockDigitalObject(uuid));
+            return new UnlockDigitalObjectResult(storedAndLocksDAO.unlockDigitalObject(uuid, userProvider.getUserId()));
         } catch (DatabaseException e) {
             throw new ActionException(e);
         }

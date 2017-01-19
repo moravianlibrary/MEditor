@@ -52,7 +52,7 @@ public interface DigitalObjectDAO {
      * @throws DatabaseException
      *         the database exception
      */
-    boolean deleteDigitalObject(String uuid, String model, String name, String topObjectUuid)
+    boolean deleteDigitalObject(String uuid, String model, String name, String topObjectUuid, Long userId)
             throws DatabaseException;
 
     /**
@@ -91,7 +91,7 @@ public interface DigitalObjectDAO {
                                    String name,
                                    String input_queue_directory_path,
                                    String top_digital_object_uuid,
-                                   boolean state) throws DatabaseException;
+                                   boolean state, Long userId) throws DatabaseException;
 
     /**
      * Update top object time.
@@ -118,6 +118,7 @@ public interface DigitalObjectDAO {
      *        the name
      * @param input_queue_directory_path
      *        the input_queue_directory_path
+     * @param userId
      * @return true, if successful
      * @throws DatabaseException
      *         the database exception
@@ -127,7 +128,7 @@ public interface DigitalObjectDAO {
                                 List<String> lowerObj,
                                 String model,
                                 String name,
-                                String input_queue_directory_path) throws DatabaseException;
+                                String input_queue_directory_path, Long userId) throws DatabaseException;
 
     /**
      * Insert do crud action.
@@ -143,7 +144,10 @@ public interface DigitalObjectDAO {
      * @throws DatabaseException
      *         the database exception
      */
-    void insertDOCrudAction(String tableName, String fkNameCol, Object foreignKey, CRUD_ACTION_TYPES type)
-            throws DatabaseException;
+    void insertDOCrudAction(Long userId,
+                                   String tableName,
+                                   String fkNameCol,
+                                   Object foreignKey,
+                                   CRUD_ACTION_TYPES type) throws DatabaseException;
 
 }

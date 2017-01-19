@@ -33,11 +33,11 @@ import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.mzk.editor.server.UserProvider;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.RecentlyModifiedItemDAO;
-import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.PutRecentlyModifiedAction;
 import cz.mzk.editor.shared.rpc.action.PutRecentlyModifiedResult;
 
@@ -55,6 +55,9 @@ public class PutRecentlyModifiedHandler
     /** The recently modified dao. */
     @Inject
     private RecentlyModifiedItemDAO recentlyModifiedDAO;
+
+    @Inject
+    private UserProvider userProvider;
 
     /**
      * Instantiates a new put recently modified handler.
@@ -83,7 +86,7 @@ public class PutRecentlyModifiedHandler
 
         LOGGER.debug("Processing action: PutRecentlyModified item:" + action.getItem());
         try {
-            return new PutRecentlyModifiedResult(recentlyModifiedDAO.put(action.getItem()));
+            return new PutRecentlyModifiedResult(recentlyModifiedDAO.put(action.getItem(), userProvider.getUserId()));
         } catch (DatabaseException e) {
             throw new ActionException(e);
         }

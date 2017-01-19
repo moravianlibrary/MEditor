@@ -64,12 +64,13 @@ public class AbstractActionDAO
      * @throws SQLException
      *         the sQL exception
      */
-    protected boolean insertCrudAction(String tableName,
+    protected boolean insertCrudAction(Long userId,
+                                       String tableName,
                                        String fkNameCol,
                                        Object foreignKey,
                                        CRUD_ACTION_TYPES type,
                                        boolean closeCon) throws DatabaseException, SQLException {
-        return insertAnyCrudAction(getUserId(false), tableName, fkNameCol, foreignKey, type, null, closeCon);
+        return insertAnyCrudAction(userId, tableName, fkNameCol, foreignKey, type, null, closeCon);
     }
 
     /**
@@ -95,14 +96,15 @@ public class AbstractActionDAO
      * @throws SQLException
      *         the sQL exception
      */
-    protected boolean insertCrudActionWithTopObject(String tableName,
+    protected boolean insertCrudActionWithTopObject(Long userId,
+                                                    String tableName,
                                                     String fkNameCol,
                                                     Object foreignKey,
                                                     CRUD_ACTION_TYPES type,
                                                     String top_digital_object_uuid,
                                                     boolean closeCon,
                                                     Connection con) throws DatabaseException, SQLException {
-        return insertAnyCrudAction(getUserId(false),
+        return insertAnyCrudAction(userId,
                                    tableName,
                                    fkNameCol,
                                    foreignKey,
@@ -110,37 +112,6 @@ public class AbstractActionDAO
                                    top_digital_object_uuid,
                                    closeCon);
     }
-
-    /**
-     * Insert crud action.
-     * 
-     * @param editor_user_id
-     *        the editor_user_id
-     * @param tableName
-     *        the table name
-     * @param fkNameCol
-     *        the fk name col
-     * @param foreignKey
-     *        the foreign key
-     * @param type
-     *        the type
-     * @param closeCon
-     *        the close con
-     * @return true, if successful
-     * @throws DatabaseException
-     *         the database exception
-     * @throws SQLException
-     *         the sQL exception
-     */
-    protected boolean insertCrudAction(Long editor_user_id,
-                                       String tableName,
-                                       String fkNameCol,
-                                       Object foreignKey,
-                                       CRUD_ACTION_TYPES type,
-                                       boolean closeCon) throws DatabaseException, SQLException {
-        return insertAnyCrudAction(editor_user_id, tableName, fkNameCol, foreignKey, type, null, closeCon);
-    }
-
     /**
      * Insert crud action with top object.
      * 
@@ -164,14 +135,14 @@ public class AbstractActionDAO
      * @throws SQLException
      *         the sQL exception
      */
-    protected boolean insertCrudActionWithTopObject(Long editor_user_id,
+    protected boolean insertCrudActionWithTopObject(Long userId,
                                                     String tableName,
                                                     String fkNameCol,
                                                     Object foreignKey,
                                                     CRUD_ACTION_TYPES type,
                                                     String top_digital_object_uuid,
                                                     boolean closeCon) throws DatabaseException, SQLException {
-        return insertAnyCrudAction(editor_user_id,
+        return insertAnyCrudAction(userId,
                                    tableName,
                                    fkNameCol,
                                    foreignKey,

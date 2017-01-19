@@ -832,15 +832,6 @@ public class DAOUtilsImpl
         }
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @throws SQLException
-     */
-    @Override
-    public Long getUserId(boolean closeCon) throws DatabaseException, SQLException {
-        return super.getUserId(closeCon);
-    }
 
     @Override
     public long getUsersId(String identifier, Constants.USER_IDENTITY_TYPES type, boolean closeCon)
@@ -877,7 +868,7 @@ public class DAOUtilsImpl
     }
 
     @Override
-    public boolean hasUserRight(EDITOR_RIGHTS right) throws DatabaseException {
+    public boolean hasUserRight(Long userId, EDITOR_RIGHTS right) throws DatabaseException {
         PreparedStatement selSt = null;
 
         String HAS_USER_ROLE =
@@ -893,9 +884,9 @@ public class DAOUtilsImpl
         try {
             selSt = getConnection().prepareStatement(HAS_USER_ROLE);
             selSt.setString(1, right.toString());
-            selSt.setLong(2, getUserId(false));
+            selSt.setLong(2, userId);
             selSt.setString(3, right.toString());
-            selSt.setLong(4, getUserId(false));
+            selSt.setLong(4, userId);
 
             ResultSet rs = selSt.executeQuery();
             if (rs.next()) {

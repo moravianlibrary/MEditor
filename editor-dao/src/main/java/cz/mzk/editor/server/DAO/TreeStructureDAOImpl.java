@@ -244,16 +244,16 @@ public class TreeStructureDAOImpl
      * {@inheritDoc}
      */
     @Override
-    public boolean removeSavedStructure(long id) throws DatabaseException {
+    public boolean removeSavedStructure(long id, Long userId) throws DatabaseException {
 
-        return storedAndLocksDAO.removeSavedStructure(id);
+        return storedAndLocksDAO.removeSavedStructure(id, userId);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ArrayList<TreeStructureNode> loadStructure(long structureId) throws DatabaseException {
+    public ArrayList<TreeStructureNode> loadStructure(long structureId, Long userId) throws DatabaseException {
         PreparedStatement selectSt = null;
         try {
             getConnection().setAutoCommit(false);
@@ -290,7 +290,7 @@ public class TreeStructureDAOImpl
             if (retList.isEmpty()) {
                 LOGGER.debug("DB has been updated: The tree structure: " + structureId + " has been read.");
                 boolean success =
-                        insertCrudAction(getUserId(false),
+                        insertCrudAction(userId,
                                          Constants.TABLE_CRUD_TREE_STRUCTURE_ACTION,
                                          "tree_structure_id",
                                          structureId,

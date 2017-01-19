@@ -28,8 +28,6 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.sql.SQLException;
-
 import java.text.DateFormat;
 
 import java.util.ArrayList;
@@ -42,13 +40,13 @@ import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.mzk.editor.server.UserProvider;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.TreeStructureDAO;
 import cz.mzk.editor.server.DAO.UserDAO;
-import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureNode;
 import cz.mzk.editor.shared.rpc.TreeStructureInfo;
 import cz.mzk.editor.shared.rpc.action.StoreTreeStructureAction;
@@ -75,6 +73,9 @@ public class StoreTreeStructureHandler
     /** The dao utils. */
     @Inject
     private DAOUtils daoUtils;
+
+    @Inject
+    private UserProvider userProvider;
 
     @Inject
     public StoreTreeStructureHandler() {
@@ -116,18 +117,7 @@ public class StoreTreeStructureHandler
 
         }
 
-        long userId = 0;
-        try {
-            userId = daoUtils.getUserId(true);
-        } catch (DatabaseException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-            throw new ActionException(e);
-        } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-            throw new ActionException(e);
-        }
+        long userId = userProvider.getUserId();
 
         try {
             switch (action.getVerb()) {
@@ -161,10 +151,10 @@ public class StoreTreeStructureHandler
                     } else {
                         // tree nodes
                         return new StoreTreeStructureResult(null, treeDAO.loadStructure(Long.parseLong(action
-                                .getId())));
+                                .getId()), userProvider.getUserId()));
                     }
                 case DELETE:
-                    treeDAO.removeSavedStructure(Long.parseLong(action.getId()));
+                    treeDAO.removeSavedStructure(Long.parseLong(action.getId()), userProvider.getUserId());
                     break;
 
             }

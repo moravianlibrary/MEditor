@@ -116,6 +116,24 @@ public class ServerUtils {
         return getEditorUserAuthentication(httpSessionProvider.get());
     }
 
+    private static void checkExpiredSession(HttpSession session) throws ActionException {
+        EditorUserAuthentication authentication = getEditorUserAuthentication(session);
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ActionException(Constants.SESSION_EXPIRED_FLAG + URLS.ROOT()
+                    + (URLS.LOCALHOST() ? URLS.LOGIN_LOCAL_PAGE : URLS.LOGIN_PAGE));
+        }
+    }
+
+    public static boolean checkUserRight(Long userId, EDITOR_RIGHTS right) {
+        try {
+            return daoUtils.hasUserRight(userId, right);
+        } catch (DatabaseException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     private static List<Field> getAllFields(Class<?> clazz) {
         if (clazz == null || clazz.getName().contains("java.util.List")
                 || clazz.getName().contains("java.lang.String")) {

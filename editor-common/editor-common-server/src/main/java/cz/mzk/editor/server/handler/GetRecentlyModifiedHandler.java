@@ -41,6 +41,7 @@ import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.mzk.editor.server.UserProvider;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.server.DAO.DAOUtils;
@@ -82,6 +83,9 @@ public class GetRecentlyModifiedHandler
     @Inject
     private DAOUtils daoUtils;
 
+    @Inject
+    private UserProvider userProvider;
+
     /**
      * Instantiates a new gets the recently modified handler.
      * 
@@ -122,7 +126,7 @@ public class GetRecentlyModifiedHandler
             } else {
                 recItems =
                         recentlyModifiedDAO.getItems(configuration.getRecentlyModifiedNumber(),
-                                                     daoUtils.getUserId(true));
+                                                     userProvider.getUserId());
             }
 
             for (RecentlyModifiedItem item : recItems) {
@@ -133,10 +137,6 @@ public class GetRecentlyModifiedHandler
             }
             return new GetRecentlyModifiedResult(recItems);
         } catch (DatabaseException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-            throw new ActionException(e);
-        } catch (SQLException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
             throw new ActionException(e);

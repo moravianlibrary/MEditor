@@ -75,10 +75,11 @@ public interface TreeStructureDAO {
      * 
      * @param id
      *        id of the record
+     * @param userId
      * @return
      * @throws DatabaseException
      */
-    boolean removeSavedStructure(long id) throws DatabaseException;
+    boolean removeSavedStructure(long id, Long userId) throws DatabaseException;
 
     /**
      * Returns the list of TreeStructureNode representing the unfinished work in
@@ -86,9 +87,10 @@ public interface TreeStructureDAO {
      * 
      * @param structureId
      *        id of a stored structure
+     * @param userId
      * @throws DatabaseException
      */
-    ArrayList<TreeStructureNode> loadStructure(long structureId) throws DatabaseException;
+    ArrayList<TreeStructureNode> loadStructure(long structureId, Long userId) throws DatabaseException;
 
     /**
      * Saves the unfinished work into DB

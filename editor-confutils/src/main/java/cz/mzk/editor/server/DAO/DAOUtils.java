@@ -597,19 +597,6 @@ public interface DAOUtils {
                                  String prop_aditional_info_or_ocr,
                                  boolean prop_exist) throws DatabaseException;
 
-    /**
-     * Gets the user id.
-     * 
-     * @param closeCon
-     *        the close con
-     * @return the user id
-     * @throws DatabaseException
-     *         the database exception
-     * @throws SQLException
-     *         the sQL exception
-     */
-    Long getUserId(boolean closeCon) throws DatabaseException, SQLException;
-
     long getUsersId(String identifier, Constants.USER_IDENTITY_TYPES type, boolean closeCon) throws DatabaseException, SQLException;
 
     /**
@@ -632,6 +619,6 @@ public interface DAOUtils {
      * @throws DatabaseException
      *         the database exception
      */
-    boolean hasUserRight(EDITOR_RIGHTS right) throws DatabaseException;
+    boolean hasUserRight(Long userId, EDITOR_RIGHTS right) throws DatabaseException;
 
 }

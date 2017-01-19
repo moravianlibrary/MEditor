@@ -31,6 +31,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import cz.mzk.editor.server.UserProvider;
 import cz.mzk.editor.server.util.StringUtils;
 import org.apache.log4j.Logger;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
@@ -43,7 +44,6 @@ import com.gwtplatform.dispatch.shared.ActionException;
 
 import cz.mzk.editor.client.CreateObjectException;
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.DigitalObjectDAO;
@@ -93,6 +93,9 @@ public class InsertNewDigitalObjectHandler
     @Inject
     private ImageResolverDAO imageResolverDAO;
 
+    @Inject
+    private UserProvider userProvider;
+
     private static RequestDispatcher erraiDispatcher;
 
     private boolean reindexSuccess = false;
@@ -134,7 +137,7 @@ public class InsertNewDigitalObjectHandler
                                      config,
                                      digitalObjectDAO,
                                      imageResolverDAO,
-                                     fedoraAccess);
+                                     fedoraAccess, userProvider);
             ingestSuccess = createObject.insertAllTheStructureToFOXMLs(object);
 
             if (object.getUuid() != null && createObject.getTopLevelUuid() != null && !createObject.getTopLevelUuid().equals(object.getUuid())) {
@@ -145,11 +148,11 @@ public class InsertNewDigitalObjectHandler
                                                              createObject.getIngestedObjects(),
                                                              object.getModel().getValue(),
                                                              object.getName(),
-                                                             object.getPath())) {
+                                                             object.getPath(), userProvider.getUserId())) {
                         digitalObjectDAO.deleteDigitalObject(createObject.getTopLevelUuid(),
                                                              null,
                                                              null,
-                                                             createObject.getTopLevelUuid());
+                                                             createObject.getTopLevelUuid(), userProvider.getUserId());
                     }
                 } catch (DatabaseException e) {
                     LOGGER.error("DB ERROR!!!: " + e.getMessage() + ": " + e);

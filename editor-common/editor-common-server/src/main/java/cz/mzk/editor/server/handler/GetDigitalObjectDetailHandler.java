@@ -43,12 +43,12 @@ import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 
+import cz.mzk.editor.server.UserProvider;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.ConnectionException;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
-import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.DescriptionDAO;
 import cz.mzk.editor.server.DAO.DigitalObjectDAO;
@@ -95,6 +95,9 @@ public class GetDigitalObjectDetailHandler
 
     @Inject
     private DigitalObjectDAO digObjDAO;
+
+    @Inject
+    private UserProvider userProvider;
 
     /**
      * Instantiates a new gets the digital object detail handler.
@@ -162,7 +165,7 @@ public class GetDigitalObjectDetailHandler
                                                                    storedFOXMLFilePath,
                                                                    action.getModel());
                 try {
-                    digObjDAO.insertDOCrudAction(Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION,
+                    digObjDAO.insertDOCrudAction(userProvider.getUserId(), Constants.TABLE_CRUD_SAVED_EDITED_OBJECT_ACTION,
                                                  "saved_edited_object_id",
                                                  action.getSavedEditedObject().getId(),
                                                  CRUD_ACTION_TYPES.READ);
@@ -183,7 +186,7 @@ public class GetDigitalObjectDetailHandler
             String description = null;
             Date modified = null;
             try {
-                description = descriptionDAO.getUserDescription(uuid);
+                description = descriptionDAO.getUserDescription(uuid, userProvider.getUserId());
 
                 // TODO: is the given user authorized to this operation?
             } catch (DatabaseException e) {

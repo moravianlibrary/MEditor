@@ -27,9 +27,12 @@ package cz.mzk.editor.server.DAO;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import cz.mzk.editor.server.UserProvider;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.client.util.Constants;
+
+import javax.inject.Inject;
 
 /**
  * @author Matous Jobanek
@@ -46,6 +49,9 @@ public class LogInOutDAOImpl
     /** The Constant INSERT_LOG_IN_ACTION. */
     public static final String INSERT_LOG_IN_ACTION = "INSERT INTO " + Constants.TABLE_LOG_IN_OUT
             + " (editor_user_id, timestamp, type) VALUES ((?), (CURRENT_TIMESTAMP), (?))";
+
+    @Inject
+    private UserProvider userProvider;
 
     /**
      * {@inheritDoc}
@@ -73,11 +79,6 @@ public class LogInOutDAOImpl
      * {@inheritDoc}
      */
     public void logInOut(boolean logIn) throws DatabaseException {
-        try {
-            logInOut(getUserId(true), logIn);
-        } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-        }
+        logInOut(userProvider.getUserId(), logIn);
     }
 }
