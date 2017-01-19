@@ -83,10 +83,6 @@
 			<artifactId>commons-codec</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.reveregroup.gwt</groupId>
 			<artifactId>gwt-image-loader</artifactId>
 		</dependency>

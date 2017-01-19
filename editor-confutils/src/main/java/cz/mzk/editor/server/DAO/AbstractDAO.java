@@ -324,9 +324,11 @@ public abstract class AbstractDAO {
                 resourceEl.setAttribute("auth", "Container");
                 resourceEl.setAttribute("type", "javax.sql.DataSource");
                 resourceEl.setAttribute("driverClassName", "org.postgresql.Driver");
-                resourceEl.setAttribute("maxActive", "40");
+                resourceEl.setAttribute("initialSize", "3");
+                resourceEl.setAttribute("maxTotal", "40");
                 resourceEl.setAttribute("maxIdle", "20");
-                resourceEl.setAttribute("maxWait", "7500");
+                resourceEl.setAttribute("maxWaitMillis", "7500");
+                resourceEl.setAttribute("factory", "org.apache.tomcat.jdbc.pool.DataSourceFactory" );
                 resourceEl.setAttribute("removeAbandoned", "true");
                 resourceEl.setAttribute("removeAbandonedTimeout", "100");
                 resourceEl.setAttribute("logAbandoned", "true");
