@@ -15,4 +15,4 @@ META-INF
 .gwt
 *.swp
 .errai
-.class
+*.class
