@@ -1103,13 +1103,9 @@ Revision 1.02 - Added Log Comment  2003/03/24 19:37:42  ckeith
 
                     <xsl:for-each select="marc:subfield[@code='c']">
                         <mods:dateIssued>
-                            <xsl:call-template name="chopPunctuationBoth">
-                                <xsl:with-param name="chopString">
-                                    <xsl:call-template name="chopPunctuationBoth">
+                                    <xsl:call-template name="chopPunctuation">
                                         <xsl:with-param name="chopString" select="."/>
                                     </xsl:call-template>
-                                </xsl:with-param>
-                            </xsl:call-template>
                         </mods:dateIssued>
                     </xsl:for-each>
 
