@@ -33,7 +33,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -808,7 +810,7 @@ public class CreateObject {
                             + getSysnoPath(sysno) : config.getRecordingServerUnknown()
                             + getPathFromNonSysno(sysno));
 
-            mkdirIfPathNotExist(audioDir);
+            mkdirIfPathNotExist(audioDir.toPath());
         }
 
         String unknown = config.getImageServerUnknown();
@@ -838,24 +840,23 @@ public class CreateObject {
                         + getSysnoPath(sysno) : config.getImageServerUnknown()
                         + getPathFromNonSysno(sysno));
 
-        mkdirIfPathNotExist(imagesDir);
+        mkdirIfPathNotExist(imagesDir.toPath());
 
 
     }
 
-    private void mkdirIfPathNotExist(File file) throws CreateObjectException {
-        if (file.exists()) return;
-
-        boolean mkdirs = file.mkdirs();
-        if (!mkdirs) {
-            LOGGER.error("cannot create directory '" + file.getAbsolutePath() + "'");
-            throw new CreateObjectException("cannot create directory '" + file.getAbsolutePath()
-                    + "'");
-        } else {
-            if (!file.canRead() || !file.canWrite()) {
-                LOGGER.error("cannot write into '" + file.getAbsolutePath() + "'");
-                throw new CreateObjectException("cannot write into '" + file.getAbsolutePath() + "'");
-            }
+    private void mkdirIfPathNotExist(Path path) throws CreateObjectException {
+        try {
+            Files.createDirectories(path);
+        } catch (AccessDeniedException e) {
+            String error = "cannot create directory '" + path.toAbsolutePath().toString() + "' (Access Denied)";
+            LOGGER.error(error);
+            throw new CreateObjectException(error);
+        }
+        catch (IOException e) {
+            String error = "cannot create directory '" + path.toAbsolutePath().toString() + "' (IO exception)";
+            LOGGER.error(error);
+            throw new CreateObjectException(error);
         }
     }
 
