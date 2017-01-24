@@ -32,8 +32,13 @@
 		<!--comment out when using superDevMode-->
 		<security:intercept-url pattern="/**" requires-channel="https" />
 
+		<!-- coz iframe with pdf.js -->
+		<security:headers>
+			<security:frame-options disabled="true" />
+		</security:headers>
+
 		<!-- As of Spring Security 4.0 CSRF is enabled by default, temporarily disabled -->
-		<security:csrf disabled="true"/>
+		<security:csrf disabled="true" />
 	</security:http>
 
 	<bean id="ldapAuthenticationProvider"

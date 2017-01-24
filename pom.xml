@@ -622,6 +622,11 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</pluginRepository>
+		<pluginRepository>
+			<id>mulesoft-releases</id>
+			<name>MuleSoft Repository</name>
+			<url>https://repository.mulesoft.org/releases/</url>
+		</pluginRepository>
 	</pluginRepositories>
 
 	<build>

@@ -134,6 +134,27 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.mule.tools.javascript</groupId>
+				<artifactId>npm-maven-plugin</artifactId>
+				<configuration>
+					<outputDirectory>src/main/webapp/js</outputDirectory>
+				</configuration>
+				<version>1.0</version>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>fetch-modules</goal>
+						</goals>
+						<configuration>
+							<packages>
+								<package>pdfjs-dist:1.5.188</package>
+							</packages>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 	<profiles>

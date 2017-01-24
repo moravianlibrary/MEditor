@@ -154,7 +154,7 @@ public class Constants {
     public static final String URL_PARAM_BASE = "base";
 
     /** The Constant URL_PARAM_PDF_PATH. */
-    public static final String URL_PARAM_PDF_PATH = "pdfPath";
+    public static final String URL_PARAM_PDF_PATH = "file";
 
     /** The Constant URL_PDF_FROM_FEDORA_SUFFIX. */
     public static final String URL_PDF_FROM_FEDORA_PREFIX = "fromFedora/";

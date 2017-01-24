@@ -16,3 +16,7 @@ META-INF
 *.swp
 .errai
 *.class
+
+editor-webapp/src/main/webapp/js/node-ensure/
+editor-webapp/src/main/webapp/js/pdfjs-dist/
+
