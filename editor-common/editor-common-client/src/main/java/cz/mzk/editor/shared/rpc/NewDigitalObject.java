@@ -109,7 +109,8 @@ public class NewDigitalObject
      */
 
     public String getSysno() {
-        return sysno;
+        // ☢️ mzk03 sysno
+        return sysno.replaceFirst("^mzk03", "");
     }
 
     /**
