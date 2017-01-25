@@ -392,28 +392,28 @@ public class LoadTreeStructureWindow
                                public void callback(StoreTreeStructureResult result) {
                                    ArrayList<TreeStructureNode> nodes = result.getNodes();
                                    if (nodes != null) {
-                                       TreeNode[] tree = new TreeNode[nodes.size()];
-                                       Record[] pages = new Record[nodes.size()];
-                                       int i = 0, j = 0;
-                                       int lastId = 0;
+                                       ArrayList<TreeNode> treeList = new ArrayList<>();
+                                       ArrayList<Record> pageList = new ArrayList<>();
                                        TreeStructureNode rootTreeNode = null;
+                                       int lastId = 0;
+
                                        for (TreeStructureNode node : nodes) {
                                            if (node.getPropParent() == null) {
-                                               pages[j++] = ClientCreateUtils.toScanRecord(node);
+                                               pageList.add(ClientCreateUtils.toScanRecord(node));
                                            } else if (node.getPropId().equals(SubstructureTreeNode.ROOT_ID)) {
                                                rootTreeNode = node;
                                            } else {
                                                int id = Integer.parseInt(node.getPropId());
                                                if (id > lastId) lastId = id;
-                                               tree[i++] = ClientCreateUtils.toTreeNode(node);
+                                               treeList.add(ClientCreateUtils.toTreeNode(node));
                                            }
                                        }
-                                       if (i == 0 && rootTreeNode != null) {
-                                           tree[i++] = ClientCreateUtils.toTreeNode(rootTreeNode);
+                                       if (treeList.isEmpty() && rootTreeNode != null) {
+                                           treeList.add(ClientCreateUtils.toTreeNode(rootTreeNode));
                                        }
-                                       getEventBus()
-                                               .fireEvent(new LoadStructureEvent(tree, loadOnlyLeft ? null
-                                                       : pages, lastId));
+                                       TreeNode[] treeArray = treeList.toArray(new TreeNode[treeList.size()]);
+                                       Record[] pageArray = pageList.toArray(new Record[pageList.size()]);
+                                       getEventBus().fireEvent(new LoadStructureEvent(treeArray, loadOnlyLeft ? null : pageArray, lastId));
                                        hide();
                                    }
                                }
