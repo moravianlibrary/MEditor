@@ -28,51 +28,29 @@
 package cz.mzk.editor.server.DAO;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-
 import java.text.SimpleDateFormat;
-
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
 import javax.servlet.http.HttpSession;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Result;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.sql.DataSource;
-
 import com.google.inject.Provider;
-
 import org.apache.log4j.Logger;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-import org.xml.sax.SAXException;
-
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.springframework.security.core.context.SecurityContext;
-
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.DEFAULT_SYSTEM_USERS;
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
@@ -264,116 +242,31 @@ public abstract class AbstractDAO {
      *        the name
      */
     private void createCorrectContext(String host, String login, String password, String port, String name) {
-        String pathPrefix = System.getProperty("catalina.home");
-        boolean changed = false;
-
-        InputStream is = null;
-        File contextFile =
-                new File(pathPrefix + File.separator + "conf" + File.separator + "Catalina" + File.separator
-                        + "localhost" + File.separator + "meditor.xml");
-        Document contextDoc = null;
-        DocumentBuilder builder;
-        try {
-            builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-
-            if (contextFile.exists()) {
-
-                try {
-
-                    is = new FileInputStream(contextFile);
-                    contextDoc = builder.parse(is);
-
-                } catch (FileNotFoundException e) {
-                    LOGGER.error(e.getMessage());
-                    e.printStackTrace();
-
-                } catch (SAXException e) {
-                    LOGGER.error(e.getMessage());
-                    e.printStackTrace();
-
-                } catch (IOException e) {
-                    LOGGER.error(e.getMessage());
-                    e.printStackTrace();
-                }
+        String catalinaHome = System.getProperty("catalina.home");
+        catalinaHome = "/usr/local/tomcat/";
+        if (catalinaHome != null) {
+            VelocityEngine ve = new VelocityEngine();
+            ve.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
+            ve.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
+            ve.init();
+            VelocityContext context = new VelocityContext();
+            context.put("login", login);
+            context.put("host", host);
+            context.put("password", password);
+            context.put("port", port);
+            context.put("name", name);
+            Template t = ve.getTemplate("context.xml");
+            File contextFile =
+                    new File(catalinaHome + File.separator + "conf" + File.separator + "Catalina" + File.separator
+                            + "localhost" + File.separator + "meditor.xml");
+            FileWriter writer = null;
+            try {
+                writer = new FileWriter(contextFile);
+                t.merge(context, writer);
+                writer.flush();
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage());
             }
-
-            if (contextDoc == null) {
-                contextDoc = builder.newDocument();
-                changed = true;
-            }
-
-            NodeList contextEls = contextDoc.getElementsByTagName("Context");
-            Element contextEl;
-            if (contextEls == null || contextEls.getLength() == 0 || contextEls.item(0) == null) {
-                contextEl = contextDoc.createElement("Context");
-                contextEl.setAttribute("antiJARLocking", "true");
-                contextEl.setAttribute("path", "/meditor");
-                contextDoc.appendChild(contextEl);
-                changed = true;
-
-            } else {
-                contextEl = (Element) contextEls.item(0);
-            }
-
-            NodeList resourceEls = contextEl.getElementsByTagName("Resource");
-            Element resourceEl;
-            if (resourceEls == null || resourceEls.getLength() == 0 || resourceEls.item(0) == null) {
-        	// TODO: HC, is baaad mmkayy. Externalization of the default config is much better.
-                resourceEl = contextDoc.createElement("Resource");
-                resourceEl.setAttribute("name", "jdbc/editor");
-                resourceEl.setAttribute("auth", "Container");
-                resourceEl.setAttribute("type", "javax.sql.DataSource");
-                resourceEl.setAttribute("driverClassName", "org.postgresql.Driver");
-                resourceEl.setAttribute("initialSize", "3");
-                resourceEl.setAttribute("maxTotal", "40");
-                resourceEl.setAttribute("maxIdle", "20");
-                resourceEl.setAttribute("maxWaitMillis", "7500");
-                resourceEl.setAttribute("factory", "org.apache.tomcat.jdbc.pool.DataSourceFactory" );
-                resourceEl.setAttribute("removeAbandoned", "true");
-                resourceEl.setAttribute("removeAbandonedTimeout", "100");
-                resourceEl.setAttribute("logAbandoned", "true");
-                contextEl.appendChild(resourceEl);
-                changed = true;
-
-            } else {
-                resourceEl = (Element) resourceEls.item(0);
-            }
-
-            String usernameAttr = resourceEl.getAttribute("username");
-            if (usernameAttr == null || !login.equals(usernameAttr)) {
-                resourceEl.setAttribute("username", login);
-                changed = true;
-            }
-
-            String passwordAttr = resourceEl.getAttribute("password");
-            if (passwordAttr == null || !password.equals(passwordAttr)) {
-                resourceEl.setAttribute("password", password);
-                changed = true;
-            }
-
-            String url = "jdbc:postgresql://" + host + ":" + port + "/" + name;
-            String urlAttr = resourceEl.getAttribute("url");
-            if (urlAttr == null || !url.equals(urlAttr)) {
-                resourceEl.setAttribute("url", url);
-                changed = true;
-            }
-
-            if (changed) {
-                // write the context.xml file
-                TransformerFactory transformerFactory = TransformerFactory.newInstance();
-                Transformer transformer = transformerFactory.newTransformer();
-                DOMSource source = new DOMSource(contextDoc);
-                Result result = new StreamResult(contextFile.toURI().getPath());
-                contextFile.exists();
-                transformer.transform(source, result);
-            }
-
-        } catch (ParserConfigurationException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-        } catch (TransformerException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
         }
 
         contextIsCorrect = true;

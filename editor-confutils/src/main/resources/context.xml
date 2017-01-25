@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context antiJARLocking="true" path="/meditor">
+    <Resource auth="Container" driverClassName="org.postgresql.Driver" logAbandoned="true" initialSize="3" maxTotal="40" maxIdle="20"
+              maxWaitMillis="7500" name="jdbc/editor" factory="org.apache.tomcat.jdbc.pool.DataSourceFactory" password="$password" removeAbandoned="true"
+              removeAbandonedTimeout="100" type="javax.sql.DataSource"
+              url="jdbc:postgresql://$host:$port/$name" username="$login"/>
+</Context>
