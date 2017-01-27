@@ -78,22 +78,6 @@
 			<groupId>com.allen-sauer.gwt.log</groupId>
 			<artifactId>gwt-log</artifactId>
 		</dependency>
-<!-- 		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.reveregroup.gwt</groupId>
-			<artifactId>gwt-image-loader</artifactId>
-		</dependency> -->
-		
-		
-		
-		
 	</dependencies>
 
 	<build>

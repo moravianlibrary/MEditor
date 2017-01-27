@@ -147,38 +147,6 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
-
-			<!-- Maven Eclipse Plugin -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<configuration>
-					<useProjectReferences>true</useProjectReferences>
-					<additionalConfig>
-						<file>
-							<name>.factorypath</name>
-							<content><![CDATA[ 
-                <factorypath> 
-                  <factorypathentry kind="VARJAR" 
-id="M2_REPO/com/gwtplatform/gwtp-processors/${gwtp.version}/gwtp-processors-${gwtp.version}.jar" 
-enabled="true" runInBatchMode="false" /> 
-                </factorypath> 
-              ]]></content>
-						</file>
-						<file>
-							<name>.settings/org.eclipse.jdt.apt.core.prefs</name>
-							<content><![CDATA[ 
-                eclipse.preferences.version=1 
-                org.eclipse.jdt.apt.aptEnabled=true 
-                org.eclipse.jdt.apt.genSrcDir=${generatedGwtpSources} 
-                org.eclipse.jdt.apt.reconcileEnabled=true 
-              ]]></content>
-						</file>
-					</additionalConfig>
-				</configuration>
-			</plugin>
-
-
 			<!-- Run annotation processors on src/main/java sources -->
 			<plugin>
 				<groupId>org.bsc.maven</groupId>
@@ -207,9 +175,6 @@ enabled="true" runInBatchMode="false" />
 					</dependency>
 				</dependencies>
 			</plugin>
-
-
-
 		</plugins>
 	</build>
 
