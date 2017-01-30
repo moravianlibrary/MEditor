@@ -50,11 +50,4 @@ public class SecurityUserDAOImpl
             throws DatabaseException, SQLException {
         return super.getUsersId(identifier, type, closeCon);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public String getName(Long userId) throws DatabaseException {
-        return daoUtils.getName(userId);
-    }
 }

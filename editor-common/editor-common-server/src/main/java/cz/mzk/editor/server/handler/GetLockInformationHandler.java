@@ -101,7 +101,7 @@ public class GetLockInformationHandler
                                                                      timeToExpiration));
 
                 } else {
-                    return new GetLockInformationResult(new LockInfo(userDAO.getName(lockOwnerId),
+                    return new GetLockInformationResult(new LockInfo(userProvider.getName(),
                                                                      locksDAO.getDescription(uuid),
                                                                      timeToExpiration));
                 }

@@ -1150,14 +1150,6 @@ public class UserDAOImpl
         return retList;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getName(Long key) throws DatabaseException {
-        return daoUtils.getName(key);
-    }
-
     @Override
     public boolean hasUserRight(EDITOR_RIGHTS right, Long userId) throws DatabaseException {
         return daoUtils.hasUserRight(userId, right);

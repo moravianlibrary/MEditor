@@ -32,7 +32,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import javax.inject.Inject;
 
@@ -44,14 +43,8 @@ import com.gwtplatform.dispatch.shared.ActionException;
 import cz.mzk.editor.server.UserProvider;
 import org.apache.log4j.Logger;
 
-import org.springframework.security.core.context.SecurityContextHolder;
-
-import cz.mzk.editor.server.EditorUserAuthentication;
-import cz.mzk.editor.server.URLS;
-import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.UserDAO;
 import cz.mzk.editor.server.config.EditorConfiguration.ServerConstants;
-import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.LogoutAction;
 import cz.mzk.editor.shared.rpc.action.LogoutResult;
 
@@ -99,24 +92,10 @@ public class LogoutHandler
 
         LOGGER.debug("Processing action: LogoutAction");
 
-        EditorUserAuthentication authentication = ServerUtils.getEditorUserAuthentication();
+        ACCESS_LOGGER.info("LOG OUT: [" + FORMATTER.format(new Date()) + "] User " + userProvider.getName()
+                + " with IP " + reqProvider.get().getRemoteAddr());
 
-        try {
-            ACCESS_LOGGER.info("LOG OUT: [" + FORMATTER.format(new Date()) + "] User " + userDAO.getName(userProvider.getUserId())
-                    + " with " + authentication.getIdentityType().toString() + " identifier "
-                    + authentication.getPrincipal() + " and IP " + reqProvider.get().getRemoteAddr());
-        } catch (DatabaseException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-        }
-
-        SecurityContextHolder.clearContext();
-        HttpSession session = reqProvider.get().getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
-
-        return new LogoutResult(URLS.ROOT() + (URLS.LOCALHOST() ? URLS.LOGIN_LOCAL_PAGE : URLS.LOGIN_PAGE));
+        return new LogoutResult(reqProvider.get().getContextPath() + "/sso/logout");
     }
 
     /*

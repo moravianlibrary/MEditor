@@ -92,14 +92,9 @@ public class GetLoggedUserHandler
 
         LOGGER.debug("Processing action: GetLoggedUserAction");
 
-        try {
-            return new GetLoggedUserResult(userDAO.getName(userProvider.getUserId()),
+        return new GetLoggedUserResult(userProvider.getName(),
                                            userProvider.getUserId());
-        } catch (DatabaseException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-            throw new ActionException(e);
-        }
+
     }
 
     /*

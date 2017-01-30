@@ -1,46 +1,45 @@
 package cz.mzk.editor.server;
 
-import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.server.DAO.DAOUtils;
-import cz.mzk.editor.server.DAO.DatabaseException;
+import cz.mzk.editor.server.DAO.UserDaoNew;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpSession;
-import java.sql.SQLException;
 
-/**
- * Created by rumanekm on 28.3.14.
- */
 public class UserProvider {
 
-    /** The http session provider. */
     @Inject
     private Provider<HttpSession> httpSessionProvider;
 
     @Inject
-    DAOUtils daoUtils;
+    private Provider<ServletRequest> servletRequestProvider;
+
+    @Inject
+    private UserDaoNew userDaoNew;
+
 
     public Long getUserId() {
         SecurityContext secContext =
                 (SecurityContext) httpSessionProvider.get().getAttribute("SPRING_SECURITY_CONTEXT");
-        EditorUserAuthentication authentication = null;
-        if (secContext != null) authentication = (EditorUserAuthentication) secContext.getAuthentication();
 
-        try {
-        if (authentication != null) {
-            return daoUtils.getUsersId((String) authentication.getPrincipal(),
-                    authentication.getIdentityType(),
-                    true);
-        } else {
-           //TODO
+        KeycloakAuthenticationToken token = (KeycloakAuthenticationToken) secContext.getAuthentication();
+        Long userId = userDaoNew.getUserIdFromPrincipal(token.getName());
+        if (userId == null) {
+            userId = userDaoNew.insertNewUser(token.getName(), getName());
         }
-        } catch (SQLException e) {
-           //TODO
-        } catch (DatabaseException e) {
-          // TODO
-        }
-        return null;
+
+        return userId;
     }
+
+    public String getName() {
+        SecurityContext secContext =
+                (SecurityContext) httpSessionProvider.get().getAttribute("SPRING_SECURITY_CONTEXT");
+        return ((KeycloakAuthenticationToken)secContext.getAuthentication())
+                .getAccount().getKeycloakSecurityContext().getIdToken().getPreferredUsername();
+    }
+
+
 }

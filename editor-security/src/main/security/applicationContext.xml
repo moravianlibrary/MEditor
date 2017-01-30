@@ -2,32 +2,60 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	   xmlns:security="http://www.springframework.org/schema/security"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xsi:schemaLocation="
-       http://www.springframework.org/schema/beans
+	   xmlns:c="http://www.springframework.org/schema/c"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/security
        http://www.springframework.org/schema/security/spring-security.xsd">
 
-    <!-- white list -->
-    <security:http pattern="/html/**" security="none" />
-	<security:http pattern="/images/**" security="none" />
-	<security:http pattern="/css/**" security="none" />
-	<security:http pattern="/js/**" security="none" />
-	<security:http pattern="/favicon.ico" security="none" />
-	<security:http pattern="/Shibboleth.sso/Login" security="none" />
-	<security:http pattern="/viewer/**" security="none" />
-		
+	<security:authentication-manager alias="authenticationManager">
+		<security:authentication-provider ref="keycloakAuthenticationProvider"/>
+	</security:authentication-manager>
+
+	<bean id="adapterDeploymentContext"
+		  class="org.keycloak.adapters.springsecurity.AdapterDeploymentContextFactoryBean"
+		  c:keycloakConfigFileResource="/WEB-INF/keycloak.json" />
+
+	<bean id="keycloakLogoutHandler"
+		  class="org.keycloak.adapters.springsecurity.authentication.KeycloakLogoutHandler"
+	      c:adapterDeploymentContext-ref="adapterDeploymentContext" />
+
+
+	<bean id="logoutFilter" class="org.springframework.security.web.authentication.logout.LogoutFilter">
+		<constructor-arg name="logoutSuccessUrl" value="/" />
+		<constructor-arg name="handlers">
+			<list>
+				<ref bean="keycloakLogoutHandler" />
+				<bean class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler" />
+			</list>
+		</constructor-arg>
+		<property name="logoutRequestMatcher">
+			<bean class="org.springframework.security.web.util.matcher.AntPathRequestMatcher"
+				  c:pattern="/sso/logout**" c:httpMethod="GET" />
+		</property>
+	</bean>
+
+	<bean id="keycloakAuthenticationEntryPoint"
+		  class="org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationEntryPoint"
+		  c:adapterDeploymentContext-ref="adapterDeploymentContext"	/>
+
+	<bean id="keycloakAuthenticationProvider"
+		  class="org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider" />
+
+	<bean id="keycloakPreAuthActionsFilter"
+		  class="org.keycloak.adapters.springsecurity.filter.KeycloakPreAuthActionsFilter" />
+
+	<bean id="keycloakAuthenticationProcessingFilter"
+		  class="org.keycloak.adapters.springsecurity.filter.KeycloakAuthenticationProcessingFilter"
+		  c:authenticationManager-ref="authenticationManager" />
+
+
 	<!-- filters chain -->
-	<security:http auto-config="true" use-expressions="true" disable-url-rewriting="true">
-		<security:intercept-url pattern="/*/**" access="isAuthenticated()" />
-		<security:intercept-url pattern="/gwt/**" access="isAuthenticated()" />
-		<security:intercept-url pattern="/**/*.html" access="isAuthenticated()" />
-		<security:intercept-url pattern="/**" access="isAuthenticated()" />
-		<security:form-login    login-page="/html/login.html"
-								default-target-url="/meditor" />
-		<security:custom-filter before="PRE_AUTH_FILTER" ref="janrainAuthenticationFilter" />
-		<security:custom-filter position="PRE_AUTH_FILTER" ref="shibbolethAuthenticationFilter" />
-		<security:custom-filter after="PRE_AUTH_FILTER" ref="ldapAuthenticationFilter" />
+	<security:http auto-config="false" entry-point-ref="keycloakAuthenticationEntryPoint">
+		<security:custom-filter ref="keycloakPreAuthActionsFilter" before="LOGOUT_FILTER" />
+		<security:custom-filter ref="keycloakAuthenticationProcessingFilter" before="FORM_LOGIN_FILTER" />
+		<security:intercept-url pattern="/**" access="hasRole('ROLE_MEDITOR')" />
+		<security:custom-filter ref="logoutFilter" position="LOGOUT_FILTER" />
 		<!--comment out when using superDevMode-->
 		<security:intercept-url pattern="/**" requires-channel="https" />
 
@@ -39,37 +67,5 @@
 		<!-- As of Spring Security 4.0 CSRF is enabled by default, temporarily disabled -->
 		<security:csrf disabled="true" />
 	</security:http>
-
-	<bean id="ldapAuthenticationProvider"
-		class="cz.mzk.editor.server.LDAP.LDAPAuthenticationProvider" />
-
-	<bean id="janrainAuthenticationProvider"
-		class="cz.mzk.editor.server.janrain.JanrainAuthenticationProvider">
-	</bean>
-
-	<bean id="shibbolethAuthenticationProvider"
-		class="cz.mzk.editor.server.shibboleth.ShibbolethAuthenticationProvider">
-	</bean>
-
-	<security:authentication-manager alias="authenticationManager">
-		<security:authentication-provider ref="ldapAuthenticationProvider" />
-		<security:authentication-provider ref="janrainAuthenticationProvider" />
-		<security:authentication-provider ref="shibbolethAuthenticationProvider" />
-	</security:authentication-manager>
-
-	<bean id="ldapAuthenticationFilter"
-		class="cz.mzk.editor.server.LDAP.LDAPAuthenticationFilter">
-		<property name="authenticationManager" ref="authenticationManager" />
-	</bean>
-
-	<bean id="janrainAuthenticationFilter"
-		class="cz.mzk.editor.server.janrain.JanrainAuthenticationFilter">
-		<property name="authenticationManager" ref="authenticationManager" />
-	</bean>
-
-	<bean id="shibbolethAuthenticationFilter"
-		class="cz.mzk.editor.server.shibboleth.ShibbolethAuthenticationFilter">
-		<property name="authenticationManager" ref="authenticationManager" />
-	</bean>
 
 </beans>

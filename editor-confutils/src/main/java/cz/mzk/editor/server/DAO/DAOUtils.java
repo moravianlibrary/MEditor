@@ -600,17 +600,6 @@ public interface DAOUtils {
     long getUsersId(String identifier, Constants.USER_IDENTITY_TYPES type, boolean closeCon) throws DatabaseException, SQLException;
 
     /**
-     * Gets the name.
-     * 
-     * @param key
-     *        the key
-     * @return the name
-     * @throws DatabaseException
-     *         the database exception
-     */
-    String getName(Long key) throws DatabaseException;
-
-    /**
      * Checks for user right.
      * 
      * @param right

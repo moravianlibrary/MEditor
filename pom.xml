@@ -417,39 +417,7 @@
 				<artifactId>scala-xml_2.12.0-M5</artifactId>
 				<version>1.0.5</version>
 			</dependency>
-			<!-- LDAP -->
-			<dependency>
-				<groupId>org.springframework.ldap</groupId>
-				<artifactId>spring-ldap-core</artifactId>
-				<version>2.2.1.RELEASE</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.ldap</groupId>
-				<artifactId>spring-ldap-core-tiger</artifactId>
-				<version>2.2.1.RELEASE</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.ldap</groupId>
-				<artifactId>spring-ldap-odm</artifactId>
-				<version>2.2.1.RELEASE</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.ldap</groupId>
-				<artifactId>spring-ldap-ldif-core</artifactId>
-				<version>2.2.1.RELEASE</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.ldap</groupId>
-				<artifactId>spring-ldap-ldif-batch</artifactId>
-				<version>2.2.1.RELEASE</version>
-			</dependency>
-			<!-- LDAP -->
 			<!-- OpenID -->
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-openid</artifactId>
-				<version>${springsecurity.version}</version>
-			</dependency>
 			<dependency>
 				<groupId>com.googlecode.json-simple</groupId>
 				<artifactId>json-simple</artifactId>
@@ -477,6 +445,11 @@
 				<groupId>org.springframework.security</groupId>
 				<artifactId>spring-security-config</artifactId>
 				<version>${springsecurity.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.keycloak</groupId>
+				<artifactId>keycloak-spring-security-adapter</artifactId>
+				<version>2.5.1.Final</version>
 			</dependency>
 			<!-- Spring sec -->
             <dependency>

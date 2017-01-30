@@ -1,0 +1,10 @@
+{
+  "realm" : "${env.KEYCLOAK_REALM}",
+  "resource" : "${env.KEYCLOAK_RESOURCE}",
+  "realm-public-key" : "${env.KEYCLOAK_REALM_PUBLIC_KEY}",
+  "auth-server-url" : "${env.KEYCLOAK_AUTH_SERVER_URL}",
+  "ssl-required": "external",
+  "credentials" : {
+    "secret" : "${env.KEYCLOAK_SECRET}"
+  }
+}

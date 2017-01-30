@@ -90,16 +90,6 @@ public interface UserDAO {
      */
     boolean hasRole(String role, long userId) throws DatabaseException;
 
-    /**
-     * Gets the name.
-     * 
-     * @param key
-     *        the key
-     * @return the name
-     * @throws DatabaseException
-     *         the database exception
-     */
-    String getName(Long key) throws DatabaseException;
 
     /**
      * Adds the remove user identity.

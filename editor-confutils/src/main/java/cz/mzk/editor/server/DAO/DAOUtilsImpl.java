@@ -839,34 +839,6 @@ public class DAOUtilsImpl
         return super.getUsersId(identifier, type, closeCon);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getName(Long key) throws DatabaseException {
-        PreparedStatement selectSt = null;
-        String name = "unknown";
-        try {
-
-            selectSt = getConnection().prepareStatement(SELECT_USER_NAME);
-            selectSt.setLong(1, Long.valueOf(key));
-
-        } catch (SQLException e) {
-            LOGGER.error("Could not get select statement", e);
-        }
-        try {
-            ResultSet rs = selectSt.executeQuery();
-            while (rs.next()) {
-                name = rs.getString("name") + " " + rs.getString("surname");
-            }
-        } catch (SQLException e) {
-            LOGGER.error("Query: " + selectSt, e);
-        } finally {
-            closeConnection();
-        }
-        return name;
-    }
-
     @Override
     public boolean hasUserRight(Long userId, EDITOR_RIGHTS right) throws DatabaseException {
         PreparedStatement selSt = null;

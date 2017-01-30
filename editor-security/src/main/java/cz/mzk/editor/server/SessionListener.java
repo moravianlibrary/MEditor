@@ -61,6 +61,9 @@ public class SessionListener
     @Inject
     private static SecurityUserDAO securityUserDAO;
 
+    @Inject
+    private UserProvider userProvider;
+
     /**
      * {@inheritDoc}
      */
@@ -85,7 +88,7 @@ public class SessionListener
                                                   authentication.getIdentityType(),
                                                   true);
 
-                String name = securityUserDAO.getName(usersId);
+                String name = userProvider.getName();
                 ACCESS_LOGGER.info("LOG OUT: User " + name + " with "
                         + authentication.getIdentityType().toString() + " identifier "
                         + authentication.getPrincipal() + " at " + FORMATTER.format(new Date()));
