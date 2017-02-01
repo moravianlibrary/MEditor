@@ -1,18 +1,15 @@
 language: java
-jdk: 
+sudo: false
+addons:
+  apt:
+    packages:
+      - xsltproc
+      - xmlstarlet
+jdk:
   - oraclejdk8
 before_install:
-  - mvn com.isomorphic:isc-maven-plugin:install -Dproduct=SMARTGWT -Dlicense=LGPL -DbuildNumber=6.0p -DbuildDate=2017-01-11
+  - mvn com.isomorphic:isc-maven-plugin:install -Dproduct=SMARTGWT -Dlicense=LGPL -DbuildNumber=6.0p -DbuildDate=`curl -s http://www.smartclient.com/builds/SmartGWT/6.0p/LGPL 2>&1 | xmlstarlet sel -t -c "//html/body/pre[2]/a[1]/text()"`
   - mvn clean -q
   - mkdir ~/.meditor && cp -r resources/xml/ ~/.meditor
-install: mvn install -q
-sudo: false
-
-notifications:
-  email: false
-  webhooks:
-      urls: https://webhooks.gitter.im/e/b38a7fadad0c7821d365
-      on_success: never
-      on_failure: change
-      on_start: never
+install: mvn install --batch-mode
 
