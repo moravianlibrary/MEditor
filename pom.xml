@@ -7,7 +7,7 @@
   dev:
 	mvn install -P dev (-T 1C parallel build)  for development purposes (1 locale, 1 browser, shorter compilation)
 -->
-	
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
@@ -57,7 +57,7 @@
 			<email>matousjobanek@gmail.com</email>
 			<timezone>+1</timezone>
 		</developer>
-		
+
 		<developer>
 			<name>Rumanek, Martin</name>
 			<email>martin@rumanek.com</email>

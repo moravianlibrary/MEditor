@@ -27,8 +27,6 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.sql.SQLException;
-
 import javax.inject.Inject;
 
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
@@ -39,9 +37,7 @@ import cz.mzk.editor.server.UserProvider;
 import org.apache.log4j.Logger;
 
 import cz.mzk.editor.server.DAO.DAOUtils;
-import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.UserDAO;
-import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.GetLoggedUserAction;
 import cz.mzk.editor.shared.rpc.action.GetLoggedUserResult;
 

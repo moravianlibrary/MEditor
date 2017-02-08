@@ -3,7 +3,6 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<name>Editor module for creating new digital objects</name>
-	<groupId>cz.mzk</groupId>
 	<artifactId>editor-creation</artifactId>
 	<version>2.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
