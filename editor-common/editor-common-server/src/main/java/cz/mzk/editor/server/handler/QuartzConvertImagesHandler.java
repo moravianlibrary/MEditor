@@ -28,26 +28,25 @@ import com.google.inject.Inject;
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
+import cz.mzk.editor.server.quartz.Quartz;
+import cz.mzk.editor.server.quartz.jobs.ConvertImages;
+import cz.mzk.editor.shared.rpc.action.QuartzConvertImagesAction;
+import cz.mzk.editor.shared.rpc.action.QuartzConvertImagesResult;
+import cz.mzk.editor.shared.rpc.action.ScanFolderAction;
+import cz.mzk.editor.shared.rpc.action.ScanFolderResult;
 import org.apache.log4j.Logger;
-
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
-
-import cz.mzk.editor.server.quartz.jobs.ConvertImages;
-import cz.mzk.editor.server.quartz.Quartz;
-import cz.mzk.editor.shared.rpc.action.QuartzConvertImagesAction;
-import cz.mzk.editor.shared.rpc.action.QuartzConvertImagesResult;
-import cz.mzk.editor.shared.rpc.action.ScanFolderAction;
-import cz.mzk.editor.shared.rpc.action.ScanFolderResult;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Martin Rumanek
  * @version Aug 27, 2012
  */
+@Service
 public class QuartzConvertImagesHandler
 
         implements ActionHandler<QuartzConvertImagesAction, QuartzConvertImagesResult> {

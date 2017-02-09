@@ -70,18 +70,6 @@
 			<artifactId>gwtp-all</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.google.inject</groupId>
-			<artifactId>guice</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.google.inject.extensions</groupId>
-			<artifactId>guice-servlet</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.google.inject.extensions</groupId>
-			<artifactId>guice-assistedinject</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>aopalliance</groupId>
 			<artifactId>aopalliance</artifactId>
 		</dependency>
@@ -230,13 +218,6 @@
                     <include>html/loginLocal.html</include>
 										<include>viewer/viewer.html</include>
 									</includes>
-								</resource>
-								<resource>
-									<directory>${basedir}/../editor-security/src/main/security</directory>
-									<includes>
-										<include>applicationContext.xml</include>
-									</includes>
-									<targetPath>WEB-INF</targetPath>
 								</resource>
 							</webResources>
 							<webXml>${basedir}/../editor-webapp/src/main/webapp/WEB-INF/web.xml</webXml>

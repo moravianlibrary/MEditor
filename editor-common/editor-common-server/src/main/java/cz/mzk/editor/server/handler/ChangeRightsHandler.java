@@ -24,44 +24,38 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.io.IOException;
-
-import java.util.ArrayList;
-
-import javax.xml.transform.TransformerException;
-import javax.xml.xpath.XPathExpressionException;
-
-import javax.inject.Inject;
-
-import com.google.inject.name.Named;
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import org.apache.log4j.Logger;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
 import cz.mzk.editor.server.fedora.utils.FoxmlUtils;
 import cz.mzk.editor.server.util.RESTHelper;
-import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.ChangeRightsAction;
 import cz.mzk.editor.shared.rpc.action.ChangeRightsResult;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import javax.inject.Inject;
+import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPathExpressionException;
+import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * @author Matous Jobanek
  * @version $Id$
  */
-
+@Service
 public class ChangeRightsHandler
         implements ActionHandler<ChangeRightsAction, ChangeRightsResult> {
 
     @Inject
-    private @Named("securedFedoraAccess")
+    private @Qualifier("securedFedoraAccess")
     FedoraAccess fedoraAccess;
 
     /** The configuration. */

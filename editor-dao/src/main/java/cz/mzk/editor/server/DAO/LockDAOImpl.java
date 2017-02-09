@@ -24,26 +24,24 @@
 
 package cz.mzk.editor.server.DAO;
 
+import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
+import cz.mzk.editor.client.util.Constants.DEFAULT_SYSTEM_USERS;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
+
+import javax.inject.Inject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import java.text.SimpleDateFormat;
-
-import javax.inject.Inject;
-
-import org.apache.log4j.Logger;
-
-import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
-import cz.mzk.editor.client.util.Constants.DEFAULT_SYSTEM_USERS;
 
 /**
  * @author Jiri Kremser
  * @version $Id$
  */
-
+@Repository
 public class LockDAOImpl
         extends AbstractActionDAO
         implements LockDAO {

@@ -24,33 +24,25 @@
 
 package cz.mzk.editor.server.newObject;
 
-import java.util.List;
-
-import org.dom4j.Element;
-import org.dom4j.Namespace;
-import org.dom4j.QName;
-
 import cz.mzk.editor.client.util.Constants.DATASTREAM_CONTROLGROUP;
 import cz.mzk.editor.client.util.Constants.DATASTREAM_ID;
 import cz.mzk.editor.client.util.Constants.INTERNAL_PART_LEVEL_NAMES;
 import cz.mzk.editor.server.fedora.utils.FoxmlUtils;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
-import cz.mzk.editor.shared.rpc.NewDigitalObject;
+import org.dom4j.Element;
+import org.dom4j.Namespace;
+import org.dom4j.QName;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * @author Jiri Kremser
  * @version 31.10.2011
  */
+@Component
 public class IntPartBuilder
         extends FoxmlBuilder {
-
-    /**
-     * @param uuid
-     * @param label
-     */
-    public IntPartBuilder(NewDigitalObject object) {
-        super(object);
-    }
 
     /**
      * {@inheritDoc}

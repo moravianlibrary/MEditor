@@ -24,31 +24,31 @@
 
 package cz.mzk.editor.server.newObject;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import com.google.inject.Injector;
-
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.rpc.NewDigitalObject;
+import org.apache.log4j.Logger;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
+
+import javax.inject.Inject;
+import java.beans.Introspector;
+import java.lang.reflect.Constructor;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Jiri Kremser
  * @version 14.11.2011
  */
-public class FOXMLBuilderMapping {
+@Component
+public class FOXMLBuilderMapping implements ApplicationContextAware {
 
     private static final Logger LOGGER = Logger.getLogger(FOXMLBuilderMapping.class);
 
     @Inject
-    private static Injector injector;
+    private ApplicationContext ctx;
 
     private static final Map<DigitalObjectModel, Class<? extends FoxmlBuilder>> MAP =
             new HashMap<DigitalObjectModel, Class<? extends FoxmlBuilder>>(DigitalObjectModel.values().length);
@@ -72,7 +72,7 @@ public class FOXMLBuilderMapping {
     }
 
     @SuppressWarnings("unchecked")
-    public static FoxmlBuilder getBuilder(NewDigitalObject object) {
+    public FoxmlBuilder getBuilder(NewDigitalObject object) {
         try {
             Class<? extends FoxmlBuilder> clazz = MAP.get(object.getModel());
             if (clazz != null) {
@@ -81,27 +81,20 @@ public class FOXMLBuilderMapping {
                 if (constructors.length == 0) {
                     return null;
                 } else {
-                    FoxmlBuilder builder = constructors[0].newInstance(object);
-                    injector.injectMembers(builder);
+                    FoxmlBuilder builder = this.ctx.getBean(Introspector.decapitalize(clazz.getSimpleName()), clazz);
+                    builder.setObject(object);
                     return builder;
                 }
             }
-            return null;
-            //            return new MonographBuilder(object);
-        } catch (InstantiationException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
         } catch (IllegalArgumentException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
         }
         return null;
     }
 
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.ctx = applicationContext;
+    }
 }

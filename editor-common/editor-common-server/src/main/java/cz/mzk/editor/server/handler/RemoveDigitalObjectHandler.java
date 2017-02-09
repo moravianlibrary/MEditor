@@ -27,47 +27,41 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.transform.TransformerException;
-import javax.xml.xpath.XPathException;
-
-import javax.inject.Inject;
-
-import com.google.inject.name.Named;
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import cz.mzk.editor.server.UserProvider;
-import org.apache.log4j.Logger;
-
-import org.w3c.dom.Document;
-
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.server.DAO.DigitalObjectDAO;
+import cz.mzk.editor.server.UserProvider;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
 import cz.mzk.editor.server.fedora.utils.FoxmlUtils;
 import cz.mzk.editor.server.newObject.IngestUtils;
 import cz.mzk.editor.server.util.RESTHelper;
-import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.FedoraNamespaces;
 import cz.mzk.editor.shared.rpc.Foxml;
 import cz.mzk.editor.shared.rpc.action.RemoveDigitalObjectAction;
 import cz.mzk.editor.shared.rpc.action.RemoveDigitalObjectResult;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
+
+import javax.inject.Inject;
+import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPathException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class PutRecentlyModifiedHandler.
  */
+@Service
 public class RemoveDigitalObjectHandler
         implements ActionHandler<RemoveDigitalObjectAction, RemoveDigitalObjectResult> {
 
@@ -98,6 +92,9 @@ public class RemoveDigitalObjectHandler
 
     @Inject
     private UserProvider userProvider;
+
+    @Inject
+    private IngestUtils ingestUtils;
 
     private static final class RemovedDigitalObject {
 
@@ -148,7 +145,7 @@ public class RemoveDigitalObjectHandler
      */
     @Inject
     public RemoveDigitalObjectHandler(final EditorConfiguration configuration,
-                                      @Named("securedFedoraAccess") FedoraAccess fedoraAccess) {
+                                      @Qualifier("securedFedoraAccess") FedoraAccess fedoraAccess) {
         this.configuration = configuration;
         this.getDoModelHandler = new GetDOModelHandler();
         this.fedoraAccess = fedoraAccess;
@@ -447,7 +444,7 @@ public class RemoveDigitalObjectHandler
             boolean successful = false;
             while (!successful && attempt++ < 3) {
                 successful =
-                        IngestUtils.ingest(removed.getFoxml().getNoCodedfoxml(), removed.getFoxml()
+                        ingestUtils.ingest(removed.getFoxml().getNoCodedfoxml(), removed.getFoxml()
                                 .getLabel(), removed.getUuid(), ROLLBACK_FLAG, null, null);
             }
 

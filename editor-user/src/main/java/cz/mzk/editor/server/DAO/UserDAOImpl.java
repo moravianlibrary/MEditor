@@ -27,20 +27,6 @@
 
 package cz.mzk.editor.server.DAO;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.activation.UnsupportedDataTypeException;
-import javax.inject.Inject;
-
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
 import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
@@ -48,11 +34,24 @@ import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.shared.rpc.RoleItem;
 import cz.mzk.editor.shared.rpc.UserIdentity;
 import cz.mzk.editor.shared.rpc.UserInfoItem;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
+
+import javax.activation.UnsupportedDataTypeException;
+import javax.inject.Inject;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class UserDAOImpl.
  */
+@Repository
 public class UserDAOImpl
         extends AbstractDAO
         implements UserDAO {

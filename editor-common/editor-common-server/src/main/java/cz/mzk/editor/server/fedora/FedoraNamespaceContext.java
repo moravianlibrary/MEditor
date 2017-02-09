@@ -27,13 +27,14 @@
 
 package cz.mzk.editor.server.fedora;
 
+import org.springframework.stereotype.Component;
+
+import javax.xml.namespace.NamespaceContext;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import javax.xml.namespace.NamespaceContext;
 
 import static cz.mzk.editor.shared.domain.FedoraNamespaces.BIBILO_MODS_URI;
 import static cz.mzk.editor.shared.domain.FedoraNamespaces.DC_NAMESPACE_URI;
@@ -48,6 +49,7 @@ import static cz.mzk.editor.shared.domain.FedoraNamespaces.RDF_NAMESPACE_URI;
 /**
  * The Class FedoraNamespaceContext.
  */
+@Component
 public class FedoraNamespaceContext
         implements NamespaceContext {
 

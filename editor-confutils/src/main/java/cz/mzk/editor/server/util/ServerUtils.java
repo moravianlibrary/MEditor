@@ -27,48 +27,33 @@
 
 package cz.mzk.editor.server.util;
 
+import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.server.EditorUserAuthentication;
+import cz.mzk.editor.server.config.EditorConfiguration;
+import org.apache.log4j.Logger;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.stereotype.Component;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
+import javax.xml.bind.JAXBElement;
 import java.io.IOException;
-
 import java.lang.reflect.Field;
-
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
-
-import java.sql.SQLException;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
-import javax.xml.bind.JAXBElement;
-
-import javax.inject.Inject;
-
-import com.google.inject.Provider;
-import com.gwtplatform.dispatch.shared.ActionException;
-
-import org.apache.log4j.Logger;
-
-import org.springframework.security.core.context.SecurityContext;
-
-import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
-import cz.mzk.editor.server.EditorUserAuthentication;
-import cz.mzk.editor.server.URLS;
-import cz.mzk.editor.server.DAO.DAOUtils;
-import cz.mzk.editor.server.DAO.DatabaseException;
-import cz.mzk.editor.server.config.EditorConfiguration;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class ServerUtils.
  */
+@Component
 public class ServerUtils {
 
     /** The Constant LOGGER. */
@@ -76,15 +61,8 @@ public class ServerUtils {
 
     /** The config. */
     @Inject
-    private static EditorConfiguration config;
+    private EditorConfiguration config;
 
-    /** The dao utils. */
-    @Inject
-    private static DAOUtils daoUtils;
-
-    /** The http session provider. */
-    @Inject
-    private static Provider<HttpSession> httpSessionProvider;
 
     /**
      * Checks if is caused by exception.
@@ -110,28 +88,6 @@ public class ServerUtils {
         EditorUserAuthentication authentication = null;
         if (secContext != null) authentication = (EditorUserAuthentication) secContext.getAuthentication();
         return authentication;
-    }
-
-    public static EditorUserAuthentication getEditorUserAuthentication() {
-        return getEditorUserAuthentication(httpSessionProvider.get());
-    }
-
-    private static void checkExpiredSession(HttpSession session) throws ActionException {
-        EditorUserAuthentication authentication = getEditorUserAuthentication(session);
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ActionException(Constants.SESSION_EXPIRED_FLAG + URLS.ROOT()
-                    + (URLS.LOCALHOST() ? URLS.LOGIN_LOCAL_PAGE : URLS.LOGIN_PAGE));
-        }
-    }
-
-    public static boolean checkUserRight(Long userId, EDITOR_RIGHTS right) {
-        try {
-            return daoUtils.hasUserRight(userId, right);
-        } catch (DatabaseException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-            return false;
-        }
     }
 
     private static List<Field> getAllFields(Class<?> clazz) {
@@ -161,7 +117,7 @@ public class ServerUtils {
         }
     }
 
-    public static boolean reindex(String pid) {
+    public boolean reindex(String pid) {
         if (!pid.startsWith(Constants.FEDORA_UUID_PREFIX)) {
             pid = Constants.FEDORA_UUID_PREFIX + pid;
         }
@@ -176,7 +132,7 @@ public class ServerUtils {
      *        the pid
      */
     //TODO-MR: Rest api via lrservlet must be authenticated since version 4.6 of Kramerius. Look at new Remote API!
-    private static boolean krameriusRest(KRAMERIUS_ACTION action, String pid) {
+    private boolean krameriusRest(KRAMERIUS_ACTION action, String pid) {
         String host = config.getKrameriusHost();
         String login = config.getKrameriusLogin();
         String password = config.getKrameriusPassword();

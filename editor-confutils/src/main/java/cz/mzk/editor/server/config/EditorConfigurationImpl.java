@@ -27,32 +27,28 @@
 
 package cz.mzk.editor.server.config;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-import java.util.Iterator;
-import java.util.Properties;
-
-import com.google.inject.Singleton;
-
+import cz.mzk.editor.client.config.EditorClientConfiguration;
 import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.EnvironmentConfiguration;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
-
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
-import cz.mzk.editor.client.config.EditorClientConfiguration;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.Properties;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class EditorConfigurationImpl.
  */
-@Singleton
+@Component
 public class EditorConfigurationImpl
         extends EditorConfiguration {
 

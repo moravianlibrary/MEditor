@@ -2,36 +2,26 @@ package cz.mzk.editor.server.newObject;
 
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.config.EditorConfiguration;
-import cz.mzk.editor.server.fedora.utils.DCUtils;
-import cz.mzk.editor.server.fedora.utils.Dom4jUtils;
 import cz.mzk.editor.server.fedora.utils.FoxmlUtils;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.FedoraNamespaces;
-import cz.mzk.editor.shared.rpc.NewDigitalObject;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
-import org.dom4j.Node;
 import org.dom4j.QName;
-import org.dom4j.XPath;
-
-import java.util.List;
+import org.springframework.stereotype.Component;
 
 /**
  * @author: Martin Rumanek
  * @version: 19.11.12
  */
+@Component
 public class TrackBuilder extends FoxmlBuilder {
 
-    private final DigitalObjectModel model;
+    private final DigitalObjectModel model = DigitalObjectModel.TRACK;
     private boolean wavProvided = false;
-
-    public TrackBuilder(NewDigitalObject object) {
-        super(object);
-        this.model = object.getModel();
-    }
 
     @Override
     protected void decorateMODSStream() {

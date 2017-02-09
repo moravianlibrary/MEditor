@@ -24,25 +24,23 @@
 
 package cz.mzk.editor.server.handler;
 
-import javax.inject.Inject;
-
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.InputQueueItemDAO;
-import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.GetIngestInfoAction;
 import cz.mzk.editor.shared.rpc.action.GetIngestInfoResult;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
 
 /**
  * @author Matous Jobanek
  * @version $Id$
  */
-
+@Service
 public class GetIngestInfoHandler
         implements ActionHandler<GetIngestInfoAction, GetIngestInfoResult> {
 

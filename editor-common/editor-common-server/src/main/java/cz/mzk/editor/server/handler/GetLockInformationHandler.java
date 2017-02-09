@@ -24,31 +24,27 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.sql.SQLException;
-
-import javax.inject.Inject;
-
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import cz.mzk.editor.server.UserProvider;
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.LockDAO;
 import cz.mzk.editor.server.DAO.UserDAO;
-import cz.mzk.editor.server.util.ServerUtils;
+import cz.mzk.editor.server.UserProvider;
 import cz.mzk.editor.shared.rpc.LockInfo;
 import cz.mzk.editor.shared.rpc.action.GetLockInformationAction;
 import cz.mzk.editor.shared.rpc.action.GetLockInformationResult;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
 
 /**
  * @author Matous Jobanek
  * @version $Id$
  */
-
+@Service
 public class GetLockInformationHandler
         implements ActionHandler<GetLockInformationAction, GetLockInformationResult> {
 

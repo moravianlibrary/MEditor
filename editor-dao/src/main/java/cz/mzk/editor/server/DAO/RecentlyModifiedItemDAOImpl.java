@@ -27,25 +27,24 @@
 
 package cz.mzk.editor.server.DAO;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import java.util.ArrayList;
-
-import javax.inject.Inject;
-
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.rpc.RecentlyModifiedItem;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
+
+import javax.inject.Inject;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class RecentlyModifiedItemDAOImpl.
  */
+@Repository
 public class RecentlyModifiedItemDAOImpl
         extends AbstractActionDAO
         implements RecentlyModifiedItemDAO {

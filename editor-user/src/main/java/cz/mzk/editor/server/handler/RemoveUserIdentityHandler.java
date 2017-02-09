@@ -27,34 +27,33 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.activation.UnsupportedDataTypeException;
-import javax.inject.Inject;
-
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import cz.mzk.editor.server.UserProvider;
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.UserDAO;
+import cz.mzk.editor.server.UserProvider;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.shared.rpc.UserIdentity;
 import cz.mzk.editor.shared.rpc.action.GetUserRolesRightsIdentitiesAction;
 import cz.mzk.editor.shared.rpc.action.GetUserRolesRightsIdentitiesResult;
 import cz.mzk.editor.shared.rpc.action.RemoveUserIdentityAction;
 import cz.mzk.editor.shared.rpc.action.RemoveUserIdentityResult;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import javax.activation.UnsupportedDataTypeException;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class PutRecentlyModifiedHandler.
  */
+@Service
 public class RemoveUserIdentityHandler
         implements ActionHandler<RemoveUserIdentityAction, RemoveUserIdentityResult> {
 

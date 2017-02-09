@@ -27,29 +27,22 @@
 
 package cz.mzk.editor.server;
 
-import java.io.IOException;
+import cz.mzk.editor.client.util.ClientUtils;
+import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.server.config.EditorConfiguration;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.time.DateUtils;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-
-import javax.servlet.ServletConfig;
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import javax.inject.Inject;
-
-import com.google.inject.Injector;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.time.DateUtils;
-
-import cz.mzk.editor.client.util.ClientUtils;
-import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.server.config.EditorConfiguration;
-import cz.mzk.editor.server.util.RESTHelper;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -162,30 +155,6 @@ public class ScanImgServiceImpl
     @Override
     public void init() throws ServletException {
         super.init();
-        Injector injector = getInjector();
-        injector.injectMembers(this);
-        //        base = config.getScanInputQueuePath();
-        //        baseOk = base != null && !"".equals(base);
+        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, getServletContext());
     }
-
-    /*
-     * (non-Javadoc)
-     * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
-     */
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        Injector injector = getInjector();
-        injector.injectMembers(this);
-    }
-
-    /**
-     * Gets the injector.
-     * 
-     * @return the injector
-     */
-    protected Injector getInjector() {
-        return (Injector) getServletContext().getAttribute(Injector.class.getName());
-    }
-
 }

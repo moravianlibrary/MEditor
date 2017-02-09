@@ -34,10 +34,6 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.google.inject</groupId>
-			<artifactId>guice</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.typesafe.akka</groupId>
 			<artifactId>akka-actor_2.12</artifactId>
 		</dependency>

@@ -24,33 +24,30 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.inject.Inject;
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
+import cz.mzk.editor.server.quartz.Quartz;
 import cz.mzk.editor.server.quartz.jobs.ConvertImages;
+import cz.mzk.editor.shared.rpc.ProcessItem;
+import cz.mzk.editor.shared.rpc.action.QuartzScheduleJobsAction;
+import cz.mzk.editor.shared.rpc.action.QuartzScheduleJobsResult;
 import org.apache.log4j.Logger;
-
 import org.quartz.JobExecutionContext;
 import org.quartz.JobKey;
 import org.quartz.SchedulerException;
 import org.quartz.UnableToInterruptJobException;
+import org.springframework.stereotype.Service;
 
-import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
-import cz.mzk.editor.server.quartz.Quartz;
-import cz.mzk.editor.server.util.ServerUtils;
-import cz.mzk.editor.shared.rpc.ProcessItem;
-import cz.mzk.editor.shared.rpc.action.QuartzScheduleJobsAction;
-import cz.mzk.editor.shared.rpc.action.QuartzScheduleJobsResult;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Martin Rumanek
  * @version 29.8.2012
  */
+@Service
 public class QuartzScheduleJobsHandler
         implements ActionHandler<QuartzScheduleJobsAction, QuartzScheduleJobsResult> {
 

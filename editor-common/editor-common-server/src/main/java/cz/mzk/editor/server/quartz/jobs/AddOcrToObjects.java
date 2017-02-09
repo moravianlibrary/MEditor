@@ -5,9 +5,6 @@ import com.abby.recognitionserver3.OutputDocument;
 import com.abby.recognitionserver3.RSSoapService;
 import com.abby.recognitionserver3.RSSoapServiceSoap;
 import com.abby.recognitionserver3.XmlResult;
-import com.google.inject.Injector;
-import com.google.inject.Key;
-import com.google.inject.name.Names;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.OcrDao;
 import cz.mzk.editor.server.config.EditorConfiguration;
@@ -23,7 +20,9 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.UnableToInterruptJobException;
+import org.springframework.beans.factory.annotation.Qualifier;
 
+import javax.inject.Inject;
 import javax.xml.xpath.XPathExpressionException;
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
@@ -39,10 +38,16 @@ import java.util.List;
  */
 public class AddOcrToObjects extends ProgressJob implements InterruptableJob {
 
-    private Injector guice = null;
-    private FedoraAccess fedoraAccess;
+    @Inject
     private EditorConfiguration configuration;
-    private OcrDao ocrDao;
+
+    @Inject
+    @Qualifier("securedFedoraAccess")
+    private FedoraAccess fedoraAccess;
+
+    @Inject
+    OcrDao ocrDao;
+
 
     @Override
     public void interrupt() throws UnableToInterruptJobException {
@@ -52,10 +57,6 @@ public class AddOcrToObjects extends ProgressJob implements InterruptableJob {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         JobDataMap dataMap = context.getJobDetail().getJobDataMap();
-        guice = (Injector) dataMap.get("Injector");
-        fedoraAccess = guice.getInstance(Key.get(FedoraAccess.class, Names.named("securedFedoraAccess")));
-        configuration = guice.getInstance(EditorConfiguration.class);
-        ocrDao = guice.getInstance(OcrDao.class);
 
         String uuid = dataMap.getString("uuid");
         List<String> uuidList = new ArrayList<String>();

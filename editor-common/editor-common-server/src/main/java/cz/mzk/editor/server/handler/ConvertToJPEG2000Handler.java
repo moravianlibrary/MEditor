@@ -27,21 +27,9 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.io.File;
-import java.io.IOException;
-
-import java.nio.charset.Charset;
-
-import javax.inject.Inject;
-
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import cz.mzk.editor.server.convert.Converter;
-import cz.mzk.editor.shared.rpc.ImageItem;
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfigurationImpl;
@@ -51,10 +39,18 @@ import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.ImageItem;
 import cz.mzk.editor.shared.rpc.action.ConvertToJPEG2000Action;
 import cz.mzk.editor.shared.rpc.action.ConvertToJPEG2000Result;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 
 /**
  * The Class ScanFolderHandler.
  */
+@Service
 public class ConvertToJPEG2000Handler
         implements ActionHandler<ConvertToJPEG2000Action, ConvertToJPEG2000Result> {
 

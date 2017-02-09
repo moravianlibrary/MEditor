@@ -27,23 +27,9 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.io.File;
-import java.io.FileFilter;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import com.google.inject.name.Named;
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.DAO.ConversionDAO;
 import cz.mzk.editor.server.DAO.DatabaseException;
@@ -51,17 +37,28 @@ import cz.mzk.editor.server.DAO.InputQueueItemDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.util.IOUtils;
-import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.rpc.InputQueueItem;
 import cz.mzk.editor.shared.rpc.ServerActionResult;
 import cz.mzk.editor.shared.rpc.action.ScanInputQueueAction;
 import cz.mzk.editor.shared.rpc.action.ScanInputQueueResult;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import java.io.File;
+import java.io.FileFilter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class ScanInputQueueHandler.
  */
+@Service
 public class ScanInputQueueHandler
         implements ActionHandler<ScanInputQueueAction, ScanInputQueueResult> {
 
@@ -76,7 +73,7 @@ public class ScanInputQueueHandler
 
     /** The fedora access. */
     @Inject
-    @Named("securedFedoraAccess")
+    @Qualifier("securedFedoraAccess")
     private FedoraAccess fedoraAccess;
 
     /** The input queue dao. */

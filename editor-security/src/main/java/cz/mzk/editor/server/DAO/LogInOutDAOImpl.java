@@ -24,20 +24,20 @@
 
 package cz.mzk.editor.server.DAO;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
+import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.UserProvider;
 import org.apache.log4j.Logger;
-
-import cz.mzk.editor.client.util.Constants;
+import org.springframework.stereotype.Repository;
 
 import javax.inject.Inject;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 /**
  * @author Matous Jobanek
  * @version Oct 23, 2012
  */
+@Repository
 public class LogInOutDAOImpl
         extends AbstractDAO
         implements LogInOutDAO {

@@ -27,6 +27,22 @@
 
 package cz.mzk.editor.server.DAO;
 
+import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.DEFAULT_SYSTEM_USERS;
+import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
+import cz.mzk.editor.server.config.EditorConfiguration;
+import org.apache.log4j.Logger;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+
+import javax.annotation.Resource;
+import javax.inject.Inject;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -37,26 +53,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.servlet.http.HttpSession;
-import javax.annotation.Resource;
-import javax.inject.Inject;
-import javax.sql.DataSource;
-import com.google.inject.Provider;
-import org.apache.log4j.Logger;
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
-import org.springframework.security.core.context.SecurityContext;
-import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.client.util.Constants.DEFAULT_SYSTEM_USERS;
-import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
-import cz.mzk.editor.server.EditorUserAuthentication;
-import cz.mzk.editor.server.URLS;
-import cz.mzk.editor.server.config.EditorConfiguration;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -98,7 +94,7 @@ public abstract class AbstractDAO {
     private static boolean contextIsCorrect = false;
 
     /** The pool. */
-    @Resource(name = JNDI_DB_POOL_ID)
+    @Resource
     private DataSource pool;
 
     /**

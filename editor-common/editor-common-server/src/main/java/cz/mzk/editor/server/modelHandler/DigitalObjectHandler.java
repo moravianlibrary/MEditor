@@ -24,8 +24,6 @@
 
 package cz.mzk.editor.server.modelHandler;
 
-import org.w3c.dom.Node;
-
 import cz.mzk.editor.client.mods.ModsCollectionClient;
 import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.fedora.utils.BiblioModsUtils;
@@ -34,12 +32,14 @@ import cz.mzk.editor.server.fedora.utils.FoxmlUtils;
 import cz.mzk.editor.server.mods.ModsCollection;
 import cz.mzk.editor.shared.rpc.DublinCore;
 import cz.mzk.editor.shared.rpc.Foxml;
+import org.springframework.stereotype.Service;
+import org.w3c.dom.Node;
 
 /**
  * @author Matous Jobanek
  * @version $Id$
  */
-
+@Service
 public class DigitalObjectHandler {
 
     /**

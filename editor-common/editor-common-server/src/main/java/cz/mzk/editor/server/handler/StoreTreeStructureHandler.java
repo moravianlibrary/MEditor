@@ -28,34 +28,32 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.text.DateFormat;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
-
-import javax.inject.Inject;
-
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import cz.mzk.editor.server.UserProvider;
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.TreeStructureDAO;
 import cz.mzk.editor.server.DAO.UserDAO;
+import cz.mzk.editor.server.UserProvider;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureNode;
 import cz.mzk.editor.shared.rpc.TreeStructureInfo;
 import cz.mzk.editor.shared.rpc.action.StoreTreeStructureAction;
 import cz.mzk.editor.shared.rpc.action.StoreTreeStructureResult;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class PutRecentlyModifiedHandler.
  */
+@Service
 public class StoreTreeStructureHandler
         implements ActionHandler<StoreTreeStructureAction, StoreTreeStructureResult> {
 

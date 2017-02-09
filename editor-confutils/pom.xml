@@ -58,18 +58,6 @@
 			<artifactId>gwtp-all</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.google.inject</groupId>
-			<artifactId>guice</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.google.inject.extensions</groupId>
-			<artifactId>guice-servlet</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.google.inject.extensions</groupId>
-			<artifactId>guice-assistedinject</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>aopalliance</groupId>
 			<artifactId>aopalliance</artifactId>
 		</dependency>

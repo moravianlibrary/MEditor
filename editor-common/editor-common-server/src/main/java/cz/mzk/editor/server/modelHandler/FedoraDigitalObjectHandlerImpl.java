@@ -27,19 +27,6 @@
 
 package cz.mzk.editor.server.modelHandler;
 
-import java.io.IOException;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import com.google.inject.name.Named;
-
-import org.apache.log4j.Logger;
-
-import org.w3c.dom.Document;
-
 import cz.mzk.editor.client.mods.ModsCollectionClient;
 import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
@@ -47,10 +34,20 @@ import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.rpc.DigitalObjectDetail;
 import cz.mzk.editor.shared.rpc.DublinCore;
 import cz.mzk.editor.shared.rpc.Foxml;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
+
+import javax.inject.Inject;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Class IDigitalObjectHandler.
  */
+@Service
 public class FedoraDigitalObjectHandlerImpl
         extends DigitalObjectHandler
         implements FedoraDigitalObjectHandler {
@@ -66,7 +63,7 @@ public class FedoraDigitalObjectHandlerImpl
      *        the fedora access
      */
     @Inject
-    public FedoraDigitalObjectHandlerImpl(@Named("securedFedoraAccess") FedoraAccess fedoraAccess) {
+    public FedoraDigitalObjectHandlerImpl(@Qualifier("securedFedoraAccess") FedoraAccess fedoraAccess) {
         this.fedoraAccess = fedoraAccess;
     }
 

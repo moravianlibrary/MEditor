@@ -27,31 +27,16 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import java.util.Date;
-
-import javax.servlet.http.HttpSession;
-
-import javax.inject.Inject;
-
-import com.google.inject.Injector;
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import cz.mzk.editor.server.UserProvider;
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.client.ConnectionException;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.DescriptionDAO;
 import cz.mzk.editor.server.DAO.DigitalObjectDAO;
+import cz.mzk.editor.server.UserProvider;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
 import cz.mzk.editor.server.modelHandler.FedoraDigitalObjectHandler;
 import cz.mzk.editor.server.modelHandler.StoredDigitalObjectHandler;
@@ -61,11 +46,20 @@ import cz.mzk.editor.shared.rpc.LockInfo;
 import cz.mzk.editor.shared.rpc.action.GetDigitalObjectDetailAction;
 import cz.mzk.editor.shared.rpc.action.GetDigitalObjectDetailResult;
 import cz.mzk.editor.shared.rpc.action.GetLockInformationAction;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Date;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class GetDigitalObjectDetailHandler.
  */
+@Service
 public class GetDigitalObjectDetailHandler
         implements ActionHandler<GetDigitalObjectDetailAction, GetDigitalObjectDetailResult> {
 
@@ -82,9 +76,7 @@ public class GetDigitalObjectDetailHandler
     /** The GetDescriptionHandler handler. */
     private final GetDescriptionHandler descritptionHandler;
 
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
+
 
     /** The GetLockInformationHandler handler */
     private final GetLockInformationHandler getLockInformationHandler;
@@ -146,11 +138,6 @@ public class GetDigitalObjectDetailHandler
                 if (!new File(storedFOXMLFilePath).exists() || FedoraUtils.getModel(uuid) == null)
                     return new GetDigitalObjectDetailResult(null, null, null);
             }
-
-            HttpSession ses = httpSessionProvider.get();
-            Injector injector = (Injector) ses.getServletContext().getAttribute(Injector.class.getName());
-            injector.injectMembers(descritptionHandler);
-            injector.injectMembers(getLockInformationHandler);
 
             DigitalObjectDetail obj = null;
             if (storedFOXMLFilePath == null) {

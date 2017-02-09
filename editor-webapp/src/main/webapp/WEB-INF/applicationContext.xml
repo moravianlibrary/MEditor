@@ -3,14 +3,40 @@
 	   xmlns:security="http://www.springframework.org/schema/security"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	   xmlns:c="http://www.springframework.org/schema/c"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:jee="http://www.springframework.org/schema/jee"
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/security
-       http://www.springframework.org/schema/security/spring-security.xsd">
+       http://www.springframework.org/schema/security/spring-security.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd">
+
+	<context:annotation-config />
+	<context:component-scan base-package="com.gwtplatform.dispatch.rpc.server.spring, cz.mzk.editor.shared.rpc,
+		cz.mzk.editor.server" />
+
+	<jee:jndi-lookup id="dbDataSource"
+					 jndi-name="jdbc/editor"
+					 expected-type="javax.sql.DataSource" />
+
+	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
+
+	<bean class="cz.mzk.editor.server.ServerModule" />
 
 	<security:authentication-manager alias="authenticationManager">
 		<security:authentication-provider ref="keycloakAuthenticationProvider"/>
 	</security:authentication-manager>
+
+
+	<bean class="com.gwtplatform.dispatch.rpc.server.spring.actionvalidator.DefaultActionValidator" />
+	<bean id="logger" class="com.gwtplatform.dispatch.rpc.server.spring.LoggerFactoryBean">
+		<constructor-arg>
+			<bean class="java.util.logging.Logger" factory-method="getAnonymousLogger">
+				<property name="level">
+					<value>FINEST</value>
+				</property>
+			</bean>
+		</constructor-arg>
+	</bean>
 
 	<bean id="adapterDeploymentContext"
 		  class="org.keycloak.adapters.springsecurity.AdapterDeploymentContextFactoryBean"
@@ -67,5 +93,7 @@
 		<!-- As of Spring Security 4.0 CSRF is enabled by default, temporarily disabled -->
 		<security:csrf disabled="true" />
 	</security:http>
+
+
 
 </beans>

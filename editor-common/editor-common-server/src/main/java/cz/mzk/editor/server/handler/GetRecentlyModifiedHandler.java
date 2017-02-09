@@ -27,38 +27,31 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.sql.SQLException;
-
-import java.util.ArrayList;
-
-import javax.servlet.http.HttpSession;
-
-import javax.inject.Inject;
-
-import com.google.inject.Injector;
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import cz.mzk.editor.server.UserProvider;
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.RecentlyModifiedItemDAO;
+import cz.mzk.editor.server.UserProvider;
 import cz.mzk.editor.server.config.EditorConfiguration;
-import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.LockInfo;
 import cz.mzk.editor.shared.rpc.RecentlyModifiedItem;
 import cz.mzk.editor.shared.rpc.action.GetLockInformationAction;
 import cz.mzk.editor.shared.rpc.action.GetRecentlyModifiedAction;
 import cz.mzk.editor.shared.rpc.action.GetRecentlyModifiedResult;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class GetRecentlyModifiedHandler.
  */
+@Service
 public class GetRecentlyModifiedHandler
         implements ActionHandler<GetRecentlyModifiedAction, GetRecentlyModifiedResult> {
 
@@ -74,7 +67,7 @@ public class GetRecentlyModifiedHandler
 
     /** The http session provider. */
     @Inject
-    private Provider<HttpSession> httpSessionProvider;
+    private HttpSession session;
 
     /** The GetLockInformationHandler handler */
     private final GetLockInformationHandler getLockInformationHandler;
@@ -113,10 +106,6 @@ public class GetRecentlyModifiedHandler
     public GetRecentlyModifiedResult execute(final GetRecentlyModifiedAction action,
                                              final ExecutionContext context) throws ActionException {
         LOGGER.debug("Processing action: GetRecentlyModified");
-
-        HttpSession session = httpSessionProvider.get();
-        Injector injector = (Injector) session.getServletContext().getAttribute(Injector.class.getName());
-        injector.injectMembers(getLockInformationHandler);
 
         try {
 

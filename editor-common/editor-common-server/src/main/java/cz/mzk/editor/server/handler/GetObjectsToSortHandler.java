@@ -24,32 +24,27 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.io.IOException;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import com.google.inject.name.Named;
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import org.apache.log4j.Logger;
-
-import org.w3c.dom.Document;
-
 import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.fedora.utils.DCUtils;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
-import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.FedoraRelationship;
 import cz.mzk.editor.shared.domain.NamedGraphModel;
 import cz.mzk.editor.shared.rpc.DigitalObjectRelationships;
 import cz.mzk.editor.shared.rpc.action.GetObjectsToSortAction;
 import cz.mzk.editor.shared.rpc.action.GetObjectsToSortResult;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
+
+import javax.inject.Inject;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -58,6 +53,7 @@ import cz.mzk.editor.shared.rpc.action.GetObjectsToSortResult;
  * @author Matous Jobanek
  * @version Jan 30, 2013
  */
+@Service
 public class GetObjectsToSortHandler
         implements ActionHandler<GetObjectsToSortAction, GetObjectsToSortResult> {
 
@@ -75,7 +71,7 @@ public class GetObjectsToSortHandler
      *        the fedora access
      */
     @Inject
-    public GetObjectsToSortHandler(@Named("securedFedoraAccess") FedoraAccess fedoraAccess) {
+    public GetObjectsToSortHandler(@Qualifier("securedFedoraAccess") FedoraAccess fedoraAccess) {
         this.fedoraAccess = fedoraAccess;
     }
 

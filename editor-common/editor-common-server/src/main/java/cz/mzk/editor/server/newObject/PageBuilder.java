@@ -24,31 +24,23 @@
 
 package cz.mzk.editor.server.newObject;
 
-import org.dom4j.Element;
-import org.dom4j.Namespace;
-import org.dom4j.QName;
-
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.DATASTREAM_CONTROLGROUP;
 import cz.mzk.editor.client.util.Constants.DATASTREAM_ID;
 import cz.mzk.editor.server.fedora.utils.FoxmlUtils;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
-import cz.mzk.editor.shared.rpc.NewDigitalObject;
+import org.dom4j.Element;
+import org.dom4j.Namespace;
+import org.dom4j.QName;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Jiri Kremser
  * @version 31.10.2011
  */
+@Component
 public class PageBuilder
         extends FoxmlBuilder {
-
-    /**
-     * @param object
-
-     */
-    public PageBuilder(NewDigitalObject object) {
-        super(object);
-    }
 
     /**
      * {@inheritDoc}

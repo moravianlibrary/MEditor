@@ -27,28 +27,10 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.io.IOException;
-
-import javax.xml.transform.TransformerException;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-
-import javax.inject.Inject;
-
-import com.google.inject.name.Named;
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import org.apache.log4j.Logger;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
@@ -59,11 +41,25 @@ import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.rpc.DigitalObjectDetail;
 import cz.mzk.editor.shared.rpc.action.PutDigitalObjectDetailAction;
 import cz.mzk.editor.shared.rpc.action.PutDigitalObjectDetailResult;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import javax.inject.Inject;
+import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import java.io.IOException;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class GetDigitalObjectDetailHandler.
  */
+@Service
 public class PutDigitalObjectDetailHandler
         implements ActionHandler<PutDigitalObjectDetailAction, PutDigitalObjectDetailResult> {
 
@@ -75,6 +71,9 @@ public class PutDigitalObjectDetailHandler
     private final EditorConfiguration configuration;
 
     private final FedoraAccess fedoraAccess;
+
+    @Inject
+    private ServerUtils serverUtils;
 
     // /** The injector. */
     // @Inject
@@ -92,7 +91,7 @@ public class PutDigitalObjectDetailHandler
      */
     @Inject
     public PutDigitalObjectDetailHandler(final EditorConfiguration configuration,
-                                         @Named("securedFedoraAccess") FedoraAccess fedoraAccess) {
+                                         @Qualifier("securedFedoraAccess") FedoraAccess fedoraAccess) {
         this.configuration = configuration;
         this.fedoraAccess = fedoraAccess;
     }
@@ -156,7 +155,7 @@ public class PutDigitalObjectDetailHandler
             }
 
             if (shouldReindex && action.isReindex()) {
-                ServerUtils.reindex(detail.getUuid());
+                serverUtils.reindex(detail.getUuid());
             }
         }
         return new PutDigitalObjectDetailResult(write);

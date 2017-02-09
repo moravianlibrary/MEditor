@@ -24,22 +24,19 @@
 
 package cz.mzk.editor.server.DAO;
 
-import java.sql.SQLException;
-
-import javax.inject.Inject;
-
 import cz.mzk.editor.client.util.Constants.USER_IDENTITY_TYPES;
+import org.springframework.stereotype.Repository;
+
+import java.sql.SQLException;
 
 /**
  * @author Matous Jobanek
  * @version Nov 15, 2012
  */
+@Repository
 public class SecurityUserDAOImpl
         extends AbstractDAO
         implements SecurityUserDAO {
-
-    @Inject
-    private DAOUtils daoUtils;
 
     /**
      * {@inheritDoc}

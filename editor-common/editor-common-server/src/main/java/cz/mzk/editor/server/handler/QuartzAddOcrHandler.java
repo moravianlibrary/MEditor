@@ -6,7 +6,6 @@ import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
 import cz.mzk.editor.server.quartz.Quartz;
 import cz.mzk.editor.server.quartz.jobs.AddOcrToObjects;
-import cz.mzk.editor.server.quartz.jobs.ConvertImages;
 import cz.mzk.editor.shared.rpc.action.QuartzAddOcrAction;
 import cz.mzk.editor.shared.rpc.action.QuartzAddOcrResult;
 import org.apache.log4j.Logger;
@@ -15,11 +14,13 @@ import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
+import org.springframework.stereotype.Service;
 
 /**
  * @author: Martin Rumanek
  * @version: 19.2.13
  */
+@Service
 public class QuartzAddOcrHandler implements ActionHandler<QuartzAddOcrAction, QuartzAddOcrResult> {
 
     private static final Logger LOGGER = Logger.getLogger(QuartzConvertImagesHandler.class.getPackage()

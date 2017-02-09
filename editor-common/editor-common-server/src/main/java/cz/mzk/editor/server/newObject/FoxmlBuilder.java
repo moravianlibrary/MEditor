@@ -24,22 +24,6 @@
 
 package cz.mzk.editor.server.newObject;
 
-import java.io.ByteArrayOutputStream;
-
-import java.text.SimpleDateFormat;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.QName;
-import org.dom4j.XPath;
-
 import cz.mzk.editor.client.mods.ModsTypeClient;
 import cz.mzk.editor.client.mods.PlaceTypeClient;
 import cz.mzk.editor.client.mods.StringPlusAuthorityPlusTypeClient;
@@ -56,6 +40,18 @@ import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.FedoraNamespaces;
 import cz.mzk.editor.shared.rpc.MetadataBundle;
 import cz.mzk.editor.shared.rpc.NewDigitalObject;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.dom4j.QName;
+import org.dom4j.XPath;
+
+import javax.inject.Inject;
+import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author Jiri Kremser
@@ -74,7 +70,7 @@ public abstract class FoxmlBuilder {
     private String type;
     private int pageIndex;
     private Policy policy = Policy.PRIVATE;
-    private final List<RelsExtRelation> children;
+    private final List<RelsExtRelation> children = new ArrayList<RelsExtRelation>();
     private MetadataBundle bundle;
     private Document document;
     protected Element rootElement;
@@ -93,6 +89,8 @@ public abstract class FoxmlBuilder {
 
     private String base;
 
+    private NewDigitalObject object;
+
     @Inject
     protected EditorConfiguration configuration;
 
@@ -100,15 +98,15 @@ public abstract class FoxmlBuilder {
 
     private final XPath shelfLocatorXpath = Dom4jUtils.createXPath("mods:shelfLocator");
 
-    public FoxmlBuilder(NewDigitalObject object) {
-        this(object, Policy.PRIVATE);
-    }
-
-    public FoxmlBuilder(NewDigitalObject object, Policy policy) {
-        setLabel(object);
-        this.children = new ArrayList<RelsExtRelation>();
-        this.policy = policy;
-    }
+//    public FoxmlBuilder(NewDigitalObject object) {
+//        this(object, Policy.PRIVATE);
+//    }
+//
+//    public FoxmlBuilder(NewDigitalObject object, Policy policy) {
+//        setLabel(object);
+//        this.children = new ArrayList<RelsExtRelation>();
+//        this.policy = policy;
+//    }
 
     private void setLabel(NewDigitalObject object) {
         String labelToAdd = "";
@@ -127,6 +125,15 @@ public abstract class FoxmlBuilder {
             labelToAdd = "untitled";
         }
         this.label = ClientCreateUtils.trimLabel(labelToAdd, Constants.MAX_LABEL_LENGTH);
+    }
+
+    protected NewDigitalObject getObject() {
+        return object;
+    }
+
+    protected void setObject(NewDigitalObject object) {
+        this.setLabel(object);
+        this.object = object;
     }
 
     public void createDocument() {

@@ -27,24 +27,24 @@
 
 package cz.mzk.editor.server.handler;
 
-import javax.inject.Inject;
-
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import cz.mzk.editor.server.UserProvider;
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.RecentlyModifiedItemDAO;
+import cz.mzk.editor.server.UserProvider;
 import cz.mzk.editor.shared.rpc.action.PutRecentlyModifiedAction;
 import cz.mzk.editor.shared.rpc.action.PutRecentlyModifiedResult;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class PutRecentlyModifiedHandler.
  */
+@Service
 public class PutRecentlyModifiedHandler
         implements ActionHandler<PutRecentlyModifiedAction, PutRecentlyModifiedResult> {
 

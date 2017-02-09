@@ -25,63 +25,10 @@
  * 
  */
 
-package cz.mzk.editor.server.guice;
+package cz.mzk.editor.server;
 
-import javax.xml.namespace.NamespaceContext;
-
-import com.google.inject.Scopes;
-import com.google.inject.assistedinject.FactoryModuleBuilder;
-import com.google.inject.name.Names;
-
-import com.gwtplatform.dispatch.rpc.server.guice.HandlerModule;
-import cz.mzk.editor.server.*;
-import cz.mzk.editor.server.DAO.UserDaoNew;
-import cz.mzk.editor.server.DAO.UserDaoNewImpl;
-import cz.mzk.editor.server.metadataDownloader.*;
-import org.quartz.SchedulerFactory;
-import org.quartz.impl.StdSchedulerFactory;
-
-//import cz.mzk.editor.server.DAO.ActionDAO;
-//import cz.mzk.editor.server.DAO.ActionDAOImpl;
-import cz.mzk.editor.server.DAO.ConversionDAO;
-import cz.mzk.editor.server.DAO.ConversionDAOImpl;
-import cz.mzk.editor.server.DAO.DAOUtils;
-import cz.mzk.editor.server.DAO.DAOUtilsImpl;
-import cz.mzk.editor.server.DAO.DescriptionDAO;
-import cz.mzk.editor.server.DAO.DescriptionDAOImpl;
-import cz.mzk.editor.server.DAO.DigitalObjectDAO;
-import cz.mzk.editor.server.DAO.DigitalObjectDAOImpl;
-import cz.mzk.editor.server.DAO.ImageResolverDAO;
-import cz.mzk.editor.server.DAO.ImageResolverDAOImpl;
-import cz.mzk.editor.server.DAO.InputQueueItemDAO;
-import cz.mzk.editor.server.DAO.InputQueueItemDAOImpl;
-import cz.mzk.editor.server.DAO.LockDAO;
-import cz.mzk.editor.server.DAO.LockDAOImpl;
-import cz.mzk.editor.server.DAO.LogInOutDAO;
-import cz.mzk.editor.server.DAO.LogInOutDAOImpl;
-import cz.mzk.editor.server.DAO.RecentlyModifiedItemDAO;
-import cz.mzk.editor.server.DAO.RecentlyModifiedItemDAOImpl;
-import cz.mzk.editor.server.DAO.SecurityUserDAO;
-import cz.mzk.editor.server.DAO.SecurityUserDAOImpl;
-import cz.mzk.editor.server.DAO.StoredAndLocksDAO;
-import cz.mzk.editor.server.DAO.StoredAndLocksDAOImpl;
-import cz.mzk.editor.server.DAO.StoredItemsDAO;
-import cz.mzk.editor.server.DAO.StoredItemsDAOImpl;
-import cz.mzk.editor.server.DAO.TreeStructureDAO;
-import cz.mzk.editor.server.DAO.TreeStructureDAOImpl;
-import cz.mzk.editor.server.DAO.UserDAO;
-import cz.mzk.editor.server.DAO.UserDAOImpl;
-import cz.mzk.editor.server.DAO.OcrDao;
-import cz.mzk.editor.server.DAO.OcrDaoImpl;
-import cz.mzk.editor.server.config.EditorConfiguration;
-import cz.mzk.editor.server.config.EditorConfigurationImpl;
-import cz.mzk.editor.server.fedora.FedoraAccess;
-import cz.mzk.editor.server.fedora.FedoraAccessImpl;
-import cz.mzk.editor.server.fedora.FedoraNamespaceContext;
-import cz.mzk.editor.server.fedora.IPaddressChecker;
-import cz.mzk.editor.server.fedora.RequestIPaddressChecker;
-import cz.mzk.editor.server.fedora.SecuredFedoraAccessImpl;
-import cz.mzk.editor.server.fedora.utils.FedoraUtils;
+import com.gwtplatform.dispatch.rpc.server.spring.HandlerModule;
+import com.gwtplatform.dispatch.rpc.server.spring.configuration.DefaultModule;
 import cz.mzk.editor.server.handler.ChangeRightsHandler;
 import cz.mzk.editor.server.handler.CheckAvailabilityHandler;
 import cz.mzk.editor.server.handler.CheckRightsHandler;
@@ -90,18 +37,12 @@ import cz.mzk.editor.server.handler.DownloadDigitalObjectDetailHandler;
 import cz.mzk.editor.server.handler.FindAltoOcrFilesBatchHandler;
 import cz.mzk.editor.server.handler.FindAltoOcrFilesHandler;
 import cz.mzk.editor.server.handler.FindMetadataHandler;
-//import cz.mzk.editor.server.handler.GetAllLockItemsHandler;
 import cz.mzk.editor.server.handler.GetAllRolesHandler;
-//import cz.mzk.editor.server.handler.GetAllStoredTreeStructureHandler;
-//import cz.mzk.editor.server.handler.GetAllStoredWorkingCopyHandler;
 import cz.mzk.editor.server.handler.GetClientConfigHandler;
 import cz.mzk.editor.server.handler.GetDOModelHandler;
 import cz.mzk.editor.server.handler.GetDescriptionHandler;
 import cz.mzk.editor.server.handler.GetDigitalObjectDetailHandler;
 import cz.mzk.editor.server.handler.GetFullImgMetadataHandler;
-//mport cz.mzk.editor.server.handler.GetHistoryDaysHandler;
-//import cz.mzk.editor.server.handler.GetHistoryHandler;
-//import cz.mzk.editor.server.handler.GetHistoryItemInfoHandler;
 import cz.mzk.editor.server.handler.GetIngestInfoHandler;
 import cz.mzk.editor.server.handler.GetLockInformationHandler;
 import cz.mzk.editor.server.handler.GetLoggedUserHandler;
@@ -110,8 +51,6 @@ import cz.mzk.editor.server.handler.GetOcrFromPdfHandler;
 import cz.mzk.editor.server.handler.GetRecentlyModifiedHandler;
 import cz.mzk.editor.server.handler.GetRelationshipsHandler;
 import cz.mzk.editor.server.handler.GetUserRolesRightsIdentitiesHandler;
-//import cz.mzk.editor.server.handler.GetUserStatisticDataHandler;
-//import cz.mzk.editor.server.handler.GetUsersInfoHandler;
 import cz.mzk.editor.server.handler.HasUserRightsHandler;
 import cz.mzk.editor.server.handler.InitializeConversionHandler;
 import cz.mzk.editor.server.handler.InsertNewDigitalObjectHandler;
@@ -125,11 +64,10 @@ import cz.mzk.editor.server.handler.PutRemoveUserRightsHandler;
 import cz.mzk.editor.server.handler.PutRemoveUserRolesHandler;
 import cz.mzk.editor.server.handler.PutUserIdentityHandler;
 import cz.mzk.editor.server.handler.PutUserInfoHandler;
+import cz.mzk.editor.server.handler.QuartzAddOcrHandler;
 import cz.mzk.editor.server.handler.QuartzConvertImagesHandler;
 import cz.mzk.editor.server.handler.QuartzScheduleJobsHandler;
 import cz.mzk.editor.server.handler.RemoveDigitalObjectHandler;
-//import cz.mzk.editor.server.handler.RemoveStoredTreeStructureHandler;
-//import cz.mzk.editor.server.handler.RemoveStoredWorkingCopyHandler;
 import cz.mzk.editor.server.handler.RemoveUserHandler;
 import cz.mzk.editor.server.handler.RemoveUserIdentityHandler;
 import cz.mzk.editor.server.handler.ScanFolderHandler;
@@ -137,18 +75,6 @@ import cz.mzk.editor.server.handler.ScanInputQueueHandler;
 import cz.mzk.editor.server.handler.StoreTreeStructureHandler;
 import cz.mzk.editor.server.handler.StoredItemsHandler;
 import cz.mzk.editor.server.handler.UnlockDigitalObjectHandler;
-import cz.mzk.editor.server.modelHandler.FedoraDigitalObjectHandler;
-import cz.mzk.editor.server.modelHandler.FedoraDigitalObjectHandlerImpl;
-import cz.mzk.editor.server.modelHandler.StoredDigitalObjectHandler;
-import cz.mzk.editor.server.modelHandler.StoredDigitalObjectHandlerImpl;
-import cz.mzk.editor.server.handler.QuartzAddOcrHandler;
-import cz.mzk.editor.server.newObject.FOXMLBuilderMapping;
-import cz.mzk.editor.server.newObject.IngestUtils;
-import cz.mzk.editor.server.quartz.GuiceJobFactory;
-import cz.mzk.editor.server.quartz.Quartz;
-import cz.mzk.editor.server.util.ServerUtils;
-import cz.mzk.editor.server.utils.ScanFolder;
-import cz.mzk.editor.server.utils.ScanFolderImpl;
 import cz.mzk.editor.shared.rpc.action.ChangeRightsAction;
 import cz.mzk.editor.shared.rpc.action.CheckAvailabilityAction;
 import cz.mzk.editor.shared.rpc.action.CheckRightsAction;
@@ -157,18 +83,12 @@ import cz.mzk.editor.shared.rpc.action.DownloadDigitalObjectDetailAction;
 import cz.mzk.editor.shared.rpc.action.FindAltoOcrFilesAction;
 import cz.mzk.editor.shared.rpc.action.FindAltoOcrFilesBatchAction;
 import cz.mzk.editor.shared.rpc.action.FindMetadataAction;
-//import cz.mzk.editor.shared.rpc.action.GetAllLockItemsAction;
 import cz.mzk.editor.shared.rpc.action.GetAllRolesAction;
-//import cz.mzk.editor.shared.rpc.action.GetAllStoredTreeStructureItemsAction;
-//import cz.mzk.editor.shared.rpc.action.GetAllStoredWorkingCopyItemsAction;
 import cz.mzk.editor.shared.rpc.action.GetClientConfigAction;
 import cz.mzk.editor.shared.rpc.action.GetDOModelAction;
 import cz.mzk.editor.shared.rpc.action.GetDescriptionAction;
 import cz.mzk.editor.shared.rpc.action.GetDigitalObjectDetailAction;
 import cz.mzk.editor.shared.rpc.action.GetFullImgMetadataAction;
-//import cz.mzk.editor.shared.rpc.action.GetHistoryAction;
-//import cz.mzk.editor.shared.rpc.action.GetHistoryDaysAction;
-//import cz.mzk.editor.shared.rpc.action.GetHistoryItemInfoAction;
 import cz.mzk.editor.shared.rpc.action.GetIngestInfoAction;
 import cz.mzk.editor.shared.rpc.action.GetLockInformationAction;
 import cz.mzk.editor.shared.rpc.action.GetLoggedUserAction;
@@ -177,8 +97,6 @@ import cz.mzk.editor.shared.rpc.action.GetOcrFromPdfAction;
 import cz.mzk.editor.shared.rpc.action.GetRecentlyModifiedAction;
 import cz.mzk.editor.shared.rpc.action.GetRelationshipsAction;
 import cz.mzk.editor.shared.rpc.action.GetUserRolesRightsIdentitiesAction;
-//import cz.mzk.editor.shared.rpc.action.GetUserStatisticDataAction;
-//import cz.mzk.editor.shared.rpc.action.GetUsersInfoAction;
 import cz.mzk.editor.shared.rpc.action.HasUserRightsAction;
 import cz.mzk.editor.shared.rpc.action.InitializeConversionAction;
 import cz.mzk.editor.shared.rpc.action.InsertNewDigitalObjectAction;
@@ -192,11 +110,10 @@ import cz.mzk.editor.shared.rpc.action.PutRemoveUserRightsAction;
 import cz.mzk.editor.shared.rpc.action.PutRemoveUserRolesAction;
 import cz.mzk.editor.shared.rpc.action.PutUserIdentityAction;
 import cz.mzk.editor.shared.rpc.action.PutUserInfoAction;
+import cz.mzk.editor.shared.rpc.action.QuartzAddOcrAction;
 import cz.mzk.editor.shared.rpc.action.QuartzConvertImagesAction;
 import cz.mzk.editor.shared.rpc.action.QuartzScheduleJobsAction;
 import cz.mzk.editor.shared.rpc.action.RemoveDigitalObjectAction;
-//import cz.mzk.editor.shared.rpc.action.RemoveStoredTreeStructureItemsAction;
-//import cz.mzk.editor.shared.rpc.action.RemoveStoredWorkingCopyItemsAction;
 import cz.mzk.editor.shared.rpc.action.RemoveUserAction;
 import cz.mzk.editor.shared.rpc.action.RemoveUserIdentityAction;
 import cz.mzk.editor.shared.rpc.action.ScanFolderAction;
@@ -204,12 +121,15 @@ import cz.mzk.editor.shared.rpc.action.ScanInputQueueAction;
 import cz.mzk.editor.shared.rpc.action.StoreTreeStructureAction;
 import cz.mzk.editor.shared.rpc.action.StoredItemsAction;
 import cz.mzk.editor.shared.rpc.action.UnlockDigitalObjectAction;
-import cz.mzk.editor.shared.rpc.action.QuartzAddOcrAction;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 // TODO: Auto-generated Javadoc
 /**
  * Module which binds the handlers and configurations.
  */
+@Configuration
+@Import(DefaultModule.class)
 public class ServerModule
         extends HandlerModule {
 
@@ -254,7 +174,7 @@ public class ServerModule
         bindHandler(QuartzConvertImagesAction.class, QuartzConvertImagesHandler.class);
         bindHandler(QuartzAddOcrAction.class, QuartzAddOcrHandler.class);
         bindHandler(QuartzScheduleJobsAction.class, QuartzScheduleJobsHandler.class);
-        bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).asEagerSingleton();
+        //bind(EditorConfiguration.class).to(EditorConfigurationImpl.class).asEagerSingleton();
 
         bindHandler(RemoveUserAction.class, RemoveUserHandler.class);
         bindHandler(GetUserRolesRightsIdentitiesAction.class, GetUserRolesRightsIdentitiesHandler.class);
@@ -271,56 +191,56 @@ public class ServerModule
 
 
         // DAO
-        bind(InputQueueItemDAO.class).to(InputQueueItemDAOImpl.class);
-        bind(ImageResolverDAO.class).to(ImageResolverDAOImpl.class);
-        bind(RecentlyModifiedItemDAO.class).to(RecentlyModifiedItemDAOImpl.class);
-        bind(LockDAO.class).to(LockDAOImpl.class);
-        bind(StoredItemsDAO.class).to(StoredItemsDAOImpl.class);
-        bind(TreeStructureDAO.class).to(TreeStructureDAOImpl.class);
-        bind(DAOUtils.class).to(DAOUtilsImpl.class);
-        bind(DescriptionDAO.class).to(DescriptionDAOImpl.class);
-        bind(DigitalObjectDAO.class).to(DigitalObjectDAOImpl.class);
-        bind(LogInOutDAO.class).to(LogInOutDAOImpl.class);
-        bind(ConversionDAO.class).to(ConversionDAOImpl.class);
-        bind(UserDAO.class).to(UserDAOImpl.class);
-        bind(SecurityUserDAO.class).to(SecurityUserDAOImpl.class);
-        bind(UserDAO.class).to(UserDAOImpl.class);
-        bind(DAOUtils.class).to(DAOUtilsImpl.class);
-        bind(StoredAndLocksDAO.class).to(StoredAndLocksDAOImpl.class);
-        bind(OcrDao.class).to(OcrDaoImpl.class);
-        bind(UserDaoNew.class).to(UserDaoNewImpl.class);
+//        bind(InputQueueItemDAO.class).to(InputQueueItemDAOImpl.class);
+//        bind(ImageResolverDAO.class).to(ImageResolverDAOImpl.class);
+//        bind(RecentlyModifiedItemDAO.class).to(RecentlyModifiedItemDAOImpl.class);
+//        bind(LockDAO.class).to(LockDAOImpl.class);
+//        bind(StoredItemsDAO.class).to(StoredItemsDAOImpl.class);
+//        bind(TreeStructureDAO.class).to(TreeStructureDAOImpl.class);
+//        bind(DAOUtils.class).to(DAOUtilsImpl.class);
+//        bind(DescriptionDAO.class).to(DescriptionDAOImpl.class);
+//        bind(DigitalObjectDAO.class).to(DigitalObjectDAOImpl.class);
+//        bind(LogInOutDAO.class).to(LogInOutDAOImpl.class);
+//        bind(ConversionDAO.class).to(ConversionDAOImpl.class);
+//        bind(UserDAO.class).to(UserDAOImpl.class);
+//        bind(SecurityUserDAO.class).to(SecurityUserDAOImpl.class);
+//        bind(UserDAO.class).to(UserDAOImpl.class);
+//        bind(DAOUtils.class).to(DAOUtilsImpl.class);
+//        bind(StoredAndLocksDAO.class).to(StoredAndLocksDAOImpl.class);
+//        bind(OcrDao.class).to(OcrDaoImpl.class);
+//        bind(UserDaoNew.class).to(UserDaoNewImpl.class);
 
         // Fedora
-        bind(FedoraAccess.class).annotatedWith(Names.named("rawFedoraAccess")).to(FedoraAccessImpl.class)
-                .in(Scopes.SINGLETON);
-        bind(FedoraAccess.class).annotatedWith(Names.named("securedFedoraAccess"))
-                .to(SecuredFedoraAccessImpl.class).in(Scopes.SINGLETON);
-        bind(NamespaceContext.class).to(FedoraNamespaceContext.class).in(Scopes.SINGLETON);
-
-        bind(FedoraDigitalObjectHandler.class).to(FedoraDigitalObjectHandlerImpl.class);
-        bind(StoredDigitalObjectHandler.class).to(StoredDigitalObjectHandlerImpl.class);
-        bind(Z3950Client.class).to(Z3950ClientImpl.class);
-        bind(OAIPMHClient.class).to(OAIPMHClientImpl.class);
-        bind(XServicesClient.class).to(XServicesClientImpl.class);
-
-        bind(IPaddressChecker.class).to(RequestIPaddressChecker.class);
-
-        // Quartz
-        bind(SchedulerFactory.class).to(StdSchedulerFactory.class).in(Scopes.SINGLETON);
-        bind(GuiceJobFactory.class).in(Scopes.SINGLETON);
-        bind(Quartz.class).in(Scopes.SINGLETON);
-
-        install(new FactoryModuleBuilder()
-                .implement(ScanFolder.class, ScanFolderImpl.class)
-                .build(ScanFolderImpl.ScanFolderFactory.class));
-
-
-        // static injection
-        requestStaticInjection(FedoraUtils.class);
-        requestStaticInjection(URLS.class);
-        requestStaticInjection(IngestUtils.class);
-        requestStaticInjection(ServerUtils.class);
-        requestStaticInjection(FOXMLBuilderMapping.class);
-        requestStaticInjection(SessionListener.class);
+//        bind(FedoraAccess.class).annotatedWith(Names.named("rawFedoraAccess")).to(FedoraAccessImpl.class)
+//                .in(Scopes.SINGLETON);
+//        bind(FedoraAccess.class).annotatedWith(Names.named("securedFedoraAccess"))
+//                .to(SecuredFedoraAccessImpl.class).in(Scopes.SINGLETON);
+//        bind(NamespaceContext.class).to(FedoraNamespaceContext.class).in(Scopes.SINGLETON);
+//
+//        bind(FedoraDigitalObjectHandler.class).to(FedoraDigitalObjectHandlerImpl.class);
+//        bind(StoredDigitalObjectHandler.class).to(StoredDigitalObjectHandlerImpl.class);
+//        bind(Z3950Client.class).to(Z3950ClientImpl.class);
+//        bind(OAIPMHClient.class).to(OAIPMHClientImpl.class);
+//        bind(XServicesClient.class).to(XServicesClientImpl.class);
+//
+//        bind(IPaddressChecker.class).to(RequestIPaddressChecker.class);
+//
+//        // Quartz
+//        bind(SchedulerFactory.class).to(StdSchedulerFactory.class).in(Scopes.SINGLETON);
+//        bind(GuiceJobFactory.class).in(Scopes.SINGLETON);
+//        bind(Quartz.class).in(Scopes.SINGLETON);
+//
+//        install(new FactoryModuleBuilder()
+//                .implement(ScanFolder.class, ScanFolderImpl.class)
+//                .build(ScanFolderImpl.ScanFolderFactory.class));
+//
+//
+//        // static injection
+//        requestStaticInjection(FedoraUtils.class);
+//        requestStaticInjection(URLS.class);
+//        requestStaticInjection(IngestUtils.class);
+//        requestStaticInjection(ServerUtils.class);
+//        requestStaticInjection(FOXMLBuilderMapping.class);
+//        requestStaticInjection(SessionListener.class);
     }
 }

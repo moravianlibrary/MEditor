@@ -27,25 +27,24 @@
 
 package cz.mzk.editor.server.DAO;
 
-import java.io.File;
+import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.shared.rpc.ImageItem;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.log4j.Logger;
-
-import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.shared.rpc.ImageItem;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class InputQueueItemDAOImpl.
  */
+@Repository
 public class ImageResolverDAOImpl
         extends AbstractDAO
         implements ImageResolverDAO {

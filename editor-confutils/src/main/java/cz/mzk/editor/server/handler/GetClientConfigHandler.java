@@ -27,27 +27,26 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.util.HashMap;
-import java.util.Iterator;
-
-import javax.inject.Inject;
-
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
+import cz.mzk.editor.client.config.EditorClientConfiguration;
+import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.shared.rpc.action.GetClientConfigAction;
 import cz.mzk.editor.shared.rpc.action.GetClientConfigResult;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
 
-import cz.mzk.editor.client.config.EditorClientConfiguration;
-import cz.mzk.editor.server.config.EditorConfiguration;
+import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.Iterator;
 
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class GetClientConfigHandler.
  */
+@Service
 public class GetClientConfigHandler
         implements ActionHandler<GetClientConfigAction, GetClientConfigResult> {
 

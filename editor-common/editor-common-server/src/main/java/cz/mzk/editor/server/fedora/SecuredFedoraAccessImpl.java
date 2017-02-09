@@ -27,28 +27,23 @@
 
 package cz.mzk.editor.server.fedora;
 
-import java.io.IOException;
-import java.io.InputStream;
+import cz.mzk.editor.shared.domain.DigitalObjectModel;
+import org.fedora.api.FedoraAPIA;
+import org.fedora.api.FedoraAPIM;
+import org.fedora.api.ObjectFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+import org.w3c.dom.Document;
 
-import java.util.List;
-
+import javax.inject.Inject;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
-import javax.inject.Inject;
-
-import com.google.inject.name.Named;
-
-import org.w3c.dom.Document;
-
-import org.fedora.api.FedoraAPIA;
-import org.fedora.api.FedoraAPIM;
-import org.fedora.api.ObjectFactory;
-
-import cz.mzk.editor.shared.domain.DigitalObjectModel;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -65,6 +60,7 @@ import cz.mzk.editor.shared.domain.DigitalObjectModel;
  * @see FedoraAccess#getImageFULLMimeType(String)
  * @author xkremser
  */
+@Component("securedFedoraAccess")
 public class SecuredFedoraAccessImpl
         implements FedoraAccess {
 
@@ -81,7 +77,7 @@ public class SecuredFedoraAccessImpl
      *        the raw access
      */
     @Inject
-    public SecuredFedoraAccessImpl(@Named("rawFedoraAccess") FedoraAccess rawAccess) {
+    public SecuredFedoraAccessImpl(@Qualifier("rawFedoraAccess") FedoraAccess rawAccess) {
         super();
         this.rawAccess = rawAccess;
     }

@@ -24,50 +24,13 @@
 
 package cz.mzk.editor.server.newObject;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-
-import java.nio.file.AccessDeniedException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.imageio.ImageIO;
-import javax.inject.Inject;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-
-import com.google.inject.name.Named;
-
-import cz.mzk.editor.server.UserProvider;
-import org.apache.log4j.Logger;
-
-import org.apache.pdfbox.pdmodel.PDDocument;
-
-import org.apache.pdfbox.rendering.ImageType;
-import org.apache.pdfbox.rendering.PDFRenderer;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.io.DOMReader;
-
 import cz.mzk.editor.client.CreateObjectException;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.DATASTREAM_ID;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.DigitalObjectDAO;
 import cz.mzk.editor.server.DAO.ImageResolverDAO;
+import cz.mzk.editor.server.UserProvider;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.fedora.utils.Dom4jUtils;
@@ -78,8 +41,38 @@ import cz.mzk.editor.server.util.RESTHelper;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.NamedGraphModel;
 import cz.mzk.editor.shared.rpc.NewDigitalObject;
+import org.apache.log4j.Logger;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.ImageType;
+import org.apache.pdfbox.rendering.PDFRenderer;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.io.DOMReader;
 import org.jboss.resteasy.client.jaxrs.BasicAuthentication;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.springframework.beans.factory.annotation.Qualifier;
+
+import javax.imageio.ImageIO;
+import javax.inject.Inject;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.AccessDeniedException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 // TODO: Auto-generated Javadoc
 
@@ -136,6 +129,8 @@ public class CreateObject {
      */
     private final Map<String, String> processedTracks;
 
+    private final FOXMLBuilderMapping foxmlBuilderMapping;
+
     /**
      * The sysno.
      */
@@ -158,6 +153,8 @@ public class CreateObject {
 
     private Long userId;
 
+    private IngestUtils ingestUtils;
+
     /**
      * Instantiates a new creates the object.
      *  @param inputDirPath     the input dir path
@@ -172,7 +169,9 @@ public class CreateObject {
                         final EditorConfiguration config,
                         final DigitalObjectDAO digitalObjectDAO,
                         final ImageResolverDAO imageResolverDAO,
-                        final @Named("securedFedoraAccess") FedoraAccess fedoraAccess,
+                        final @Qualifier("securedFedoraAccess") FedoraAccess fedoraAccess,
+                        final FOXMLBuilderMapping foxmlBuilderMapping,
+                        final IngestUtils ingestUtils,
                         UserProvider userProvider) {
         this.inputDirPath = inputDirPath;
         this.processedPages = new HashMap<String, String>();
@@ -182,7 +181,9 @@ public class CreateObject {
         this.config = config;
         this.digitalObjectDAO = digitalObjectDAO;
         this.imageResolverDAO = imageResolverDAO;
+        this.foxmlBuilderMapping = foxmlBuilderMapping;
         this.userId = userProvider.getUserId();
+        this.ingestUtils = ingestUtils;
     }
 
     /**
@@ -326,7 +327,7 @@ public class CreateObject {
             }
             return node.getUuid();
         }
-        FoxmlBuilder builder = FOXMLBuilderMapping.getBuilder(node);
+        FoxmlBuilder builder = foxmlBuilderMapping.getBuilder(node);
         if (builder == null) {
             throw new CreateObjectException("unknown type " + node.getModel());
         }
@@ -468,7 +469,7 @@ public class CreateObject {
 
         String foxmlRepresentation = builder.getDocument(false);
         boolean success =
-                IngestUtils.ingest(foxmlRepresentation, node.getName(), node.getUuid(), node.getModel()
+                ingestUtils.ingest(foxmlRepresentation, node.getName(), node.getUuid(), node.getModel()
                         .getValue(), topLevelUuid, inputDirPath);
 
         if (success) ingestedObjects.add(node.getUuid());

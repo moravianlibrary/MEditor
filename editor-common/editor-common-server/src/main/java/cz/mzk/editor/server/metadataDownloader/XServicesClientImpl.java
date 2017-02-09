@@ -1,40 +1,34 @@
 package cz.mzk.editor.server.metadataDownloader;
 
 import cz.mzk.editor.server.fedora.utils.BiblioModsUtils;
-import cz.mzk.editor.server.fedora.utils.Dom4jUtils;
+import cz.mzk.editor.server.mods.ModsCollection;
+import cz.mzk.editor.server.mods.ModsType;
 import cz.mzk.editor.server.newObject.MarcDocument;
-import cz.mzk.editor.server.util.XMLUtils;
 import cz.mzk.editor.shared.rpc.DublinCore;
 import cz.mzk.editor.shared.rpc.MarcSpecificMetadata;
 import cz.mzk.editor.shared.rpc.MetadataBundle;
-import cz.mzk.editor.server.mods.ModsCollection;
-import cz.mzk.editor.server.mods.ModsType;
-
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Namespace;
 import org.dom4j.Visitor;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
 
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
 /**
  * Created by rumanekm on 27.8.14.
  */
+@Service
 public class XServicesClientImpl implements XServicesClient {
 
 

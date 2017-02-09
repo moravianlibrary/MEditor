@@ -27,20 +27,18 @@
 
 package cz.mzk.editor.server.fedora;
 
-import javax.servlet.http.HttpServletRequest;
+import cz.mzk.editor.server.config.EditorConfiguration;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-
-import com.google.inject.Provider;
-
-import org.apache.log4j.Logger;
-
-import cz.mzk.editor.server.config.EditorConfiguration;
+import javax.servlet.http.HttpServletRequest;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class RequestIPaddressChecker.
  */
+@Component
 public class RequestIPaddressChecker
         implements IPaddressChecker {
 
@@ -51,7 +49,7 @@ public class RequestIPaddressChecker
     private EditorConfiguration configuration;
 
     /** The provider. */
-    private final Provider<HttpServletRequest> provider;
+    private final HttpServletRequest httpServletRequest;
 
     /**
      * Instantiates a new request i paddress checker.
@@ -60,10 +58,9 @@ public class RequestIPaddressChecker
      *        the provider
      */
     @Inject
-    public RequestIPaddressChecker(Provider<HttpServletRequest> provider) {
+    public RequestIPaddressChecker(HttpServletRequest httpServletRequest) {
         super();
-        this.provider = provider;
-        LOGGER.debug("provider is '" + provider + "'");
+        this.httpServletRequest = httpServletRequest;
     }
 
     /*
@@ -84,7 +81,6 @@ public class RequestIPaddressChecker
      * @return true, if successful
      */
     private boolean checkPatterns(String[] patterns) {
-        HttpServletRequest httpServletRequest = this.provider.get();
         String remoteAddr = httpServletRequest.getRemoteAddr();
         if (patterns != null) {
             for (String regex : patterns) {

@@ -31,46 +31,8 @@ package cz.mzk.editor.server.fedora.utils;
  *
  * @author incad
  */
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 
-import java.nio.charset.Charset;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.xml.namespace.NamespaceContext;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
-import javax.inject.Inject;
-
-import com.google.inject.name.Named;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.log4j.Logger;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import org.fedora.api.RelationshipTuple;
-
 import cz.mzk.editor.client.ConnectionException;
 import cz.mzk.editor.client.DublinCoreConstants;
 import cz.mzk.editor.client.mods.ModsCollectionClient;
@@ -87,6 +49,38 @@ import cz.mzk.editor.shared.domain.FedoraRelationship;
 import cz.mzk.editor.shared.domain.NamedGraphModel;
 import cz.mzk.editor.shared.rpc.DigitalObjectDetail;
 import cz.mzk.editor.shared.rpc.DublinCore;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.log4j.Logger;
+import org.fedora.api.RelationshipTuple;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.inject.Inject;
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static cz.mzk.editor.client.util.Constants.DATASTREAM_ID.BIBLIO_MODS;
 import static cz.mzk.editor.client.util.Constants.DATASTREAM_ID.DC;
@@ -101,6 +95,7 @@ import static cz.mzk.editor.shared.domain.FedoraNamespaces.RELS_EXT_NAMESPACE_UR
 /**
  * The Class FedoraUtils.
  */
+@Component
 public class FedoraUtils {
 
     /** The Constant LOGGER. */
@@ -116,7 +111,6 @@ public class FedoraUtils {
     public static final String IMG_FULL_STREAM = "IMG_FULL";
 
     /** The configuration. */
-    @Inject
     private static EditorConfiguration configuration;
 
     private static final String RELS_EXT_PART_KRAM = "kramerius:";
@@ -148,16 +142,32 @@ public class FedoraUtils {
                     + "<mods version=\"3.4\">\n" + "</mods>\n" + "</modsCollection>";
 
     /** The fedora access. */
-    @Inject
-    @Named("securedFedoraAccess")
     private static FedoraAccess fedoraAccess;
 
     /** The ns context. */
-    @Inject
     private static NamespaceContext nsContext;
 
     /** The xpfactory. */
     private static XPathFactory xpfactory;
+
+
+    // workaround for inject to static fields, but these fields are evil
+    @Inject
+    public void setNsContext(NamespaceContext nsContext) {
+        FedoraUtils.nsContext = nsContext;
+    }
+
+    @Inject
+    @Qualifier("securedFedoraAccess")
+    public void setFedoraAccess(FedoraAccess fedoraAccess) {
+                FedoraUtils.fedoraAccess = fedoraAccess;
+    }
+
+     @Inject
+     public void setConfiguration(EditorConfiguration configuration) {
+        FedoraUtils.configuration = configuration;
+     }
+
 
     /**
      * Gets the rdf pids.

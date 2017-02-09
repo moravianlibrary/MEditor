@@ -27,25 +27,22 @@
 
 package cz.mzk.editor.server.DAO;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
-import java.text.SimpleDateFormat;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
 import cz.mzk.editor.shared.rpc.TreeStructureBundle.TreeStructureNode;
 import cz.mzk.editor.shared.rpc.TreeStructureInfo;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
+
+import javax.inject.Inject;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -54,6 +51,7 @@ import cz.mzk.editor.shared.rpc.TreeStructureInfo;
  * @author Jiri Kremser
  * @version 25. 1. 2011
  */
+@Repository
 public class TreeStructureDAOImpl
         extends AbstractActionDAO
         implements TreeStructureDAO {

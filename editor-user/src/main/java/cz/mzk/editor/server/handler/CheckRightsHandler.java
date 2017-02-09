@@ -24,28 +24,27 @@
 
 package cz.mzk.editor.server.handler;
 
+import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
+import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
+import com.gwtplatform.dispatch.shared.ActionException;
+import cz.mzk.editor.server.DAO.DatabaseException;
+import cz.mzk.editor.server.DAO.UserDAO;
+import cz.mzk.editor.shared.rpc.action.CheckRightsAction;
+import cz.mzk.editor.shared.rpc.action.CheckRightsResult;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-
-import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
-import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
-import com.gwtplatform.dispatch.shared.ActionException;
-
-import org.apache.log4j.Logger;
-
-import cz.mzk.editor.server.DAO.DatabaseException;
-import cz.mzk.editor.server.DAO.UserDAO;
-import cz.mzk.editor.shared.rpc.action.CheckRightsAction;
-import cz.mzk.editor.shared.rpc.action.CheckRightsResult;
-
 /**
  * @author Matous Jobanek
  * @version Nov 27, 2012
  */
+@Service
 public class CheckRightsHandler
         implements ActionHandler<CheckRightsAction, CheckRightsResult> {
 

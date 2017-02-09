@@ -31,10 +31,6 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.google.inject</groupId>
-			<artifactId>guice</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>commons-configuration</groupId>
 			<artifactId>commons-configuration</artifactId>
 		</dependency>

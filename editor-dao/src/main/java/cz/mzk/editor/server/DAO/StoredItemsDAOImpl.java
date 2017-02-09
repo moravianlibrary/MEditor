@@ -24,22 +24,22 @@
 
 package cz.mzk.editor.server.DAO;
 
+import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
+import cz.mzk.editor.shared.rpc.StoredItem;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.apache.log4j.Logger;
-
-import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
-import cz.mzk.editor.shared.rpc.StoredItem;
-
 /**
  * @author Matous Jobanek
  * @version $Id$
  */
-
+@Repository
 public class StoredItemsDAOImpl
         extends AbstractActionDAO
         implements StoredItemsDAO {

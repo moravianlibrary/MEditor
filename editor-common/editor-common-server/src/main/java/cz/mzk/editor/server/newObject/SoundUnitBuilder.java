@@ -3,24 +3,19 @@ package cz.mzk.editor.server.newObject;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.fedora.utils.FoxmlUtils;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
-import cz.mzk.editor.shared.rpc.NewDigitalObject;
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
+import org.springframework.stereotype.Component;
 
 /**
  * @author: Martin Rumanek
  * @version: 19.11.12
  */
+@Component
 public class SoundUnitBuilder extends FoxmlBuilder {
 
-    private final DigitalObjectModel model;
-
-
-    public SoundUnitBuilder(NewDigitalObject object) {
-        super(object);
-        this.model = object.getModel();
-    }
+    private final DigitalObjectModel model = DigitalObjectModel.SOUND_UNIT;
 
     @Override
     protected void decorateMODSStream() {

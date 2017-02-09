@@ -1,10 +1,11 @@
 package cz.mzk.editor.server;
 
-import com.google.inject.Injector;
 import com.googlecode.flyway.core.Flyway;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import org.apache.log4j.Logger;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
+import javax.inject.Inject;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
@@ -16,11 +17,13 @@ public class FlywayListener implements ServletContextListener {
 
     private static final Logger LOGGER = Logger.getLogger(FlywayListener.class);
 
+    @Inject
+    private EditorConfiguration configuration;
+
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        Injector injector = (Injector) servletContextEvent.getServletContext()
-                .getAttribute(Injector.class.getName());
-        EditorConfiguration configuration = injector.getInstance(EditorConfiguration.class);
+        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, servletContextEvent.getServletContext());
+
         Flyway flyway = new Flyway();
         String login = configuration.getDBLogin();
         String password = configuration.getDBPassword();

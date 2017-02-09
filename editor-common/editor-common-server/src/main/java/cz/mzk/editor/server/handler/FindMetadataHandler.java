@@ -27,46 +27,41 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.inject.Inject;
-
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
+import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.server.config.EditorConfiguration;
+import cz.mzk.editor.server.fedora.utils.Dom4jUtils;
+import cz.mzk.editor.server.metadataDownloader.OAIPMHClient;
 import cz.mzk.editor.server.metadataDownloader.XServicesClient;
+import cz.mzk.editor.server.metadataDownloader.Z3950Client;
+import cz.mzk.editor.server.util.RESTHelper;
 import cz.mzk.editor.server.util.StringUtils;
+import cz.mzk.editor.shared.rpc.MetadataBundle;
+import cz.mzk.editor.shared.rpc.action.FindMetadataAction;
+import cz.mzk.editor.shared.rpc.action.FindMetadataResult;
 import org.apache.log4j.Logger;
-
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Node;
 import org.dom4j.XPath;
+import org.springframework.stereotype.Service;
 
-import cz.mzk.editor.client.util.ClientUtils;
-import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
-import cz.mzk.editor.server.metadataDownloader.OAIPMHClient;
-import cz.mzk.editor.server.metadataDownloader.Z3950Client;
-import cz.mzk.editor.server.config.EditorConfiguration;
-import cz.mzk.editor.server.fedora.utils.Dom4jUtils;
-import cz.mzk.editor.server.util.RESTHelper;
-import cz.mzk.editor.server.util.ServerUtils;
-import cz.mzk.editor.shared.rpc.MetadataBundle;
-import cz.mzk.editor.shared.rpc.action.FindMetadataAction;
-import cz.mzk.editor.shared.rpc.action.FindMetadataResult;
+import javax.inject.Inject;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class PutRecentlyModifiedHandler.
  */
+@Service
 public class FindMetadataHandler
         implements ActionHandler<FindMetadataAction, FindMetadataResult> {
 

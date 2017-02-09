@@ -50,28 +50,19 @@
 
 package cz.mzk.editor.server.metadataDownloader;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.xml.parsers.ParserConfigurationException;
-
-import cz.mzk.editor.server.fedora.utils.BiblioModsUtils;
-import cz.mzk.editor.server.fedora.utils.Dom4jUtils;
-import cz.mzk.editor.server.util.XMLUtils;
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfiguration.ServerConstants;
+import cz.mzk.editor.server.fedora.utils.BiblioModsUtils;
 import cz.mzk.editor.server.fedora.utils.DCUtils;
-import cz.mzk.editor.server.mods.ModsType;
+import cz.mzk.editor.server.fedora.utils.Dom4jUtils;
 import cz.mzk.editor.server.mods.ModsCollection;
+import cz.mzk.editor.server.mods.ModsType;
+import cz.mzk.editor.server.util.XMLUtils;
 import cz.mzk.editor.shared.rpc.DublinCore;
 import cz.mzk.editor.shared.rpc.MarcSpecificMetadata;
 import cz.mzk.editor.shared.rpc.MetadataBundle;
+import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.marc4j.MarcReader;
@@ -80,6 +71,7 @@ import org.marc4j.marc.ControlField;
 import org.marc4j.marc.DataField;
 import org.marc4j.marc.Subfield;
 import org.marc4j.marc.VariableField;
+import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
 import org.yaz4j.Connection;
 import org.yaz4j.PrefixQuery;
@@ -87,10 +79,21 @@ import org.yaz4j.Record;
 import org.yaz4j.ResultSet;
 import org.yaz4j.exception.ZoomException;
 
+import javax.inject.Inject;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Jiri Kremser
  */
 @SuppressWarnings({"rawtypes", "unused", "unchecked"})
+@Service
 public class Z3950ClientImpl
         implements Z3950Client {
 

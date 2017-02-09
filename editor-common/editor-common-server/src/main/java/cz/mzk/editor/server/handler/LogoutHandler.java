@@ -27,31 +27,27 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.text.SimpleDateFormat;
-
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-
-import javax.inject.Inject;
-
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import cz.mzk.editor.server.UserProvider;
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.server.DAO.UserDAO;
+import cz.mzk.editor.server.UserProvider;
 import cz.mzk.editor.server.config.EditorConfiguration.ServerConstants;
 import cz.mzk.editor.shared.rpc.action.LogoutAction;
 import cz.mzk.editor.shared.rpc.action.LogoutResult;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class PutRecentlyModifiedHandler.
  */
+@Service
 public class LogoutHandler
         implements ActionHandler<LogoutAction, LogoutResult> {
 
@@ -60,24 +56,14 @@ public class LogoutHandler
     private static final Logger ACCESS_LOGGER = Logger.getLogger(ServerConstants.ACCESS_LOG_ID);
     private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 
-    private final Provider<HttpServletRequest> reqProvider;
+    @Inject
+    private HttpServletRequest request;
 
     @Inject
     private UserDAO userDAO;
 
     @Inject
     private UserProvider userProvider;
-
-    /**
-     * Instantiates a new put recently modified handler.
-     * 
-     * @param httpSessionProvider
-     *        the http session provider
-     */
-    @Inject
-    public LogoutHandler(Provider<HttpServletRequest> reqProvider) {
-        this.reqProvider = reqProvider;
-    }
 
     /*
      * (non-Javadoc)
@@ -93,9 +79,9 @@ public class LogoutHandler
         LOGGER.debug("Processing action: LogoutAction");
 
         ACCESS_LOGGER.info("LOG OUT: [" + FORMATTER.format(new Date()) + "] User " + userProvider.getName()
-                + " with IP " + reqProvider.get().getRemoteAddr());
+                + " with IP " + request.getRemoteAddr());
 
-        return new LogoutResult(reqProvider.get().getContextPath() + "/sso/logout");
+        return new LogoutResult(request.getContextPath() + "/sso/logout");
     }
 
     /*

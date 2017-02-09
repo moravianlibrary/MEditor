@@ -3,12 +3,14 @@ package cz.mzk.editor.server;
 import cz.mzk.editor.server.DAO.UserDaoNew;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpSession;
 
+@Component
 public class UserProvider {
 
     @Inject

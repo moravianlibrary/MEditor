@@ -24,22 +24,21 @@
 
 package cz.mzk.editor.server.DAO;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
+
+import javax.inject.Inject;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * @author Matous Jobanek
  * @version Oct 22, 2012
  */
+@Repository
 public class DigitalObjectDAOImpl
         extends AbstractActionDAO
         implements DigitalObjectDAO {

@@ -27,30 +27,6 @@
 
 package cz.mzk.editor.server;
 
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-
-import java.io.IOException;
-import java.io.InputStream;
-
-import java.net.HttpURLConnection;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import javax.xml.xpath.XPathExpressionException;
-
-import javax.inject.Inject;
-
-import com.google.inject.Injector;
-import com.google.inject.name.Named;
-
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.client.util.ClientUtils;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.config.EditorConfiguration;
@@ -60,6 +36,22 @@ import cz.mzk.editor.server.fedora.KrameriusImageSupport;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
 import cz.mzk.editor.server.util.IOUtils;
 import cz.mzk.editor.server.util.RESTHelper;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+
+import javax.inject.Inject;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.xpath.XPathExpressionException;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -79,7 +71,7 @@ public class FullImgServiceImpl
 
     /** The fedora access. */
     @Inject
-    @Named("securedFedoraAccess")
+    @Qualifier("securedFedoraAccess")
     private FedoraAccess fedoraAccess;
 
     /*
@@ -172,28 +164,6 @@ public class FullImgServiceImpl
     @Override
     public void init() throws ServletException {
         super.init();
-        Injector injector = getInjector();
-        injector.injectMembers(this);
+        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, getServletContext());
     }
-
-    /*
-     * (non-Javadoc)
-     * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
-     */
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        Injector injector = getInjector();
-        injector.injectMembers(this);
-    }
-
-    /**
-     * Gets the injector.
-     * 
-     * @return the injector
-     */
-    protected Injector getInjector() {
-        return (Injector) getServletContext().getAttribute(Injector.class.getName());
-    }
-
 }

@@ -24,34 +24,30 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.io.File;
-import java.io.FileInputStream;
-
-import javax.inject.Inject;
-
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
+import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.server.config.EditorConfiguration;
+import cz.mzk.editor.shared.rpc.action.GetOcrFromPdfAction;
+import cz.mzk.editor.shared.rpc.action.GetOcrFromPdfResult;
 import org.apache.log4j.Logger;
-
 import org.apache.pdfbox.cos.COSDocument;
 import org.apache.pdfbox.io.RandomAccessBufferedFileInputStream;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
-
-import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.server.config.EditorConfiguration;
-import cz.mzk.editor.server.util.ServerUtils;
-import cz.mzk.editor.shared.rpc.action.GetOcrFromPdfAction;
-import cz.mzk.editor.shared.rpc.action.GetOcrFromPdfResult;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import java.io.File;
+import java.io.FileInputStream;
 
 /**
  * @author Matous Jobanek
  * @version $Id$
  */
-
+@Service
 public class GetOcrFromPdfHandler
         implements ActionHandler<GetOcrFromPdfAction, GetOcrFromPdfResult> {
 

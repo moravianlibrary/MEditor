@@ -61,10 +61,6 @@
 			<artifactId>log4j</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.google.inject</groupId>
-			<artifactId>guice</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>mzk.ki</groupId>
 			<artifactId>ki-jzkit-z3950</artifactId>
 		</dependency>

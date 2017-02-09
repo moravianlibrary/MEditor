@@ -26,9 +26,7 @@ package cz.mzk.editor.server.quartz;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-
 import org.quartz.Job;
-import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.spi.JobFactory;
@@ -41,11 +39,9 @@ import org.quartz.spi.TriggerFiredBundle;
 public class GuiceJobFactory
         implements JobFactory {
 
-    private final Injector guice;
 
     @Inject
     public GuiceJobFactory(final Injector guice) {
-        this.guice = guice;
     }
 
     /**
@@ -53,9 +49,10 @@ public class GuiceJobFactory
      */
     @Override
     public Job newJob(TriggerFiredBundle bundle, Scheduler arg1) throws SchedulerException {
-        JobDetail jobDetail = bundle.getJobDetail();
-        jobDetail.getJobDataMap().put("Injector", guice);
-        Class<? extends Job> jobClass = jobDetail.getJobClass();
-        return guice.getInstance(jobClass);
+//        JobDetail jobDetail = bundle.getJobDetail();
+//        jobDetail.getJobDataMap().put("Injector", guice);
+//        Class<? extends Job> jobClass = jobDetail.getJobClass();
+//        return guice.getInstance(jobClass);
+        return null;
     }
 }

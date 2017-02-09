@@ -27,50 +27,8 @@
 
 package cz.mzk.editor.server.fedora;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
-import java.net.Authenticator;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.PasswordAuthentication;
-import java.net.URL;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.namespace.NamespaceContext;
-import javax.xml.namespace.QName;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.ws.BindingProvider;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
-import javax.inject.Inject;
-
-import cz.mzk.editor.client.util.Constants;
-import org.apache.log4j.Logger;
-
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import org.xml.sax.SAXException;
-
-import org.fedora.api.FedoraAPIA;
-import org.fedora.api.FedoraAPIAService;
-import org.fedora.api.FedoraAPIM;
-import org.fedora.api.FedoraAPIMService;
-import org.fedora.api.ObjectFactory;
-
 import cz.mzk.editor.client.ConnectionException;
+import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
 import cz.mzk.editor.server.fedora.utils.LexerException;
@@ -81,6 +39,38 @@ import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.FedoraNamespaces;
 import cz.mzk.editor.shared.domain.FedoraRelationship;
 import cz.mzk.editor.shared.domain.NamedGraphModel;
+import org.apache.log4j.Logger;
+import org.fedora.api.FedoraAPIA;
+import org.fedora.api.FedoraAPIAService;
+import org.fedora.api.FedoraAPIM;
+import org.fedora.api.FedoraAPIMService;
+import org.fedora.api.ObjectFactory;
+import org.springframework.stereotype.Component;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import javax.inject.Inject;
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.ws.BindingProvider;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.Authenticator;
+import java.net.HttpURLConnection;
+import java.net.PasswordAuthentication;
+import java.util.ArrayList;
+import java.util.List;
 
 import static cz.mzk.editor.server.fedora.utils.FedoraUtils.getDjVuImage;
 import static cz.mzk.editor.server.fedora.utils.FedoraUtils.getFedoraDatastreamsList;
@@ -92,6 +82,7 @@ import static cz.mzk.editor.server.fedora.utils.FedoraUtils.getFedoraDatastreams
  * @see FedoraAccess
  * @author pavels
  */
+@Component("rawFedoraAccess")
 public class FedoraAccessImpl
         implements FedoraAccess {
 

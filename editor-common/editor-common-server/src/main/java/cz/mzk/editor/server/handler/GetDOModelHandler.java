@@ -27,24 +27,23 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.io.IOException;
-
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
-import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.rpc.action.GetDOModelAction;
 import cz.mzk.editor.shared.rpc.action.GetDOModelResult;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 /**
  * @author Jiri Kremser
  * @version 13.11.2011
  */
+@Service
 public class GetDOModelHandler
         implements ActionHandler<GetDOModelAction, GetDOModelResult> {
 

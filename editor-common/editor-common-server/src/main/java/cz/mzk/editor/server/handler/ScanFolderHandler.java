@@ -27,49 +27,42 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.io.File;
-import java.io.IOException;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-
-import javax.servlet.http.HttpServletRequest;
-
-import javax.inject.Inject;
-
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import cz.mzk.editor.server.UserProvider;
-import cz.mzk.editor.server.utils.ScanFolder;
-import cz.mzk.editor.server.utils.ScanFolderImpl;
-import cz.mzk.editor.server.util.AudioUtils;
-import cz.mzk.editor.shared.rpc.ImageItem;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.client.util.Constants.SERVER_ACTION_RESULT;
 import cz.mzk.editor.server.DAO.ConversionDAO;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.ImageResolverDAO;
 import cz.mzk.editor.server.DAO.InputQueueItemDAO;
+import cz.mzk.editor.server.UserProvider;
 import cz.mzk.editor.server.config.EditorConfiguration;
+import cz.mzk.editor.server.util.AudioUtils;
 import cz.mzk.editor.server.util.IOUtils;
-import cz.mzk.editor.server.util.ServerUtils;
+import cz.mzk.editor.server.utils.ScanFolder;
+import cz.mzk.editor.server.utils.ScanFolderImpl;
+import cz.mzk.editor.shared.rpc.ImageItem;
 import cz.mzk.editor.shared.rpc.ServerActionResult;
 import cz.mzk.editor.shared.rpc.action.ScanFolderAction;
 import cz.mzk.editor.shared.rpc.action.ScanFolderResult;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class ScanFolderHandler.
  */
+@Service
 public class ScanFolderHandler
         implements ActionHandler<ScanFolderAction, ScanFolderResult> {
 
@@ -83,18 +76,12 @@ public class ScanFolderHandler
     @Inject
     private ImageResolverDAO imageResolverDAO;
 
-    @Inject
-    private Provider<HttpServletRequest> requestProvider;
-
     /** The input queue dao. */
     @Inject
     private InputQueueItemDAO inputQueueDAO;
 
     @Inject
     private ConversionDAO conversionDAO;
-
-    @Inject
-    private ScanFolderImpl.ScanFolderFactory scanFolderFactory;
 
     @Inject
     private UserProvider userProvider;
@@ -123,9 +110,6 @@ public class ScanFolderHandler
 
         LOGGER.debug("Processing action: ScanFolderAction " + action.getModel() + " - " + action.getCode());
 
-        scanFolderFactory.create(action.getModel(), action.getCode());
-
-
         // parse input
         final String model = action.getModel();
         final String code = action.getCode();
@@ -133,7 +117,7 @@ public class ScanFolderHandler
             return null;
         }
 
-        ScanFolder scanFolder = scanFolderFactory.create(model, code);
+        ScanFolder scanFolder = new ScanFolderImpl(model, code, configuration);
         List<String> wrongNames = scanFolder.getWrongNames();
         List<String> imgFileNames = scanFolder.getFileNames();
         if (imgFileNames == null || imgFileNames.isEmpty()) {

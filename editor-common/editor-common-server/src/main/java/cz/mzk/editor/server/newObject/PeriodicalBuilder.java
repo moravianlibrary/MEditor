@@ -24,21 +24,6 @@
 
 package cz.mzk.editor.server.newObject;
 
-import java.io.FileNotFoundException;
-
-import java.util.List;
-import java.util.logging.Logger;
-
-import org.dom4j.Attribute;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.Namespace;
-import org.dom4j.Node;
-import org.dom4j.QName;
-import org.dom4j.XPath;
-
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.client.util.Constants.DATASTREAM_CONTROLGROUP;
 import cz.mzk.editor.client.util.Constants.DATASTREAM_ID;
@@ -46,13 +31,25 @@ import cz.mzk.editor.server.fedora.utils.Dom4jUtils;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.FedoraNamespaces;
 import cz.mzk.editor.shared.rpc.MarcSpecificMetadata;
-import cz.mzk.editor.shared.rpc.NewDigitalObject;
+import org.dom4j.Attribute;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.dom4j.Namespace;
+import org.dom4j.Node;
+import org.dom4j.QName;
+import org.dom4j.XPath;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * @author Jiri Kremser
  * @version 17.11.2011
  */
 @SuppressWarnings("unused")
+@Component
 public class PeriodicalBuilder
         extends FoxmlBuilder {
 
@@ -64,15 +61,6 @@ public class PeriodicalBuilder
             .createXPath("//mods:location/mods:holdingSimple/mods:copyInformation");
     private final XPath recordInfoXpath = Dom4jUtils.createXPath("//mods:recordInfo");
 
-    /**
-     * @throws FileNotFoundException
-     *         final if some xsl template file cannot be found
-     * @throws DocumentException
-     *         final case of error in loading xsl template
-     */
-    public PeriodicalBuilder(NewDigitalObject object) {
-        super(object);
-    }
 
     @SuppressWarnings("unchecked")
     private void updateDcDoc(Document dcDoc,

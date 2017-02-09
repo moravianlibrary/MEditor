@@ -27,27 +27,25 @@
 
 package cz.mzk.editor.server.DAO;
 
-import java.io.File;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.shared.rpc.IngestInfo;
 import cz.mzk.editor.shared.rpc.InputQueueItem;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
+
+import javax.inject.Inject;
+import java.io.File;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class InputQueueItemDAOImpl.
  */
+@Repository
 public class InputQueueItemDAOImpl
         extends AbstractDAO
         implements InputQueueItemDAO {

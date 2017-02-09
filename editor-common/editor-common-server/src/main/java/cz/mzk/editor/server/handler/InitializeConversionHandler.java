@@ -27,27 +27,25 @@
 
 package cz.mzk.editor.server.handler;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
-
-import javax.inject.Inject;
-
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.convert.Converter;
 import cz.mzk.editor.shared.rpc.action.InitializeConversionAction;
 import cz.mzk.editor.shared.rpc.action.InitializeConversionResult;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 
 /**
  * @author Jiri Kremser
  * @version 27.4.2012
  */
+@Service
 public class InitializeConversionHandler
         implements ActionHandler<InitializeConversionAction, InitializeConversionResult> {
 
@@ -62,9 +60,9 @@ public class InitializeConversionHandler
     /** The configuration. */
     private final EditorConfiguration configuration;
 
-    /** The http session provider. */
+    /** The provider. */
     @Inject
-    private Provider<HttpSession> httpSessionProvider;
+    private HttpSession session;
 
     /**
      * Instantiates a new scan input queue handler.
@@ -99,7 +97,6 @@ public class InitializeConversionHandler
         if (!configuration.getAkkaOn()) {
             return new InitializeConversionResult(true);
         }
-        HttpSession session = httpSessionProvider.get();
         ServletContext context = session.getServletContext();
         Long startTime = (Long) context.getAttribute(CONVERSION_START_TIME);
         boolean running = converter.isRunning() && startTime != null;

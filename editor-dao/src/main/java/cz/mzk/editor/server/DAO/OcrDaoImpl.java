@@ -2,6 +2,7 @@ package cz.mzk.editor.server.DAO;
 
 import cz.mzk.editor.client.util.Constants;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -10,6 +11,7 @@ import java.sql.SQLException;
  * @author: Martin Rumanek
  * @version: 25.2.13
  */
+@Repository
 public class OcrDaoImpl extends AbstractActionDAO implements OcrDao {
 
     private static final Logger LOGGER = Logger.getLogger(OcrDaoImpl.class.getPackage().toString());

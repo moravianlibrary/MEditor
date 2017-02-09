@@ -24,41 +24,35 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-
-import java.sql.SQLException;
-
-import java.util.ArrayList;
-
-import javax.inject.Inject;
-
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import cz.mzk.editor.server.UserProvider;
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.DAO.DAOUtils;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.StoredItemsDAO;
+import cz.mzk.editor.server.UserProvider;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
 import cz.mzk.editor.server.modelHandler.StoredDigitalObjectHandlerImpl;
-import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.StoredItem;
 import cz.mzk.editor.shared.rpc.action.StoredItemsAction;
 import cz.mzk.editor.shared.rpc.action.StoredItemsResult;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * @author Matous Jobanek
  * @version $Id$
  */
-
+@Service
 public class StoredItemsHandler
         implements ActionHandler<StoredItemsAction, StoredItemsResult> {
 

@@ -1,6 +1,7 @@
 package cz.mzk.editor.server.DAO;
 
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,6 +11,7 @@ import java.sql.Statement;
 /**
  * Created by rumanekm on 1/23/17.
  */
+@Repository
 public class UserDaoNewImpl extends AbstractDAO implements UserDaoNew {
 
     private static final Logger LOGGER = Logger.getLogger(UserDaoNewImpl.class);

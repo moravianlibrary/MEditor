@@ -5,7 +5,6 @@ import cz.mzk.editor.server.fedora.utils.Dom4jUtils;
 import cz.mzk.editor.shared.domain.DigitalObjectModel;
 import cz.mzk.editor.shared.domain.FedoraNamespaces;
 import cz.mzk.editor.shared.rpc.MarcSpecificMetadata;
-import cz.mzk.editor.shared.rpc.NewDigitalObject;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -14,6 +13,7 @@ import org.dom4j.Namespace;
 import org.dom4j.Node;
 import org.dom4j.QName;
 import org.dom4j.XPath;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -22,6 +22,7 @@ import java.util.logging.Logger;
  * @author: Martin Rumanek
  * @version: 17.11.12
  */
+@Component
 public class SoundRecordingBuilder extends FoxmlBuilder {
     private final XPath locationXpath = Dom4jUtils
             .createXPath("/mods:modsCollection/mods:mods/mods:location");
@@ -30,13 +31,7 @@ public class SoundRecordingBuilder extends FoxmlBuilder {
     private final XPath modsXpath = Dom4jUtils.createXPath("/mods:modsCollection/mods:mods");
     private final XPath recordInfoXpath = Dom4jUtils.createXPath("//mods:recordInfo");
 
-    private final DigitalObjectModel model;
-
-    public SoundRecordingBuilder(NewDigitalObject object) {
-        super(object);
-        this.model = object.getModel();
-    }
-
+    private final DigitalObjectModel model = DigitalObjectModel.SOUNDRECORDING;
 
     @Override
     protected void decorateMODSStream() {

@@ -24,32 +24,7 @@
 
 package cz.mzk.editor.server.modelHandler;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-
-import javax.inject.Inject;
-
-import com.google.inject.name.Named;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import org.apache.log4j.Logger;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-import org.xml.sax.SAXException;
-
 import cz.mzk.editor.client.mods.ModsCollectionClient;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.fedora.FedoraAccess;
@@ -62,12 +37,31 @@ import cz.mzk.editor.shared.domain.NamedGraphModel;
 import cz.mzk.editor.shared.rpc.DigitalObjectDetail;
 import cz.mzk.editor.shared.rpc.DublinCore;
 import cz.mzk.editor.shared.rpc.Foxml;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import javax.inject.Inject;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Matous Jobanek
  * @version $Id$
  */
-
+@Service
 public class StoredDigitalObjectHandlerImpl
         extends DigitalObjectHandler
         implements StoredDigitalObjectHandler {
@@ -83,7 +77,7 @@ public class StoredDigitalObjectHandlerImpl
      *        the fedora access
      */
     @Inject
-    public StoredDigitalObjectHandlerImpl(@Named("securedFedoraAccess") FedoraAccess fedoraAccess) {
+    public StoredDigitalObjectHandlerImpl(@Qualifier("securedFedoraAccess") FedoraAccess fedoraAccess) {
         this.fedoraAccess = fedoraAccess;
     }
 

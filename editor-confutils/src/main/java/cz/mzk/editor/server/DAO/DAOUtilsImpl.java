@@ -24,23 +24,24 @@
 
 package cz.mzk.editor.server.DAO;
 
+import cz.mzk.editor.client.util.Constants;
+import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
+import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
+import cz.mzk.editor.client.util.Constants.REQUESTS_TO_ADMIN_TYPES;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 
-import org.apache.log4j.Logger;
-
-import cz.mzk.editor.client.util.Constants;
-import cz.mzk.editor.client.util.Constants.CRUD_ACTION_TYPES;
-import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
-import cz.mzk.editor.client.util.Constants.REQUESTS_TO_ADMIN_TYPES;
-
 /**
  * @author Matous Jobanek
  * @version Oct 11, 2012
  */
+@Repository
 public class DAOUtilsImpl
         extends AbstractDAO
         implements DAOUtils {

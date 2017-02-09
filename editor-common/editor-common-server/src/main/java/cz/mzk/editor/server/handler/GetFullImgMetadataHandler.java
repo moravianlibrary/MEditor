@@ -24,31 +24,26 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.io.IOException;
-
-import javax.servlet.http.HttpServletRequest;
-
-import javax.inject.Inject;
-
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.server.URLS;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.util.RESTHelper;
-import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.GetFullImgMetadataAction;
 import cz.mzk.editor.shared.rpc.action.GetFullImgMetadataResult;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 /**
  * @author Matous Jobanek
  * @version $Id$
  */
-
+@Service
 public class GetFullImgMetadataHandler
         implements ActionHandler<GetFullImgMetadataAction, GetFullImgMetadataResult> {
 
@@ -56,9 +51,8 @@ public class GetFullImgMetadataHandler
     private static final Logger LOGGER = Logger.getLogger(GetFullImgMetadataHandler.class.getPackage()
             .toString());
 
-    /** The http session provider. */
     @Inject
-    private Provider<HttpServletRequest> requestProvider;
+    private HttpServletRequest request;
 
     /** The configuration. */
     @Inject
@@ -74,16 +68,15 @@ public class GetFullImgMetadataHandler
 
         LOGGER.debug("Processing action: GetFullImgMetadataAction " + action.getUuid());
 
-        HttpServletRequest httpServletRequest = requestProvider.get();
 
         StringBuffer baseUrl = new StringBuffer();
         baseUrl.append("http");
-        if (httpServletRequest.getProtocol().toLowerCase().contains("https")) {
+        if (request.getProtocol().toLowerCase().contains("https")) {
             baseUrl.append('s');
         }
         baseUrl.append("://");
         if (!URLS.LOCALHOST()) {
-            baseUrl.append(httpServletRequest.getServerName());
+            baseUrl.append(request.getServerName());
         } else {
             String hostname = config.getHostname();
             if (hostname.contains("://")) {

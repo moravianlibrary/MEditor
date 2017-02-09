@@ -24,29 +24,26 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.io.File;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.inject.Inject;
-
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.ImageResolverDAO;
-import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.FindAltoOcrFilesBatchAction;
 import cz.mzk.editor.shared.rpc.action.FindAltoOcrFilesBatchResult;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Martin Rumanek
  * @version Aug 20, 2012
  */
+@Service
 public class FindAltoOcrFilesBatchHandler
         implements ActionHandler<FindAltoOcrFilesBatchAction, FindAltoOcrFilesBatchResult> {
 

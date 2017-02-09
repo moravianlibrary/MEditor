@@ -24,33 +24,34 @@
 
 package cz.mzk.editor.server.newObject;
 
-import javax.inject.Inject;
-
 import cz.mzk.editor.client.util.Constants;
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.DigitalObjectDAO;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.config.EditorConfiguration.ServerConstants;
 import cz.mzk.editor.server.util.RESTHelper;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
+
+import javax.inject.Inject;
 
 
 /**
  * @author Matous Jobanek
  * @version Oct 23, 2012
  */
+@Component
 public class IngestUtils {
 
     public static final Logger LOGGER = Logger.getLogger(IngestUtils.class);
     private static final Logger INGEST_LOGGER = Logger.getLogger(ServerConstants.INGEST_LOG_ID);
 
     @Inject
-    private static EditorConfiguration config;
+    private EditorConfiguration config;
 
     /** The dao utils. */
     @Inject
-    private static DigitalObjectDAO digitalObjectDAO;
+    private DigitalObjectDAO digitalObjectDAO;
 
     /**
      * Ingest.
@@ -69,7 +70,7 @@ public class IngestUtils {
      *        the input dir path
      * @return true, if successful
      */
-    public static boolean ingest(String foxml,
+    public boolean ingest(String foxml,
                                  String label,
                                  String uuid,
                                  String model,

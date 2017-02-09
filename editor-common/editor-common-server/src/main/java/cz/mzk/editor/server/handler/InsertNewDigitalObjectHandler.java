@@ -24,24 +24,9 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import cz.mzk.editor.server.UserProvider;
-import cz.mzk.editor.server.util.StringUtils;
-import org.apache.log4j.Logger;
-import org.jboss.errai.bus.client.api.base.MessageBuilder;
-
-
-import com.google.inject.name.Named;
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
 import cz.mzk.editor.client.CreateObjectException;
 import cz.mzk.editor.client.util.Constants;
 import cz.mzk.editor.server.DAO.DAOUtils;
@@ -49,21 +34,36 @@ import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.DigitalObjectDAO;
 import cz.mzk.editor.server.DAO.ImageResolverDAO;
 import cz.mzk.editor.server.DAO.InputQueueItemDAO;
+import cz.mzk.editor.server.UserProvider;
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.FedoraAccess;
 import cz.mzk.editor.server.newObject.CreateObject;
+import cz.mzk.editor.server.newObject.FOXMLBuilderMapping;
+import cz.mzk.editor.server.newObject.IngestUtils;
 import cz.mzk.editor.server.util.RESTHelper;
 import cz.mzk.editor.server.util.ServerUtils;
+import cz.mzk.editor.server.util.StringUtils;
 import cz.mzk.editor.shared.rpc.NewDigitalObject;
 import cz.mzk.editor.shared.rpc.action.InsertNewDigitalObjectAction;
 import cz.mzk.editor.shared.rpc.action.InsertNewDigitalObjectResult;
+import org.apache.log4j.Logger;
+import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.bus.client.api.messaging.RequestDispatcher;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
  * @author Jiri Kremser
  * @version 14.11.2011
  */
+@Service
 public class InsertNewDigitalObjectHandler
         implements ActionHandler<InsertNewDigitalObjectAction, InsertNewDigitalObjectResult> {
 
@@ -71,7 +71,7 @@ public class InsertNewDigitalObjectHandler
 
     /** The fedora access. */
     @Inject
-    @Named("securedFedoraAccess")
+    @Qualifier("securedFedoraAccess")
     private FedoraAccess fedoraAccess;
 
     /** The config. */
@@ -99,6 +99,15 @@ public class InsertNewDigitalObjectHandler
     private static RequestDispatcher erraiDispatcher;
 
     private boolean reindexSuccess = false;
+
+    @Inject
+    private FOXMLBuilderMapping foxmlBuilderMapping;
+
+    @Inject
+    private IngestUtils ingestUtils;
+
+    @Inject
+    private ServerUtils serverUtils;
 
     public InsertNewDigitalObjectHandler() {
         super();
@@ -137,7 +146,7 @@ public class InsertNewDigitalObjectHandler
                                      config,
                                      digitalObjectDAO,
                                      imageResolverDAO,
-                                     fedoraAccess, userProvider);
+                                     fedoraAccess, foxmlBuilderMapping, ingestUtils, userProvider);
             ingestSuccess = createObject.insertAllTheStructureToFOXMLs(object);
 
             if (object.getUuid() != null && createObject.getTopLevelUuid() != null && !createObject.getTopLevelUuid().equals(object.getUuid())) {
@@ -198,12 +207,12 @@ public class InsertNewDigitalObjectHandler
 
     private boolean reindex(NewDigitalObject object) {
         if (object.getUuid() != null) {
-            return ServerUtils.reindex(object.getUuid());
+            return serverUtils.reindex(object.getUuid());
         }
 
         for (NewDigitalObject child : object.getChildren()) {
             if (child.getExist() && child.getUuid() != null && !"".equals(child.getUuid())) {
-                    return ServerUtils.reindex(child.getUuid());
+                    return serverUtils.reindex(child.getUuid());
             } else {
                 reindex(child);
             }

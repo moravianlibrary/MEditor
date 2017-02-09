@@ -27,28 +27,6 @@
 
 package cz.mzk.editor.server.metadataDownloader;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import javax.xml.parsers.ParserConfigurationException;
-
-import javax.inject.Inject;
-
-import org.apache.log4j.Logger;
-
-import org.dom4j.Attribute;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.XPath;
-
-import org.xml.sax.SAXException;
-
 import cz.mzk.editor.server.config.EditorConfiguration;
 import cz.mzk.editor.server.fedora.utils.BiblioModsUtils;
 import cz.mzk.editor.server.fedora.utils.DCUtils;
@@ -62,12 +40,30 @@ import cz.mzk.editor.server.util.XMLUtils;
 import cz.mzk.editor.shared.rpc.DublinCore;
 import cz.mzk.editor.shared.rpc.MarcSpecificMetadata;
 import cz.mzk.editor.shared.rpc.MetadataBundle;
+import org.apache.log4j.Logger;
+import org.dom4j.Attribute;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.dom4j.XPath;
+import org.springframework.stereotype.Service;
+import org.xml.sax.SAXException;
+
+import javax.inject.Inject;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author Jiri Kremser
  * @version 12.11.2011
  */
 @SuppressWarnings("Duplicates")
+@Service
 public class OAIPMHClientImpl
         implements OAIPMHClient {
 

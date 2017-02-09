@@ -27,19 +27,17 @@ package cz.mzk.editor.server.handler;
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.server.fedora.utils.FedoraUtils;
-import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.DownloadDigitalObjectDetailAction;
 import cz.mzk.editor.shared.rpc.action.DownloadDigitalObjectDetailResult;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Matous Jobanek
  * @version $Id$
  */
-
+@Service
 public class DownloadDigitalObjectDetailHandler
         implements ActionHandler<DownloadDigitalObjectDetailAction, DownloadDigitalObjectDetailResult> {
 

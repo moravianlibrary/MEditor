@@ -16,11 +16,10 @@
 
 package cz.mzk.editor.server;
 
-import com.google.inject.Injector;
 import cz.mzk.editor.server.config.EditorConfiguration;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.inject.Inject;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
@@ -445,20 +444,11 @@ public class AudioServiceImpl extends HttpServlet {
  * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
  */
     @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        Injector injector = getInjector();
-        injector.injectMembers(this);
+    public void init() throws ServletException {
+        super.init();
+        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, getServletContext());
     }
 
-    /**
-     * Gets the injector.
-     *
-     * @return the injector
-     */
-    protected Injector getInjector() {
-        return (Injector) getServletContext().getAttribute(Injector.class.getName());
-    }
 
     /**
      * This class represents a byte range.

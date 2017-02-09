@@ -24,17 +24,9 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.util.List;
-
-import javax.activation.UnsupportedDataTypeException;
-import javax.inject.Inject;
-
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.client.util.Constants.EDITOR_RIGHTS;
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.UserDAO;
@@ -43,11 +35,18 @@ import cz.mzk.editor.shared.rpc.action.GetUserRolesRightsIdentitiesAction;
 import cz.mzk.editor.shared.rpc.action.GetUserRolesRightsIdentitiesResult;
 import cz.mzk.editor.shared.rpc.action.PutRemoveUserRightsAction;
 import cz.mzk.editor.shared.rpc.action.PutRemoveUserRightsResult;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import javax.activation.UnsupportedDataTypeException;
+import javax.inject.Inject;
+import java.util.List;
 
 /**
  * @author Matous Jobanek
  * @version Nov 27, 2012
  */
+@Service
 public class PutRemoveUserRightsHandler
         implements ActionHandler<PutRemoveUserRightsAction, PutRemoveUserRightsResult> {
 

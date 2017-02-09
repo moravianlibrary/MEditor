@@ -24,31 +24,26 @@
 
 package cz.mzk.editor.server.handler;
 
-import javax.servlet.http.HttpSession;
-
-import javax.inject.Inject;
-
-import com.google.inject.Injector;
-import com.google.inject.Provider;
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import cz.mzk.editor.server.UserProvider;
-import org.apache.log4j.Logger;
-
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.LockDAO;
+import cz.mzk.editor.server.UserProvider;
 import cz.mzk.editor.shared.rpc.LockInfo;
 import cz.mzk.editor.shared.rpc.action.GetLockInformationAction;
 import cz.mzk.editor.shared.rpc.action.LockDigitalObjectAction;
 import cz.mzk.editor.shared.rpc.action.LockDigitalObjectResult;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
 
 /**
  * @author Jiri Kremser
  * @version $Id$
  */
-
+@Service
 public class LockDigitalObjectHandler
         implements ActionHandler<LockDigitalObjectAction, LockDigitalObjectResult> {
 
@@ -61,19 +56,16 @@ public class LockDigitalObjectHandler
     private LockDAO locksDAO;
 
     /** The GetLockInformationHandler handler */
-    private final GetLockInformationHandler getLockInformationHandler;
+    private GetLockInformationHandler getLockInformationHandler;
 
-    /** The http session provider. */
-    @Inject
-    private Provider<HttpSession> httpSessionProvider;
 
     @Inject
     private UserProvider userProvider;
 
     /** Instantiate a new lock digital object handler **/
     @Inject
-    public LockDigitalObjectHandler() {
-        this.getLockInformationHandler = new GetLockInformationHandler();
+    public LockDigitalObjectHandler(GetLockInformationHandler getLockInformationHandler) {
+        this.getLockInformationHandler = getLockInformationHandler;
     }
 
     /**
@@ -89,10 +81,6 @@ public class LockDigitalObjectHandler
         String uuid = action.getUuid();
         String description = (action.getDescription() == null ? "" : action.getDescription());
 
-        Injector injector =
-                (Injector) httpSessionProvider.get().getServletContext()
-                        .getAttribute(Injector.class.getName());
-        injector.injectMembers(getLockInformationHandler);
 
         LockInfo lockInfo =
                 getLockInformationHandler.execute(new GetLockInformationAction(uuid), context).getLockInfo();

@@ -24,34 +24,29 @@
 
 package cz.mzk.editor.server.handler;
 
-import java.io.File;
-import java.io.FileFilter;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
-
-import org.apache.log4j.Logger;
-
-import org.dom4j.DocumentException;
-import org.dom4j.io.SAXReader;
-
 import cz.mzk.editor.server.DAO.DatabaseException;
 import cz.mzk.editor.server.DAO.ImageResolverDAO;
-import cz.mzk.editor.server.util.ServerUtils;
 import cz.mzk.editor.shared.rpc.action.FindAltoOcrFilesAction;
 import cz.mzk.editor.shared.rpc.action.FindAltoOcrFilesResult;
+import org.apache.log4j.Logger;
+import org.dom4j.DocumentException;
+import org.dom4j.io.SAXReader;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import java.io.File;
+import java.io.FileFilter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Matous Jobanek
  * @version $Id$
  */
-
+@Service
 public class FindAltoOcrFilesHandler
         implements ActionHandler<FindAltoOcrFilesAction, FindAltoOcrFilesResult> {
 
