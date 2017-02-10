@@ -88,6 +88,7 @@
 		<yaz4j.version>1.5</yaz4j.version>
 		<marc4j.version>2.6.0</marc4j.version>
 		<springsecurity.version>4.2.1.RELEASE</springsecurity.version>
+		<spring.version>4.3.6.RELEASE</spring.version>
 
 		<warName>meditor</warName>
 		<generatedGwtpSources>target/generated-sources/apt</generatedGwtpSources>
@@ -432,7 +433,7 @@
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-context</artifactId>
-				<version>4.3.6.RELEASE</version>
+				<version>${spring.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.keycloak</groupId>

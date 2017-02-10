@@ -24,35 +24,44 @@
 
 package cz.mzk.editor.server.quartz;
 
-import com.google.inject.Inject;
-import com.google.inject.Injector;
+
 import org.quartz.Job;
+import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.spi.JobFactory;
 import org.quartz.spi.TriggerFiredBundle;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
+
+import javax.inject.Inject;
+import java.beans.Introspector;
 
 /**
  * @author Martin Rumanek
  * @version Aug 27, 2012
  */
-public class GuiceJobFactory
-        implements JobFactory {
-
+@Component
+public class GuiceJobFactory implements ApplicationContextAware, JobFactory {
 
     @Inject
-    public GuiceJobFactory(final Injector guice) {
-    }
+    private ApplicationContext ctx;
 
     /**
      * {@inheritDoc}
      */
     @Override
     public Job newJob(TriggerFiredBundle bundle, Scheduler arg1) throws SchedulerException {
-//        JobDetail jobDetail = bundle.getJobDetail();
-//        jobDetail.getJobDataMap().put("Injector", guice);
-//        Class<? extends Job> jobClass = jobDetail.getJobClass();
-//        return guice.getInstance(jobClass);
-        return null;
+        JobDetail jobDetail = bundle.getJobDetail();
+        Class<? extends Job> jobClass = jobDetail.getJobClass();
+
+        return this.ctx.getBean(Introspector.decapitalize(jobClass.getSimpleName()), jobClass);
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.ctx = applicationContext;
     }
 }

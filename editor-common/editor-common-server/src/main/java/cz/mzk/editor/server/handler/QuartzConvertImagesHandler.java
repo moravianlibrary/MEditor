@@ -24,7 +24,6 @@
 
 package cz.mzk.editor.server.handler;
 
-import com.google.inject.Inject;
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
@@ -54,11 +53,16 @@ public class QuartzConvertImagesHandler
     /** The logger. */
     private static final Logger LOGGER = Logger.getLogger(QuartzConvertImagesHandler.class.getPackage()
             .toString());
-    @Inject
-    Quartz quartz;
 
-    @Inject
-    ScanFolderHandler scanFolderHandler;
+    private final Quartz quartz;
+
+    private final ScanFolderHandler scanFolderHandler;
+
+    @javax.inject.Inject
+    public QuartzConvertImagesHandler(Quartz quartz, ScanFolderHandler scanFolderHandler) {
+        this.quartz = quartz;
+        this.scanFolderHandler = scanFolderHandler;
+    }
 
     /**
      * {@inheritDoc}

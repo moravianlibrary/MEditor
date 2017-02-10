@@ -75,6 +75,15 @@
 		  class="org.keycloak.adapters.springsecurity.filter.KeycloakAuthenticationProcessingFilter"
 		  c:authenticationManager-ref="authenticationManager" />
 
+	<bean id="quartz" class="cz.mzk.editor.server.quartz.Quartz">
+		<constructor-arg name="factory">
+			<bean class="org.quartz.impl.StdSchedulerFactory" />
+		</constructor-arg>
+		<constructor-arg name="jobFactory">
+			<bean class="cz.mzk.editor.server.quartz.GuiceJobFactory" />
+		</constructor-arg>
+	</bean>
+
 
 	<!-- filters chain -->
 	<security:http auto-config="false" entry-point-ref="keycloakAuthenticationEntryPoint">

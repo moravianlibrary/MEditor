@@ -25,6 +25,8 @@
 package cz.mzk.editor.server.quartz;
 
 import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SchedulerFactory;
 
 /**
  * @author Martin Rumanek
@@ -32,25 +34,24 @@ import org.quartz.Scheduler;
  */
 public class Quartz {
 
-    private final Scheduler scheduler = null;
+    private final Scheduler scheduler;
 
-//    @Inject
-//    public Quartz(final SchedulerFactory factory, final GuiceJobFactory jobFactory)
-//            throws SchedulerException {
-//        scheduler = factory.getScheduler();
-//        scheduler.setJobFactory(jobFactory);
-//        scheduler.start();
-//    }
+    public Quartz(final SchedulerFactory factory, final GuiceJobFactory jobFactory)
+            throws SchedulerException {
+        scheduler = factory.getScheduler();
+        scheduler.setJobFactory(jobFactory);
+        scheduler.start();
+    }
 
     public final Scheduler getScheduler() {
         return scheduler;
     }
-//
-//    public void shutdown() {
-//        try {
-//            scheduler.shutdown();
-//        } catch (SchedulerException e) {
-//        }
-//    }
+
+    public void shutdown() {
+        try {
+            scheduler.shutdown();
+        } catch (SchedulerException e) {
+        }
+    }
 
 }

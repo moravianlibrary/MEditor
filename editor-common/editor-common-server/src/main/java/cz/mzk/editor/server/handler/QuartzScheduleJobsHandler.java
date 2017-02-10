@@ -23,8 +23,6 @@
  */
 
 package cz.mzk.editor.server.handler;
-
-import com.google.inject.Inject;
 import com.gwtplatform.dispatch.rpc.server.ExecutionContext;
 import com.gwtplatform.dispatch.rpc.server.actionhandler.ActionHandler;
 import com.gwtplatform.dispatch.shared.ActionException;
@@ -40,6 +38,7 @@ import org.quartz.SchedulerException;
 import org.quartz.UnableToInterruptJobException;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,8 +54,12 @@ public class QuartzScheduleJobsHandler
     private static final Logger LOGGER = Logger.getLogger(QuartzScheduleJobsHandler.class.getPackage()
             .toString());
 
+    private final Quartz quartz;
+
     @Inject
-    Quartz quartz;
+    public QuartzScheduleJobsHandler(Quartz quartz) {
+        this.quartz = quartz;
+    }
 
     /**
      * {@inheritDoc}
