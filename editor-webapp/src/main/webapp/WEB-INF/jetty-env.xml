@@ -2,7 +2,6 @@
 <!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
 <Configure id='portal' class="org.eclipse.jetty.webapp.WebAppContext">
     <New id="DStest" class="org.eclipse.jetty.plus.jndi.Resource">
-        <Arg></Arg>
         <Arg>jdbc/editor</Arg>
         <Arg>
             <New class="org.postgresql.ds.PGSimpleDataSource">

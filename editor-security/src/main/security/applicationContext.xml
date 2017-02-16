@@ -57,7 +57,7 @@
 		<security:intercept-url pattern="/**" access="hasRole('ROLE_MEDITOR')" />
 		<security:custom-filter ref="logoutFilter" position="LOGOUT_FILTER" />
 		<!--comment out when using superDevMode-->
-		<security:intercept-url pattern="/**" requires-channel="https" />
+		<security:intercept-url pattern="/**" requires-channel="#{ systemEnvironment['superdev'] != null ? 'any' : 'https' }" />
 
 		<!-- coz iframe with pdf.js -->
 		<security:headers>

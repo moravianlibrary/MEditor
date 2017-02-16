@@ -1,0 +1,15 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="docker" type="docker-deploy" factoryName="Docker Deployment" server-name="Docker">
+    <deployment type="docker-compose.yml" path="$PROJECT_DIR$/docker-dir/docker-compose.yml">
+      <settings>
+        <option name="JSONFilePath" value="" />
+        <option name="command" value="" />
+        <option name="entrypoint" value="" />
+        <option name="startBrowserSettings">
+          <browser url="http://127.0.0.1" />
+        </option>
+      </settings>
+    </deployment>
+    <method />
+  </configuration>
+</component>

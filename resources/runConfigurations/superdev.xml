@@ -1,0 +1,19 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="superdev" type="GWT.ConfigurationType" factoryName="GWT Configuration">
+    <module name="editor-webapp" />
+    <option name="VM_PARAMETERS" value="-Xmx2048m" />
+    <option name="RUN_PAGE" value="MEditor.html" />
+    <option name="GWT_MODULE" value="cz.mzk.editor.MEditorDev" />
+    <option name="OPEN_IN_BROWSER" value="false" />
+    <option name="USE_SUPER_DEV_MODE" value="true" />
+    <option name="WORKING_DIRECTORY" value="" />
+    <envs>
+      <env name="KEYCLOAK_AUTH_SERVER_URL" value="http://localhost:84/auth/" />
+      <env name="KEYCLOAK_REALM" value="meditor" />
+      <env name="KEYCLOAK_REALM_PUBLIC_KEY" value="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzheQ2PrgOdfSrc4ENgd4BUXJz5MkumqJ9DGHUTteVRoasGtlQdCdS8Ooi8F0mWY2+53oA+19s7d8ljiI5930aQoeA2LCyctpQr6MiLjLZVhbEWQjAEqd4+u301Pp00XQwiY3spaE27o9kYt2t/cA/n+GwdQ8o7sfyNpxguI/H12InVqNe0ETWdpwKdLuqaIs6HAxYn9f+4zcRpbEi//8KPNviHOB8fIK0AeXRVvtY5cnpMJDWC1wtgNHThC/vFI14NkOyvaEAOEakAMfaubMKrq0u9MeCLhFI+LyqZOu1rmNJ8IA9yMAdsouxFk9Bbkmmgl2opdSP4YedIozjURkGwIDAQAB" />
+      <env name="KEYCLOAK_RESOURCE" value="meditor" />
+      <env name="superdev" value="true" />
+    </envs>
+    <method />
+  </configuration>
+</component>

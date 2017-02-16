@@ -1,0 +1,112 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="tomcat" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 8.0.30" ALTERNATIVE_JRE_ENABLED="false">
+    <option name="UPDATING_POLICY" value="restart-server" />
+    <deployment>
+      <file path="$PROJECT_DIR$/target/meditor.war">
+        <settings>
+          <option name="CONTEXT_PATH" value="meditor" />
+        </settings>
+      </file>
+    </deployment>
+    <server-settings>
+      <option name="BASE_DIRECTORY_NAME" value="Unnamed_MEditor_3" />
+    </server-settings>
+    <predefined_log_file id="Tomcat" enabled="true" />
+    <predefined_log_file id="Tomcat Catalina" enabled="true" />
+    <predefined_log_file id="Tomcat Manager" enabled="false" />
+    <predefined_log_file id="Tomcat Host Manager" enabled="false" />
+    <predefined_log_file id="Tomcat Localhost Access" enabled="false" />
+    <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+    <RunnerSettings RunnerId="Debug">
+      <option name="DEBUG_PORT" value="36853" />
+    </RunnerSettings>
+    <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
+      <option name="USE_ENV_VARIABLES" value="true" />
+      <STARTUP>
+        <option name="USE_DEFAULT" value="true" />
+        <option name="SCRIPT" value="" />
+        <option name="VM_PARAMETERS" value="" />
+        <option name="PROGRAM_PARAMETERS" value="" />
+      </STARTUP>
+      <SHUTDOWN>
+        <option name="USE_DEFAULT" value="true" />
+        <option name="SCRIPT" value="" />
+        <option name="VM_PARAMETERS" value="" />
+        <option name="PROGRAM_PARAMETERS" value="" />
+      </SHUTDOWN>
+    </ConfigurationWrapper>
+    <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Debug">
+      <option name="USE_ENV_VARIABLES" value="true" />
+      <STARTUP>
+        <option name="USE_DEFAULT" value="true" />
+        <option name="SCRIPT" value="" />
+        <option name="VM_PARAMETERS" value="" />
+        <option name="PROGRAM_PARAMETERS" value="" />
+      </STARTUP>
+      <SHUTDOWN>
+        <option name="USE_DEFAULT" value="true" />
+        <option name="SCRIPT" value="" />
+        <option name="VM_PARAMETERS" value="" />
+        <option name="PROGRAM_PARAMETERS" value="" />
+      </SHUTDOWN>
+      <EnvironmentVariables>
+        <option name="NAME" value="KEYCLOAK_REALM" />
+        <option name="VALUE" value="meditor" />
+        <option name="IS_PREDEFINED" value="false" />
+      </EnvironmentVariables>
+      <EnvironmentVariables>
+        <option name="NAME" value="KEYCLOAK_RESOURCE" />
+        <option name="VALUE" value="meditor" />
+        <option name="IS_PREDEFINED" value="false" />
+      </EnvironmentVariables>
+      <EnvironmentVariables>
+        <option name="NAME" value="KEYCLOAK_REALM_PUBLIC_KEY" />
+        <option name="VALUE" value="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzheQ2PrgOdfSrc4ENgd4BUXJz5MkumqJ9DGHUTteVRoasGtlQdCdS8Ooi8F0mWY2+53oA+19s7d8ljiI5930aQoeA2LCyctpQr6MiLjLZVhbEWQjAEqd4+u301Pp00XQwiY3spaE27o9kYt2t/cA/n+GwdQ8o7sfyNpxguI/H12InVqNe0ETWdpwKdLuqaIs6HAxYn9f+4zcRpbEi//8KPNviHOB8fIK0AeXRVvtY5cnpMJDWC1wtgNHThC/vFI14NkOyvaEAOEakAMfaubMKrq0u9MeCLhFI+LyqZOu1rmNJ8IA9yMAdsouxFk9Bbkmmgl2opdSP4YedIozjURkGwIDAQAB" />
+        <option name="IS_PREDEFINED" value="false" />
+      </EnvironmentVariables>
+      <EnvironmentVariables>
+        <option name="NAME" value="KEYCLOAK_AUTH_SERVER_URL" />
+        <option name="VALUE" value="http://localhost:84/auth/" />
+        <option name="IS_PREDEFINED" value="false" />
+      </EnvironmentVariables>
+    </ConfigurationWrapper>
+    <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Run">
+      <option name="USE_ENV_VARIABLES" value="true" />
+      <STARTUP>
+        <option name="USE_DEFAULT" value="true" />
+        <option name="SCRIPT" value="" />
+        <option name="VM_PARAMETERS" value="" />
+        <option name="PROGRAM_PARAMETERS" value="" />
+      </STARTUP>
+      <SHUTDOWN>
+        <option name="USE_DEFAULT" value="true" />
+        <option name="SCRIPT" value="" />
+        <option name="VM_PARAMETERS" value="" />
+        <option name="PROGRAM_PARAMETERS" value="" />
+      </SHUTDOWN>
+      <EnvironmentVariables>
+        <option name="NAME" value="KEYCLOAK_REALM" />
+        <option name="VALUE" value="meditor" />
+        <option name="IS_PREDEFINED" value="false" />
+      </EnvironmentVariables>
+      <EnvironmentVariables>
+        <option name="NAME" value="KEYCLOAK_RESOURCE" />
+        <option name="VALUE" value="meditor" />
+        <option name="IS_PREDEFINED" value="false" />
+      </EnvironmentVariables>
+      <EnvironmentVariables>
+        <option name="NAME" value="KEYCLOAK_REALM_PUBLIC_KEY" />
+        <option name="VALUE" value="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzheQ2PrgOdfSrc4ENgd4BUXJz5MkumqJ9DGHUTteVRoasGtlQdCdS8Ooi8F0mWY2+53oA+19s7d8ljiI5930aQoeA2LCyctpQr6MiLjLZVhbEWQjAEqd4+u301Pp00XQwiY3spaE27o9kYt2t/cA/n+GwdQ8o7sfyNpxguI/H12InVqNe0ETWdpwKdLuqaIs6HAxYn9f+4zcRpbEi//8KPNviHOB8fIK0AeXRVvtY5cnpMJDWC1wtgNHThC/vFI14NkOyvaEAOEakAMfaubMKrq0u9MeCLhFI+LyqZOu1rmNJ8IA9yMAdsouxFk9Bbkmmgl2opdSP4YedIozjURkGwIDAQAB" />
+        <option name="IS_PREDEFINED" value="false" />
+      </EnvironmentVariables>
+      <EnvironmentVariables>
+        <option name="NAME" value="KEYCLOAK_AUTH_SERVER_URL" />
+        <option name="VALUE" value="http://localhost:84/auth/" />
+        <option name="IS_PREDEFINED" value="false" />
+      </EnvironmentVariables>
+    </ConfigurationWrapper>
+    <method>
+      <option name="Make" enabled="false" />
+    </method>
+  </configuration>
+</component>

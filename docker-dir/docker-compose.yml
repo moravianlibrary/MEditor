@@ -1,0 +1,20 @@
+version: "2"
+services:
+  meditorPostgres:
+    image: "postgres:9.6"
+    environment:
+      - POSTGRES_USER=meditor
+      - POSTGRES_PASSWORD=meditor
+      - POSTGRES_DB=meditor
+    ports:
+      - "5432:5432"
+  keycloak:
+    image: jboss/keycloak
+    environment:
+      - KEYCLOAK_USER=medit
+      - KEYCLOAK_PASSWORD=medit
+    volumes:
+      - ./import.json:/opt/jboss/keycloak/import.json
+    ports:
+      - "84:8080"
+    command: "-b 0.0.0.0 -Dkeycloak.import=/opt/jboss/keycloak/import.json"
