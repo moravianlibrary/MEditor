@@ -101,6 +101,10 @@
 			<artifactId>pdfbox</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.github.jai-imageio</groupId>
+			<artifactId>jai-imageio-jpeg2000</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.foxtrottechnologies</groupId>
 			<artifactId>javadjvu</artifactId>
 		</dependency>
